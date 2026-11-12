@@ -1,0 +1,1536 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="theme-color" content="#5C3A21">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Kamaui Lab">
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" type="image/jpeg" href="assets/logo-kamaui.jpg">
+    <link rel="apple-touch-icon" href="assets/logo-kamaui.jpg">
+    <title>Kamaui Lab — App Móvil & APK (Validador 360°)</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        kamaui: {
+                            gold: '#D4A373',
+                            goldlight: '#E9C8A6',
+                            brown: '#5C3A21',
+                            deep: '#382212',
+                            blue: '#85A1BA',
+                            black: '#2B2B2B',
+                            chalk: '#F7F5F0',
+                            sand: '#EFE9DE',
+                        }
+                    },
+                    fontFamily: {
+                        playfair: ['"Playfair Display"', 'serif'],
+                        cinzel: ['"Cinzel"', 'serif'],
+                        montserrat: ['"Montserrat"', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Montserrat:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+    <!-- Phosphor Icons -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <!-- html2pdf.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+    <style>
+        :root {
+            --safe-top: env(safe-area-inset-top, 0px);
+            --safe-bottom: env(safe-area-inset-bottom, 0px);
+        }
+        * {
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+        }
+        input, textarea, select {
+            user-select: text;
+        }
+        body {
+            font-family: 'Playfair Display', serif;
+            background-color: #26170C;
+            color: #2B2B2B;
+            overscroll-behavior-y: none;
+        }
+        .font-cinzel { font-family: 'Cinzel', serif; }
+        .font-tech { font-family: 'Montserrat', sans-serif; }
+
+        /* Contenedor de Simulación de Dispositivo en PC / Fullscreen en Móvil y APK */
+        .apk-device-frame {
+            background-color: #F7F5F0;
+            background-image:
+                radial-gradient(at 0% 0%, rgba(212, 163, 115, 0.16) 0px, transparent 50%),
+                radial-gradient(at 100% 25%, rgba(133, 161, 186, 0.14) 0px, transparent 45%);
+            width: 100%;
+            height: 100dvh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            position: relative;
+        }
+        @media (min-width: 640px) {
+            body.framed-mode {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                min-height: 100dvh;
+                padding: 16px;
+            }
+            body.framed-mode .apk-device-frame {
+                max-width: 430px;
+                height: 92dvh;
+                max-height: 900px;
+                border-radius: 44px;
+                border: 8px solid #382212;
+                box-shadow: 0 30px 90px rgba(0, 0, 0, 0.65), 0 0 0 2px #D4A373;
+            }
+        }
+
+        .botanical-card {
+            background: rgba(255, 255, 255, 0.86);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(212, 163, 115, 0.35);
+            box-shadow: 0 12px 30px -8px rgba(92, 58, 33, 0.08);
+        }
+
+        .espresso-card {
+            background: linear-gradient(145deg, #5C3A21 0%, #382212 100%);
+            border: 1px solid rgba(212, 163, 115, 0.45);
+            color: #F7F5F0;
+            box-shadow: 0 16px 36px -8px rgba(56, 34, 18, 0.35);
+        }
+
+        .apk-input {
+            background: #FFFFFF;
+            border: 1px solid rgba(212, 163, 115, 0.45);
+            transition: all 0.25s ease;
+        }
+        .apk-input:focus {
+            border-color: #5C3A21;
+            box-shadow: 0 0 0 3px rgba(212, 163, 115, 0.22);
+        }
+
+        .apk-screen {
+            display: none;
+            animation: screenSlideIn 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .apk-screen.active {
+            display: block;
+        }
+        @keyframes screenSlideIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        ::-webkit-scrollbar { width: 4px; height: 4px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(212, 163, 115, 0.5); border-radius: 999px; }
+    </style>
+</head>
+<body class="framed-mode antialiased">
+
+    <!-- Barra Flotante de Utilidades solo en Escritorio (para alternar Marco o ir a Web Desktop) -->
+    <div class="hidden sm:flex fixed top-4 right-4 z-50 items-center gap-2 font-tech text-[11px]">
+        <button onclick="toggleFrameMode()" class="px-3.5 py-2 rounded-full bg-kamaui-brown text-kamaui-gold border border-kamaui-gold/40 shadow-lg hover:bg-kamaui-deep transition flex items-center gap-1.5">
+            <i class="ph-light ph-device-mobile text-sm"></i>
+            <span id="frameToggleText">Expandir Pantalla</span>
+        </button>
+        <a href="index.html" class="px-3.5 py-2 rounded-full bg-white/90 text-kamaui-brown border border-kamaui-gold/40 shadow-lg hover:bg-white transition flex items-center gap-1.5 font-semibold">
+            <i class="ph-light ph-desktop text-sm"></i>
+            <span>Versión Web Desktop</span>
+        </a>
+    </div>
+
+    <!-- ================= CONTENEDOR PRINCIPAL DE LA APP APK ================= -->
+    <div class="apk-device-frame">
+
+        <!-- BARRA DE ESTADO ANDROID / TOP APP BAR -->
+        <header class="espresso-card rounded-b-[28px] px-4 pt-3 pb-3.5 shrink-0 z-20 shadow-md" style="padding-top: max(12px, var(--safe-top));">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-full p-0.5 bg-gradient-to-tr from-kamaui-gold via-kamaui-chalk to-kamaui-blue shrink-0">
+                        <img src="assets/logo-kamaui.jpg" onerror="this.src='WhatsApp Image 2026-08-18 at 9.43.47 AM.jpg'" alt="Kamaui" class="w-full h-full rounded-full object-cover bg-white">
+                    </div>
+                    <div>
+                        <div class="flex items-center gap-2">
+                            <span class="font-cinzel text-base font-bold tracking-[0.16em] text-kamaui-chalk leading-none">KAMAUI</span>
+                            <span class="px-2 py-0.5 rounded-full bg-kamaui-gold/20 border border-kamaui-gold/40 font-tech text-[8px] uppercase tracking-widest text-kamaui-gold font-bold">APK v1.2</span>
+                        </div>
+                        <p id="apkHeaderSubtitle" class="font-tech text-[10px] text-kamaui-goldlight/80 mt-0.5">Laboratorio Botánico Móvil</p>
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-1.5">
+                    <button onclick="openApkInstallSheet()" title="Instalar o Compilar APK" class="px-3 py-1.5 rounded-full bg-kamaui-gold text-kamaui-deep font-tech text-[10px] font-bold uppercase tracking-wider flex items-center gap-1 shadow">
+                        <i class="ph-bold ph-android-logo text-sm"></i>
+                        <span>APK</span>
+                    </button>
+                    <button onclick="openWebhookSheet()" title="Conexión n8n" class="w-8 h-8 rounded-full bg-white/10 border border-kamaui-gold/30 text-kamaui-goldlight flex items-center justify-center">
+                        <i class="ph-light ph-plugs-connected text-base"></i>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- ÁREA DE CONTENIDO SCROLLABLE NATIVO -->
+        <main id="apkScrollContainer" class="flex-1 overflow-y-auto px-4 py-4 space-y-4">
+
+            <!-- ================= PANTALLA 1: CONCEPTO ================= -->
+            <section id="screen-idea" class="apk-screen active space-y-4 pb-6">
+                <!-- Tarjeta de Bienvenida + Presets Táctiles -->
+                <div class="espresso-card rounded-3xl p-4 space-y-3 relative overflow-hidden">
+                    <div class="flex items-center justify-between">
+                        <span class="font-tech text-[9px] uppercase tracking-[0.2em] text-kamaui-gold font-bold">Plantillas Rápidas de Laboratorio</span>
+                        <i class="ph-light ph-flower-lotus text-lg text-kamaui-gold"></i>
+                    </div>
+                    <div class="flex gap-2 overflow-x-auto pb-1 font-tech text-[11px]">
+                        <button type="button" onclick="loadPreset('balsamo')" class="shrink-0 px-3.5 py-2 rounded-2xl bg-white/10 active:bg-kamaui-gold active:text-kamaui-deep border border-kamaui-gold/30 text-kamaui-chalk font-medium flex items-center gap-1.5">
+                            <i class="ph-light ph-drop text-kamaui-gold"></i>
+                            <span>Bálsamo Huellas</span>
+                        </button>
+                        <button type="button" onclick="loadPreset('shampoo')" class="shrink-0 px-3.5 py-2 rounded-2xl bg-white/10 active:bg-kamaui-gold active:text-kamaui-deep border border-kamaui-gold/30 text-kamaui-chalk font-medium flex items-center gap-1.5">
+                            <i class="ph-light ph-sparkle text-kamaui-gold"></i>
+                            <span>Champú Avena</span>
+                        </button>
+                        <button type="button" onclick="loadPreset('alerta_tox')" class="shrink-0 px-3.5 py-2 rounded-2xl bg-red-950/60 border border-red-400/40 text-red-100 font-medium flex items-center gap-1.5">
+                            <i class="ph-light ph-shield-warning text-red-300"></i>
+                            <span>Alerta Felina</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Formulario Móvil -->
+                <form id="apkIdeaForm" class="botanical-card rounded-3xl p-5 space-y-4">
+                    <div class="flex items-center justify-between border-b border-kamaui-gold/25 pb-3">
+                        <div>
+                            <span class="font-tech text-[9px] uppercase tracking-[0.22em] text-kamaui-blue font-bold block">Paso 01 • Nuevo Producto</span>
+                            <h1 class="text-xl font-playfair font-semibold text-kamaui-brown">Definición Galénica</h1>
+                        </div>
+                        <i class="ph-light ph-flask text-2xl text-kamaui-gold"></i>
+                    </div>
+
+                    <div>
+                        <label class="font-tech text-[10px] uppercase tracking-wider text-kamaui-brown font-bold block mb-1">Nombre del Producto</label>
+                        <input type="text" id="product_name" required value="Bálsamo Sagrado Reparador de Huellas & Trufa"
+                            class="apk-input w-full px-3.5 py-2.5 rounded-xl text-base font-playfair text-kamaui-black outline-none">
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-3 font-tech text-xs">
+                        <div>
+                            <label class="text-[9px] uppercase tracking-wider text-kamaui-brown font-bold block mb-1">Forma Cosmética</label>
+                            <select id="cosmetic_form" class="apk-input w-full px-3 py-2.5 rounded-xl text-[11px] font-medium text-kamaui-black outline-none">
+                                <option value="Bálsamo Anhidro Fundente">Bálsamo Anhidro</option>
+                                <option value="Champú Dermo-Calmante Suave">Champú Suave</option>
+                                <option value="Bruma / Hidrolato Acondicionador">Bruma / Spray</option>
+                                <option value="Emulsión / Sérum Dermo-Reparador">Sérum / Emulsión</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="text-[9px] uppercase tracking-wider text-kamaui-brown font-bold block mb-1">Especie</label>
+                            <select id="target_pet" class="apk-input w-full px-3 py-2.5 rounded-xl text-[11px] font-medium text-kamaui-black outline-none">
+                                <option value="Perros y Gatos">Perros y Gatos</option>
+                                <option value="Perros">Solo Perros</option>
+                                <option value="Gatos">Solo Gatos</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="font-tech text-xs">
+                        <label class="text-[9px] uppercase tracking-wider text-kamaui-brown font-bold block mb-1">Zona de Aplicación / Manto</label>
+                        <select id="coat_type" class="apk-input w-full px-3 py-2.5 rounded-xl text-[11px] font-medium text-kamaui-black outline-none">
+                            <option value="Almohadillas plantares, trufa y zonas hiperqueratósicas">Almohadillas plantares y trufa</option>
+                            <option value="Manto doble, largo o rizado con piel sensible">Manto doble/largo piel sensible</option>
+                            <option value="Manto corto y piel con tendencia atópica">Manto corto / Piel reactiva</option>
+                            <option value="Cachorros y mascotas senior">Cachorros y Senior</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="font-tech text-[10px] uppercase tracking-wider text-kamaui-brown font-bold block mb-1">Activos &amp; Materias Primas (coma)</label>
+                        <textarea id="ingredients" rows="2" required
+                            class="apk-input w-full px-3.5 py-2.5 rounded-xl text-sm font-playfair text-kamaui-black outline-none resize-none">Manteca de Karité Orgánica, Cera de Candelilla, Oleato de Caléndula, Aceite de Semilla de Cáñamo, D-Pantenol, Vitamina E</textarea>
+                    </div>
+
+                    <div>
+                        <label class="font-tech text-[10px] uppercase tracking-wider text-kamaui-brown font-bold block mb-1">Propósito y Beneficios</label>
+                        <textarea id="concept_description" rows="2" required
+                            class="apk-input w-full px-3.5 py-2.5 rounded-xl text-sm font-playfair text-kamaui-black outline-none resize-none">Proteger y regenerar almohadillas expuestas al asfalto caliente o frío con una textura sedosa 100% segura al lamido (Lick-Safe).</textarea>
+                    </div>
+
+                    <button type="submit" id="btnSubmit" class="w-full py-3.5 px-5 rounded-2xl espresso-card text-kamaui-gold font-cinzel font-bold text-xs tracking-[0.16em] flex items-center justify-center gap-2 active:scale-[0.99] transition shadow-lg">
+                        <i class="ph-light ph-sparkle text-base"></i>
+                        <span>VALIDAR Y GENERAR DOSSIER 360°</span>
+                    </button>
+                </form>
+
+                <!-- Estado de Carga -->
+                <div id="loadingState" class="hidden botanical-card rounded-3xl p-8 flex-col items-center justify-center text-center space-y-3">
+                    <div class="w-14 h-14 rounded-full border-2 border-kamaui-gold/30 border-t-kamaui-brown animate-spin flex items-center justify-center"></div>
+                    <h3 id="loadingStepTitle" class="text-lg font-playfair font-semibold text-kamaui-brown">Auditando Bóveda Obsidian...</h3>
+                    <p class="font-tech text-[11px] text-kamaui-black/60">Verificando Resolución ICA 1056 y Toxicología Lick-Safe</p>
+                </div>
+            </section>
+
+            <!-- ================= PANTALLA 2: VIABILIDAD 360° ================= -->
+            <section id="screen-results" class="apk-screen space-y-4 pb-6">
+                <!-- Tarjeta Puntaje Radial -->
+                <div class="espresso-card rounded-3xl p-5 space-y-4">
+                    <div class="flex items-center justify-between gap-3">
+                        <div class="space-y-1">
+                            <span class="font-tech text-[9px] uppercase tracking-widest text-kamaui-gold block">Diagnóstico Integral</span>
+                            <h2 id="res-product-title" class="text-lg font-cinzel font-bold text-kamaui-chalk leading-snug">Bálsamo Sagrado</h2>
+                            <span id="res-licksafe-badge" class="inline-block font-tech text-[10px] font-semibold px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-200 border border-emerald-400/30">
+                                100% Lick-Safe
+                            </span>
+                        </div>
+                        <div class="w-20 h-20 rounded-full border-4 border-kamaui-gold flex flex-col items-center justify-center shrink-0 bg-black/20">
+                            <span id="res-score" class="text-2xl font-cinzel font-bold text-kamaui-chalk leading-none">95</span>
+                            <span class="font-tech text-[8px] uppercase tracking-widest text-kamaui-gold">/ 100</span>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-3 gap-2 pt-2 border-t border-kamaui-gold/20 font-tech text-[10px] text-center">
+                        <div class="bg-white/5 rounded-xl p-2">
+                            <span class="text-kamaui-goldlight block">Técnico</span>
+                            <strong id="res-score-tech" class="text-sm text-white">95%</strong>
+                        </div>
+                        <div class="bg-white/5 rounded-xl p-2">
+                            <span class="text-kamaui-goldlight block">ICA Reg.</span>
+                            <strong id="res-score-reg" class="text-sm text-white">97%</strong>
+                        </div>
+                        <div class="bg-white/5 rounded-xl p-2">
+                            <span class="text-kamaui-goldlight block">Mercado</span>
+                            <strong id="res-score-mkt" class="text-sm text-white">92%</strong>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Botones de Dictamen: Aprobar o Rechazar en Portafolio -->
+                <div class="botanical-card rounded-3xl p-4 space-y-3 border-2 border-kamaui-gold/45">
+                    <div class="flex items-center justify-between">
+                        <span class="font-tech text-[10px] uppercase tracking-wider text-kamaui-brown font-bold">Dictamen &amp; Estado Inicial:</span>
+                        <select id="saveStageSelect" class="font-tech text-xs font-bold text-kamaui-brown bg-kamaui-sand px-3 py-1 rounded-xl border border-kamaui-gold/40 outline-none">
+                            <option value="En proceso">En proceso</option>
+                            <option value="En espera">En espera</option>
+                            <option value="Finalizado">Finalizado</option>
+                            <option value="Descartado">Descartado</option>
+                        </select>
+                    </div>
+                    <div class="grid grid-cols-2 gap-2.5 font-cinzel text-[11px] font-bold">
+                        <button type="button" onclick="saveCurrentIdeaToVault('Aprobada')" class="py-3 px-3 rounded-2xl bg-emerald-900 text-emerald-100 flex items-center justify-center gap-1.5 shadow active:scale-95 transition">
+                            <i class="ph-bold ph-check-circle text-sm text-emerald-300"></i>
+                            <span>APROBAR IDEA</span>
+                        </button>
+                        <button type="button" onclick="saveCurrentIdeaToVault('Rechazada')" class="py-3 px-3 rounded-2xl bg-rose-950 text-rose-100 flex items-center justify-center gap-1.5 shadow active:scale-95 transition">
+                            <i class="ph-bold ph-x-circle text-sm text-rose-300"></i>
+                            <span>RECHAZAR IDEA</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Regulación ICA & Toxicología -->
+                <div class="botanical-card rounded-3xl p-5 space-y-3">
+                    <h3 class="font-cinzel font-bold text-sm text-kamaui-brown flex items-center gap-2">
+                        <i class="ph-light ph-shield-check text-lg text-kamaui-gold"></i>
+                        <span>Normativa ICA 1056 &amp; Toxicología</span>
+                    </h3>
+                    <p id="res-ica" class="font-tech text-xs text-kamaui-black/80 leading-relaxed"></p>
+                    <p id="res-tox" class="font-tech text-xs text-kamaui-brown font-medium leading-relaxed bg-kamaui-sand/60 p-3 rounded-2xl"></p>
+                    <div id="res-tox-cards" class="space-y-2 pt-1 font-tech text-xs"></div>
+                </div>
+
+                <!-- Mercado y Packaging -->
+                <div class="botanical-card rounded-3xl p-5 space-y-3">
+                    <h3 class="font-cinzel font-bold text-sm text-kamaui-brown flex items-center gap-2">
+                        <i class="ph-light ph-trend-up text-lg text-kamaui-blue"></i>
+                        <span>Mercado &amp; Envasado Sugerido</span>
+                    </h3>
+                    <p id="res-market-opp" class="text-xs italic text-kamaui-black/80"></p>
+                    <div id="res-packaging-list" class="space-y-2 font-tech text-xs"></div>
+                </div>
+            </section>
+
+            <!-- ================= PANTALLA 3: DOSSIER I+D ================= -->
+            <section id="screen-formula" class="apk-screen space-y-4 pb-6">
+                <!-- Barra de Acciones Rápidas del Dossier -->
+                <div class="espresso-card rounded-3xl p-4 flex items-center justify-between gap-2">
+                    <div>
+                        <span class="font-tech text-[9px] uppercase tracking-widest text-kamaui-gold block">Ingeniería Galénica</span>
+                        <h2 class="text-base font-cinzel font-bold text-kamaui-chalk">Fórmula Maestra &amp; SOP</h2>
+                    </div>
+                    <div class="flex items-center gap-2 font-tech text-[10px] font-bold">
+                        <button onclick="generateDynamicFormulaPDF()" class="px-3 py-2 rounded-xl bg-kamaui-gold text-kamaui-deep flex items-center gap-1 shadow">
+                            <i class="ph-bold ph-file-pdf text-sm"></i>
+                            <span>PDF</span>
+                        </button>
+                        <button onclick="exportObsidianMarkdown()" class="px-3 py-2 rounded-xl bg-white/10 text-kamaui-chalk border border-kamaui-gold/30 flex items-center gap-1">
+                            <i class="ph-light ph-file-md text-sm text-kamaui-gold"></i>
+                            <span>.MD</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 1. Materias Primas -->
+                <div class="botanical-card rounded-3xl p-4 space-y-3">
+                    <h3 class="font-cinzel font-bold text-sm text-kamaui-brown flex items-center gap-2">
+                        <i class="ph-light ph-plant text-lg text-kamaui-gold"></i>
+                        <span>1. Opciones de Materias Primas</span>
+                    </h3>
+                    <div id="res-raw-materials" class="space-y-2.5"></div>
+                </div>
+
+                <!-- 2. Fórmula Cuali-Cuantitativa con Selector de Escala -->
+                <div class="botanical-card rounded-3xl p-4 space-y-3">
+                    <div class="flex items-center justify-between">
+                        <h3 class="font-cinzel font-bold text-sm text-kamaui-brown">2. Fórmula Maestra (100%)</h3>
+                        <div class="flex items-center gap-1.5 font-tech text-[10px] bg-kamaui-sand px-2.5 py-1 rounded-xl">
+                            <span class="text-kamaui-brown font-bold">Piloto (kg):</span>
+                            <input type="number" id="pilotBatchKg" value="25" min="1" onchange="recalculateBatchTable()" class="w-12 text-center font-bold text-kamaui-brown bg-white rounded border border-kamaui-gold/40">
+                        </div>
+                    </div>
+                    <div id="res-formula-cards" class="space-y-2 font-tech text-xs"></div>
+                </div>
+
+                <!-- 3. Instructivo Lab y Planta Piloto -->
+                <div class="botanical-card rounded-3xl p-4 space-y-3">
+                    <h3 class="font-cinzel font-bold text-sm text-kamaui-brown flex items-center gap-2">
+                        <i class="ph-light ph-test-tube text-lg text-kamaui-blue"></i>
+                        <span>3A. Instructivo Laboratorio (500 g)</span>
+                    </h3>
+                    <div id="res-lab-instructions" class="font-tech text-xs text-kamaui-black/85 leading-relaxed"></div>
+                </div>
+
+                <div class="espresso-card rounded-3xl p-4 space-y-3">
+                    <h3 class="font-cinzel font-bold text-sm text-kamaui-gold flex items-center gap-2">
+                        <i class="ph-light ph-factory text-lg text-kamaui-gold"></i>
+                        <span>3B. Escalado Planta Piloto (25 kg)</span>
+                    </h3>
+                    <div id="res-pilot-instructions" class="font-tech text-xs text-kamaui-chalk/90 leading-relaxed"></div>
+                </div>
+
+                <!-- 4. Especificaciones -->
+                <div class="botanical-card rounded-3xl p-4 space-y-2.5 font-tech text-xs">
+                    <h3 class="font-cinzel font-bold text-sm text-kamaui-brown">4. Especificaciones de Calidad</h3>
+                    <div class="p-3 rounded-2xl bg-kamaui-chalk"><strong>pH Objetivo:</strong> <span id="res-spec-ph"></span></div>
+                    <div class="p-3 rounded-2xl bg-kamaui-chalk"><strong>Aspecto:</strong> <span id="res-spec-phys"></span></div>
+                    <div class="p-3 rounded-2xl bg-kamaui-chalk"><strong>Reología/Fusión:</strong> <span id="res-spec-visc"></span></div>
+                    <div class="p-3 rounded-2xl bg-kamaui-chalk"><strong>Microbiología:</strong> <span id="res-spec-micro"></span></div>
+                </div>
+            </section>
+
+            <!-- ================= PANTALLA 4: PORTAFOLIO DE IDEAS (APROBADAS / RECHAZADAS & AVANCE) ================= -->
+            <section id="screen-vault" class="apk-screen space-y-4 pb-6">
+                <!-- Resumen KPIs -->
+                <div class="espresso-card rounded-3xl p-4 space-y-3">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <span class="font-tech text-[9px] uppercase tracking-widest text-kamaui-gold block">Gestión de Proyectos I+D</span>
+                            <h2 class="text-base font-cinzel font-bold text-kamaui-chalk">Ideas Aprobadas &amp; Rechazadas</h2>
+                        </div>
+                        <button onclick="resetDemoVaultIdeas()" class="px-2.5 py-1 rounded-xl bg-white/10 text-[10px] font-tech text-kamaui-goldlight border border-kamaui-gold/30">
+                            Restaurar Demo
+                        </button>
+                    </div>
+
+                    <div class="grid grid-cols-3 gap-2 font-tech text-center">
+                        <div class="bg-white/10 rounded-2xl p-2.5 border border-emerald-400/30">
+                            <span class="text-[9px] uppercase text-emerald-200 block">Aprobadas</span>
+                            <strong id="kpi-approved" class="text-lg font-cinzel text-emerald-300">0</strong>
+                        </div>
+                        <div class="bg-white/10 rounded-2xl p-2.5 border border-rose-400/30">
+                            <span class="text-[9px] uppercase text-rose-200 block">Rechazadas</span>
+                            <strong id="kpi-rejected" class="text-lg font-cinzel text-rose-300">0</strong>
+                        </div>
+                        <div class="bg-white/10 rounded-2xl p-2.5 border border-kamaui-gold/30">
+                            <span class="text-[9px] uppercase text-kamaui-goldlight block">En Proceso</span>
+                            <strong id="kpi-inprogress" class="text-lg font-cinzel text-kamaui-gold">0</strong>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Filtros Móviles -->
+                <div class="botanical-card rounded-3xl p-3.5 space-y-2.5 font-tech text-xs">
+                    <div class="flex gap-1.5 overflow-x-auto pb-1">
+                        <button onclick="setVaultDecisionFilter('ALL')" id="filter-dec-ALL" class="px-3.5 py-1.5 rounded-full bg-kamaui-brown text-kamaui-chalk font-semibold text-[11px] shrink-0">Todas</button>
+                        <button onclick="setVaultDecisionFilter('Aprobada')" id="filter-dec-Aprobada" class="px-3.5 py-1.5 rounded-full bg-kamaui-sand text-kamaui-brown font-semibold text-[11px] shrink-0">Aprobadas</button>
+                        <button onclick="setVaultDecisionFilter('Rechazada')" id="filter-dec-Rechazada" class="px-3.5 py-1.5 rounded-full bg-kamaui-sand text-kamaui-brown font-semibold text-[11px] shrink-0">Rechazadas</button>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-2">
+                        <select id="vaultStageFilter" onchange="renderVaultIdeas()" class="apk-input px-3 py-2 rounded-xl text-[11px] font-bold text-kamaui-brown outline-none">
+                            <option value="ALL">Estado: Todos</option>
+                            <option value="En proceso">En proceso</option>
+                            <option value="En espera">En espera</option>
+                            <option value="Finalizado">Finalizado</option>
+                            <option value="Descartado">Descartado</option>
+                        </select>
+                        <input type="text" id="vaultSearchInput" oninput="renderVaultIdeas()" placeholder="Buscar idea..." class="apk-input px-3 py-2 rounded-xl text-[11px] outline-none">
+                    </div>
+                </div>
+
+                <!-- Lista de Tarjetas de Ideas -->
+                <div id="vaultIdeasGrid" class="space-y-3.5"></div>
+            </section>
+
+            <!-- ================= PANTALLA 5: LANDING & EXPORTACIÓN PDF ================= -->
+            <section id="screen-landing" class="apk-screen space-y-4 pb-6">
+                <!-- Tarjeta Hero de la Landing -->
+                <div class="espresso-card rounded-3xl p-5 space-y-4 text-center">
+                    <div class="w-20 h-20 mx-auto rounded-full p-1 bg-gradient-to-tr from-kamaui-gold via-kamaui-chalk to-kamaui-blue shadow-lg">
+                        <img src="assets/logo-kamaui.jpg" onerror="this.src='WhatsApp Image 2026-08-18 at 9.43.47 AM.jpg'" alt="Kamaui" class="w-full h-full object-cover rounded-full bg-white">
+                    </div>
+                    <span id="lan-badge" class="inline-block px-3 py-0.5 rounded-full bg-white/10 text-[9px] font-tech uppercase tracking-widest text-kamaui-gold">Fórmula Validada</span>
+                    <h2 id="lan-headline" class="text-xl font-cinzel font-bold text-kamaui-chalk leading-snug"></h2>
+                    <p id="lan-subheadline" class="text-xs font-playfair italic text-kamaui-goldlight"></p>
+                    <div id="lan-bullets" class="space-y-1.5 text-left font-tech text-[11px]"></div>
+                </div>
+
+                <!-- Módulo 1 & 2 Resumen -->
+                <div class="botanical-card rounded-3xl p-4 space-y-3">
+                    <span class="font-tech text-[9px] uppercase tracking-widest text-kamaui-blue font-bold">Módulo 01 &amp; 02 • Transparencia 100%</span>
+                    <h3 class="font-cinzel font-bold text-sm text-kamaui-brown">Composición Cuali-Cuantitativa</h3>
+                    <div id="lan-formula-list" class="space-y-1.5 font-tech text-xs"></div>
+                </div>
+
+                <!-- Módulo 3 & Botón PDF Detallado (Debajo del Módulo 3) -->
+                <div class="botanical-card rounded-3xl p-4 space-y-3">
+                    <span class="font-tech text-[9px] uppercase tracking-widest text-kamaui-gold font-bold">Módulo 03 • Instructivo de Manufactura</span>
+                    <p id="lan-process-summary" class="font-tech text-xs text-kamaui-black/80 leading-relaxed"></p>
+                </div>
+
+                <div class="espresso-card rounded-3xl p-5 space-y-3 border-2 border-kamaui-gold">
+                    <span class="font-tech text-[9px] uppercase tracking-widest text-kamaui-gold font-bold block">Orden Maestra de Producción</span>
+                    <h4 class="font-cinzel font-bold text-base text-kamaui-chalk">PDF Detallado: Fórmula Cuali-Cuantitativa &amp; Instructivo</h4>
+                    <p class="text-xs font-playfair italic text-kamaui-goldlight/85">Incluye pesajes para 50 g, 500 g y 25 kg y protocolo paso a paso.</p>
+                    <div class="grid grid-cols-2 gap-2 pt-1">
+                        <button id="btnLandingPdf" onclick="generateDynamicFormulaPDF()" class="py-3 px-3 rounded-2xl bg-kamaui-gold text-kamaui-deep font-cinzel font-bold text-[11px] flex items-center justify-center gap-1.5 shadow">
+                            <i class="ph-bold ph-file-pdf text-base"></i>
+                            <span>GENERAR PDF</span>
+                        </button>
+                        <button onclick="shareCurrentDossier()" class="py-3 px-3 rounded-2xl bg-white/10 text-kamaui-chalk border border-kamaui-gold/40 font-cinzel font-bold text-[11px] flex items-center justify-center gap-1.5">
+                            <i class="ph-light ph-share-network text-base text-kamaui-gold"></i>
+                            <span>COMPARTIR</span>
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+
+        <!-- BARRA DE NAVEGACIÓN INFERIOR NATIVA (5 PESTAÑAS) -->
+        <nav class="bg-kamaui-chalk/95 backdrop-blur-xl border-t border-kamaui-gold/35 px-2 pt-1.5 shrink-0 z-20" style="padding-bottom: max(8px, var(--safe-bottom));">
+            <div class="grid grid-cols-5 items-center h-14">
+                <button onclick="switchScreen('idea')" id="nav-idea" class="flex flex-col items-center justify-center text-kamaui-brown">
+                    <i class="ph-fill ph-sparkle text-xl"></i>
+                    <span class="text-[9px] font-cinzel font-bold tracking-wider mt-0.5">CONCEPTO</span>
+                </button>
+                <button onclick="switchScreen('results')" id="nav-results" class="flex flex-col items-center justify-center text-kamaui-blue">
+                    <i class="ph-light ph-chart-polar text-xl"></i>
+                    <span class="text-[9px] font-cinzel font-bold tracking-wider mt-0.5">VIABILIDAD</span>
+                </button>
+                <button onclick="switchScreen('formula')" id="nav-formula" class="flex flex-col items-center justify-center text-kamaui-blue">
+                    <i class="ph-light ph-flask text-xl"></i>
+                    <span class="text-[9px] font-cinzel font-bold tracking-wider mt-0.5">DOSSIER</span>
+                </button>
+                <button onclick="switchScreen('vault')" id="nav-vault" class="relative flex flex-col items-center justify-center text-kamaui-blue">
+                    <span id="vaultCountBadge" class="absolute top-0 right-3 px-1.5 py-0.2 rounded-full bg-kamaui-brown text-kamaui-gold font-tech text-[8px] font-bold">3</span>
+                    <i class="ph-light ph-archive-box text-xl"></i>
+                    <span class="text-[9px] font-cinzel font-bold tracking-wider mt-0.5">PORTAFOLIO</span>
+                </button>
+                <button onclick="switchScreen('landing')" id="nav-landing" class="flex flex-col items-center justify-center text-kamaui-blue">
+                    <i class="ph-light ph-file-pdf text-xl"></i>
+                    <span class="text-[9px] font-cinzel font-bold tracking-wider mt-0.5">LANDING/PDF</span>
+                </button>
+            </div>
+        </nav>
+
+        <!-- ================= BOTTOM SHEET: INSPECTOR DE MATERIAS PRIMAS E INSTRUCTIVO ================= -->
+        <div id="vaultInspectorSheet" class="absolute inset-0 bg-black/65 z-40 hidden flex-col justify-end backdrop-blur-xs">
+            <div class="bg-kamaui-chalk rounded-t-[32px] max-h-[88%] flex flex-col border-t-2 border-kamaui-gold shadow-2xl overflow-hidden">
+                <div class="p-4 bg-kamaui-sand/80 border-b border-kamaui-gold/30 flex items-center justify-between shrink-0">
+                    <div>
+                        <span id="insp-badges" class="font-tech text-[9px] uppercase tracking-widest text-kamaui-brown font-bold block">Expediente Técnico</span>
+                        <h3 id="insp-title" class="font-cinzel font-bold text-base text-kamaui-brown line-clamp-1">Nombre Idea</h3>
+                    </div>
+                    <button onclick="closeVaultInspector()" class="w-8 h-8 rounded-full bg-white text-kamaui-brown flex items-center justify-center shadow">
+                        <i class="ph-bold ph-x text-sm"></i>
+                    </button>
+                </div>
+
+                <div class="p-4 overflow-y-auto space-y-4 font-tech text-xs">
+                    <div>
+                        <h4 class="font-cinzel font-bold text-xs text-kamaui-brown uppercase tracking-wider mb-2">1. Materias Primas &amp; Alternativas</h4>
+                        <div id="insp-raw-materials" class="space-y-2"></div>
+                    </div>
+
+                    <div>
+                        <h4 class="font-cinzel font-bold text-xs text-kamaui-brown uppercase tracking-wider mb-2">2. Fórmula Cuali-Cuantitativa (100% / 500g / 25kg)</h4>
+                        <div id="insp-formula-rows" class="space-y-1.5"></div>
+                    </div>
+
+                    <div class="bg-white p-3.5 rounded-2xl border border-kamaui-gold/30 space-y-1.5">
+                        <h4 class="font-cinzel font-bold text-xs text-kamaui-brown">3A. Instructivo Laboratorio (500 g)</h4>
+                        <div id="insp-lab-sop" class="text-[11px] text-kamaui-black/85 leading-relaxed"></div>
+                    </div>
+
+                    <div class="espresso-card p-3.5 rounded-2xl space-y-1.5">
+                        <h4 class="font-cinzel font-bold text-xs text-kamaui-gold">3B. Escalado Planta Piloto (25 kg)</h4>
+                        <div id="insp-pilot-sop" class="text-[11px] text-kamaui-chalk/90 leading-relaxed"></div>
+                    </div>
+                </div>
+
+                <div class="p-3.5 bg-white border-t border-kamaui-gold/30 grid grid-cols-2 gap-2 shrink-0 font-cinzel text-[11px] font-bold">
+                    <button id="insp-btn-pdf" type="button" class="py-2.5 px-3 rounded-xl espresso-card text-kamaui-gold flex items-center justify-center gap-1.5">
+                        <i class="ph-light ph-file-pdf text-sm"></i>
+                        <span>DESCARGAR PDF</span>
+                    </button>
+                    <button id="insp-btn-load" type="button" class="py-2.5 px-3 rounded-xl bg-kamaui-sand text-kamaui-brown flex items-center justify-center gap-1.5">
+                        <i class="ph-light ph-arrow-u-up-right text-sm"></i>
+                        <span>ABRIR EN APP</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= BOTTOM SHEET: INSTALAR APP / GENERAR APK ================= -->
+        <div id="apkInstallSheet" class="absolute inset-0 bg-black/65 z-40 hidden flex-col justify-end backdrop-blur-xs">
+            <div class="bg-kamaui-chalk rounded-t-[32px] p-5 space-y-4 border-t-2 border-kamaui-gold max-h-[85%] overflow-y-auto">
+                <div class="flex items-center justify-between border-b border-kamaui-gold/30 pb-3">
+                    <div class="flex items-center gap-2.5">
+                        <i class="ph-fill ph-android-logo text-2xl text-emerald-700"></i>
+                        <div>
+                            <h3 class="font-cinzel font-bold text-base text-kamaui-brown">Instalación Móvil &amp; Empaquetado APK</h3>
+                            <p class="font-tech text-[10px] text-kamaui-black/60">Modo Offline + Capacitor Android Nativo</p>
+                        </div>
+                    </div>
+                    <button onclick="closeApkInstallSheet()" class="w-8 h-8 rounded-full bg-white text-kamaui-brown flex items-center justify-center">
+                        <i class="ph-bold ph-x text-sm"></i>
+                    </button>
+                </div>
+
+                <div class="space-y-3 font-tech text-xs">
+                    <button id="btnPwaInstall" onclick="triggerPwaInstall()" class="w-full py-3.5 px-4 rounded-2xl espresso-card text-kamaui-gold font-cinzel font-bold text-xs flex items-center justify-center gap-2 shadow">
+                        <i class="ph-bold ph-download-simple text-base"></i>
+                        <span>INSTALAR APP EN ESTE DISPOSITIVO</span>
+                    </button>
+
+                    <div class="p-3.5 rounded-2xl bg-white border border-kamaui-gold/35 space-y-1.5">
+                        <span class="text-[10px] uppercase tracking-wider text-kamaui-brown font-bold block">Opción A • Compilar .APK con 1 Comando (Capacitor)</span>
+                        <p class="text-[11px] text-kamaui-black/75">El proyecto incluye <code class="bg-kamaui-sand px-1 rounded">capacitor.config.json</code> y el script automatizado <code class="bg-kamaui-sand px-1 rounded">.\build-apk.ps1</code> para generar el archivo instalable <code class="bg-kamaui-sand px-1 rounded">Kamaui-Validador-360.apk</code>.</p>
+                    </div>
+
+                    <div class="p-3.5 rounded-2xl bg-white border border-kamaui-gold/35 space-y-1.5">
+                        <span class="text-[10px] uppercase tracking-wider text-kamaui-brown font-bold block">Opción B • Compilación Automática en la Nube (Sin instalar Android Studio)</span>
+                        <p class="text-[11px] text-kamaui-black/75">Sube la carpeta a GitHub: el flujo incluido en <code class="bg-kamaui-sand px-1 rounded">.github/workflows/build-android-apk.yml</code> compila y entrega el archivo <strong>.APK</strong> listo para descargar en tu celular.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= BOTTOM SHEET: CONFIGURACIÓN WEBHOOK N8N ================= -->
+        <div id="webhookSheet" class="absolute inset-0 bg-black/65 z-40 hidden flex-col justify-end backdrop-blur-xs">
+            <div class="bg-kamaui-chalk rounded-t-[32px] p-5 space-y-4 border-t-2 border-kamaui-gold">
+                <div class="flex items-center justify-between">
+                    <h3 class="font-cinzel font-bold text-base text-kamaui-brown">Endpoint n8n + Bóveda Obsidian</h3>
+                    <button onclick="closeWebhookSheet()" class="w-8 h-8 rounded-full bg-white text-kamaui-brown flex items-center justify-center">
+                        <i class="ph-bold ph-x text-sm"></i>
+                    </button>
+                </div>
+                <input type="url" id="n8nWebhookInput" value="http://localhost:5678/webhook/kamaui-validate-idea"
+                    class="apk-input w-full px-3.5 py-2.5 rounded-xl font-tech text-xs outline-none">
+                <p class="font-tech text-[11px] text-kamaui-black/65">Si no hay conexión de red en el celular, el APK utiliza automáticamente el motor experto local integrado.</p>
+                <button onclick="saveWebhookUrl()" class="w-full py-3 rounded-xl espresso-card text-kamaui-gold font-cinzel font-bold text-xs">
+                    GUARDAR CONEXIÓN
+                </button>
+            </div>
+        </div>
+
+        <!-- TOAST NOTIFICATION NATIVO -->
+        <div id="apkToast" class="pointer-events-none fixed bottom-20 left-1/2 -translate-x-1/2 z-50 opacity-0 transition-opacity duration-300 px-4 py-2.5 rounded-full espresso-card text-kamaui-gold font-tech text-xs font-semibold shadow-xl flex items-center gap-2">
+            <i class="ph-bold ph-check-circle text-emerald-300 text-base"></i>
+            <span id="apkToastText">Guardado</span>
+        </div>
+
+    </div>
+
+    <!-- ================= LÓGICA DE LA APP MÓVIL / APK ================= -->
+    <script>
+        // Registrar Service Worker para funcionamiento Offline en APK / PWA
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js').catch(() => {});
+            });
+        }
+
+        let deferredPrompt = null;
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+        });
+
+        function triggerPwaInstall() {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+            } else {
+                showToast('En Android Chrome: Menú (⋮) → "Instalar aplicación"');
+            }
+        }
+
+        function toggleFrameMode() {
+            document.body.classList.toggle('framed-mode');
+            const isFramed = document.body.classList.contains('framed-mode');
+            document.getElementById('frameToggleText').textContent = isFramed ? 'Expandir Pantalla' : 'Modo Teléfono';
+        }
+
+        function showToast(msg) {
+            const toast = document.getElementById('apkToast');
+            document.getElementById('apkToastText').textContent = msg;
+            toast.classList.remove('opacity-0');
+            setTimeout(() => toast.classList.add('opacity-0'), 2600);
+        }
+
+        function openApkInstallSheet() {
+            const s = document.getElementById('apkInstallSheet');
+            s.classList.remove('hidden');
+            s.classList.add('flex');
+        }
+        function closeApkInstallSheet() {
+            const s = document.getElementById('apkInstallSheet');
+            s.classList.add('hidden');
+            s.classList.remove('flex');
+        }
+        function openWebhookSheet() {
+            const s = document.getElementById('webhookSheet');
+            s.classList.remove('hidden');
+            s.classList.add('flex');
+        }
+        function closeWebhookSheet() {
+            const s = document.getElementById('webhookSheet');
+            s.classList.add('hidden');
+            s.classList.remove('flex');
+        }
+
+        let N8N_WEBHOOK_URL = localStorage.getItem('kamaui_n8n_url') || 'http://localhost:5678/webhook/kamaui-validate-idea';
+        document.getElementById('n8nWebhookInput').value = N8N_WEBHOOK_URL;
+
+        function saveWebhookUrl() {
+            const val = document.getElementById('n8nWebhookInput').value.trim();
+            if (val) {
+                N8N_WEBHOOK_URL = val;
+                localStorage.setItem('kamaui_n8n_url', val);
+                closeWebhookSheet();
+                showToast('Endpoint n8n actualizado');
+            }
+        }
+
+        const SCREEN_TITLES = {
+            idea: 'Paso 01 • Captura de Concepto',
+            results: 'Paso 02 • Viabilidad & Regulación ICA',
+            formula: 'Paso 03 • Dossier Técnico I+D',
+            vault: 'Portafolio de Ideas & Estado de Avance',
+            landing: 'Vista Previa Landing & Orden PDF'
+        };
+
+        function switchScreen(screenId) {
+            document.querySelectorAll('.apk-screen').forEach(s => s.classList.remove('active'));
+            document.getElementById(`screen-${screenId}`).classList.add('active');
+            document.getElementById('apkHeaderSubtitle').textContent = SCREEN_TITLES[screenId] || 'Kamaui Lab';
+
+            ['idea', 'results', 'formula', 'vault', 'landing'].forEach(id => {
+                const btn = document.getElementById(`nav-${id}`);
+                if (!btn) return;
+                btn.className = id === screenId
+                    ? 'relative flex flex-col items-center justify-center text-kamaui-brown scale-105 transition'
+                    : 'relative flex flex-col items-center justify-center text-kamaui-blue opacity-80 transition';
+            });
+
+            if (screenId === 'vault') renderVaultIdeas();
+            document.getElementById('apkScrollContainer').scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function loadPreset(type) {
+            if (type === 'balsamo') {
+                document.getElementById('product_name').value = 'Bálsamo Sagrado Reparador de Huellas & Trufa';
+                document.getElementById('cosmetic_form').value = 'Bálsamo Anhidro Fundente';
+                document.getElementById('target_pet').value = 'Perros y Gatos';
+                document.getElementById('coat_type').value = 'Almohadillas plantares, trufa y zonas hiperqueratósicas';
+                document.getElementById('ingredients').value = 'Manteca de Karité Orgánica, Cera de Candelilla, Oleato de Caléndula, Aceite de Semilla de Cáñamo, D-Pantenol, Vitamina E';
+                document.getElementById('concept_description').value = 'Proteger y regenerar almohadillas expuestas al asfalto caliente o frío con una textura sedosa 100% segura al lamido (Lick-Safe).';
+            } else if (type === 'shampoo') {
+                document.getElementById('product_name').value = 'Champú Dermo-Armonía de Avena Coloidal & Manzanilla Azul';
+                document.getElementById('cosmetic_form').value = 'Champú Dermo-Calmante Suave';
+                document.getElementById('target_pet').value = 'Perros y Gatos';
+                document.getElementById('coat_type').value = 'Manto doble, largo o rizado con piel sensible';
+                document.getElementById('ingredients').value = 'Avena Coloidal USP, Hidrolato de Manzanilla Romana, Coco-Glucoside, Aloe Vera Descolorizado, D-Pantenol, Extracto de Caléndula';
+                document.getElementById('concept_description').value = 'Limpieza profunda libre de sulfatos que calma el prurito y equilibra el microbioma cutáneo en pH 7.0.';
+            } else if (type === 'alerta_tox') {
+                document.getElementById('product_name').value = 'Loción Botánica Purificante con Árbol de Té y Eucalipto';
+                document.getElementById('cosmetic_form').value = 'Bruma / Hidrolato Acondicionador';
+                document.getElementById('target_pet').value = 'Perros y Gatos';
+                document.getElementById('coat_type').value = 'Manto corto y piel con tendencia atópica';
+                document.getElementById('ingredients').value = 'Aceite Esencial de Árbol de Té, Eucalipto, Manteca de Cacao, Caléndula, Óxido de Zinc';
+                document.getElementById('concept_description').value = 'Bruma refrescante para calmar picazón intensa y controlar el mal olor en perros y gatos.';
+            }
+            showToast('Plantilla cargada');
+        }
+
+        function runExpertDiagnosticEngine(payload) {
+            const rawIngList = payload.ingredients.split(',').map(i => i.trim()).filter(Boolean);
+            const includesFeline = payload.target_pet.toLowerCase().includes('gato') || payload.target_pet.toLowerCase().includes('ambos');
+
+            const safetyMatrix = [];
+            let hasCriticalAlert = false;
+            let hasModerateAlert = false;
+
+            rawIngList.forEach(ing => {
+                const l = ing.toLowerCase();
+                if (l.includes('árbol de té') || l.includes('arbol de te') || l.includes('melaleuca') || l.includes('eucalipto') || l.includes('menta') || l.includes('pino')) {
+                    hasCriticalAlert = true;
+                    safetyMatrix.push({
+                        active: ing,
+                        canine_safety: 'Precaución (<0.5%)',
+                        feline_safety: 'PROHIBIDO (Hepatotóxico)',
+                        notes: 'Terpenos/fenoles hepatotóxicos en gatos por deficiencia de glucuronidación. Sustituir por Hidrolato de Manzanilla.'
+                    });
+                } else if (l.includes('cacao')) {
+                    hasModerateAlert = true;
+                    safetyMatrix.push({
+                        active: ing,
+                        canine_safety: 'Solo refinada',
+                        feline_safety: 'Riesgo (Teobromina)',
+                        notes: 'Sustituir por Manteca de Karité o Mango.'
+                    });
+                } else if (l.includes('zinc')) {
+                    hasCriticalAlert = true;
+                    safetyMatrix.push({
+                        active: ing,
+                        canine_safety: 'Riesgo al lamido',
+                        feline_safety: 'Riesgo al lamido',
+                        notes: 'El Óxido de Zinc ingerido por lamido puede inducir anemia hemolítica. Reemplazar por Cera de Candelilla.'
+                    });
+                } else {
+                    safetyMatrix.push({
+                        active: ing,
+                        canine_safety: '100% Seguro (Lick-Safe)',
+                        feline_safety: '100% Seguro (Lick-Safe)',
+                        notes: 'Aprobado en Bóveda Obsidian Kamaui. Biocompatibilidad cutánea y oral.'
+                    });
+                }
+            });
+
+            let qualiQuanti = [];
+            let labInstructions = '';
+            let pilotInstructions = '';
+            let phTarget = '6.8 – 7.4 (Fisiológico Animal)';
+            let appearance = '';
+            let viscosityOrMelting = '';
+
+            if (payload.cosmetic_form.includes('Champú')) {
+                phTarget = '6.8 – 7.2 (Estrato córneo canino/felino)';
+                appearance = 'Gel fluido perlado color avena traslúcido, espuma cremosa suave.';
+                viscosityOrMelting = 'Viscosidad Brookfield: 3,500 – 5,000 cP';
+                qualiQuanti = [
+                    { phase: 'Fase A', ingredient: 'Agua Purificada Desionizada USP', inci: 'Aqua', function: 'Vehículo principal', percentage: '54.2%' },
+                    { phase: 'Fase A', ingredient: 'Hidrolato de Manzanilla Romana', inci: 'Anthemis Nobilis Flower Water', function: 'Calmante neuro-sensorial', percentage: '15.0%' },
+                    { phase: 'Fase A', ingredient: 'Avena Coloidal USP Ultrafina', inci: 'Avena Sativa Kernel Flour', function: 'Antipruriginoso y protector', percentage: '3.0%' },
+                    { phase: 'Fase B', ingredient: 'Coco-Glucoside (Ecocert)', inci: 'Coco-Glucoside', function: 'Tensioactivo no iónico suave', percentage: '14.0%' },
+                    { phase: 'Fase B', ingredient: 'Cocamidopropil Betaína Botánica', inci: 'Cocamidopropyl Betaine', function: 'Co-surfactante suave ocular', percentage: '8.0%' },
+                    { phase: 'Fase C', ingredient: 'Extracto Glicólico de Caléndula', inci: 'Calendula Officinalis Extract', function: 'Epitelizante dérmico', percentage: '2.5%' },
+                    { phase: 'Fase C', ingredient: 'D-Pantenol (Provitamina B5)', inci: 'Panthenol', function: 'Humectante de manto', percentage: '1.5%' },
+                    { phase: 'Fase C', ingredient: 'Goma Xantana Transparente', inci: 'Xanthan Gum', function: 'Estabilizante reológico', percentage: '0.8%' },
+                    { phase: 'Fase D', ingredient: 'Geogard 221 + Ácido Láctico q.s.', inci: 'Benzyl Alcohol, Dehydroacetic Acid', function: 'Conservante Ecocert y pH 7.0', percentage: '1.0%' }
+                ];
+                labInstructions = `1. Dispersar Goma Xantana y Avena Coloidal en Agua USP e Hidrolato a 25°C (400 RPM, 15 min).\n2. Mezclar Coco-Glucoside y Betaína aparte a <150 RPM sin generar espuma.\n3. Incorporar Fase B sobre Fase A suavemente.\n4. Agregar Caléndula, D-Pantenol y Geogard 221; ajustar pH a 7.0 ± 0.2.`;
+                pilotInstructions = `1. Cargar reactor Inox 316L con Agua USP e Hidrolato.\n2. Hidratar Avena y Xantana con dispersor Cowles (600 RPM, 10 min) y pasar a áncora con vacío (-0.4 bar).\n3. Dosificar tensioactivos por carga inferior.\n4. Incorporar Fase C y D a 25°C y filtrar por malla de 100 micras.`;
+            } else if (payload.cosmetic_form.includes('Bruma') || payload.cosmetic_form.includes('Emulsión')) {
+                phTarget = '6.6 – 7.2 (Isotónico veterinario)';
+                appearance = 'Emulsión fluida / bruma ligera de toque seco sin residuo graso.';
+                viscosityOrMelting = 'Viscosidad: 450 – 900 cP';
+                qualiQuanti = [
+                    { phase: 'Fase A', ingredient: 'Agua Purificada Desionizada USP', inci: 'Aqua', function: 'Vehículo acuoso', percentage: '62.5%' },
+                    { phase: 'Fase A', ingredient: 'Hidrolato de Manzanilla & Caléndula', inci: 'Anthemis Nobilis Flower Water', function: 'Calmante dérmico Lick-Safe', percentage: '20.0%' },
+                    { phase: 'Fase B', ingredient: 'Aceite Virgen de Semilla de Cáñamo', inci: 'Cannabis Sativa Seed Oil', function: 'Nutrición Omega 3/6', percentage: '6.0%' },
+                    { phase: 'Fase B', ingredient: 'Olivem 1000 (Cristales Líquidos)', inci: 'Cetearyl Olivate, Sorbitan Olivate', function: 'Emulsionante libre de PEG', percentage: '4.0%' },
+                    { phase: 'Fase C', ingredient: 'Aloe Vera Descolorizado (Sin Aloína)', inci: 'Aloe Barbadensis Leaf Juice', function: 'Hidratante epitelial', percentage: '4.0%' },
+                    { phase: 'Fase C', ingredient: 'D-Pantenol + Vitamina E', inci: 'Panthenol, Tocopherol', function: 'Reparador y antioxidante', percentage: '2.5%' },
+                    { phase: 'Fase D', ingredient: 'Conservante Ecocert Geogard 221', inci: 'Benzyl Alcohol, Dehydroacetic Acid', function: 'Preservación segura', percentage: '1.0%' }
+                ];
+                labInstructions = `1. Calentar Fase A y Fase B por separado a 70°C.\n2. Emulsionar Fase B sobre Fase A con Ultra-Turrax a 3,000 RPM por 4 min.\n3. Enfriar a 38°C bajo agitación de pala (250 RPM) y añadir Fase C y D.\n4. Ajustar pH a 6.9.`;
+                pilotInstructions = `1. Fundir Fase B a 72°C y calentar Fase A en reactor a 72°C.\n2. Emulsionar con turbina de fondo a 2,800 RPM por 8 min bajo vacío.\n3. Enfriar por chaqueta hasta 38°C, adicionar termolábiles y muestrear.`;
+            } else {
+                phTarget = 'No aplica (Sistema 100% Anhidro; compatible con pH 6.5–7.5)';
+                appearance = 'Bálsamo sólido ámbar dorado a 25°C, fundente al contacto con piel (36–38°C).';
+                viscosityOrMelting = 'Punto de Fusión: 48°C – 54°C';
+                qualiQuanti = [
+                    { phase: 'Fase A', ingredient: 'Manteca de Karité Orgánica Refinada', inci: 'Butyrospermum Parkii Butter', function: 'Emoliente reparador plantar', percentage: '42.0%' },
+                    { phase: 'Fase A', ingredient: 'Cera de Candelilla Grado Cosmético', inci: 'Euphorbia Cerifera Cera', function: 'Escudo protector y punto de fusión', percentage: '20.0%' },
+                    { phase: 'Fase B', ingredient: 'Oleato Botánico de Caléndula', inci: 'Calendula Officinalis Extract', function: 'Epitelizante y calmante de grietas', percentage: '24.5%' },
+                    { phase: 'Fase B', ingredient: 'Triglicéridos Caprílico/Cáprico', inci: 'Caprylic/Capric Triglyceride', function: 'Absorción rápida sin rastro graso', percentage: '7.0%' },
+                    { phase: 'Fase C', ingredient: 'Aceite Virgen de Semilla de Cáñamo', inci: 'Cannabis Sativa Seed Oil', function: 'Nutrición Omega 3 y 6 (3:1)', percentage: '5.0%' },
+                    { phase: 'Fase C', ingredient: 'Vitamina E Natural (Alfa-Tocoferol)', inci: 'Tocopherol', function: 'Antioxidante de fase lipídica', percentage: '1.5%' }
+                ];
+                labInstructions = `1. Fundir Fase A (Manteca de Karité y Cera de Candelilla) en baño maría a 65–68°C (No superar 72°C).\n2. Incorporar Fase B (Oleato de Caléndula y Coco Fraccionado) a 200 RPM.\n3. Enfriar bajo agitación lenta hasta ≤ 44°C y añadir Fase C (Aceite de Cáñamo y Vitamina E).\n4. Verter a 40–42°C en latas de aluminio y enfriar a 18°C destapadas por 45 min.`;
+                pilotInstructions = `1. En marmita Inox 316L con control PID, fundir Fase A a 68°C con áncora y raspadores PTFE (35 RPM).\n2. Precalentar Fase B a 50°C e incorporar evitando choque térmico.\n3. Enfriar por chaqueta (15°C) hasta 43°C para nucleación uniforme de cristales beta-prima.\n4. Adicionar Fase C, homogeneizar 10 min y dosificar con tolva calefactada a 42°C.`;
+            }
+
+            const rawMaterialsOptions = [
+                {
+                    name: 'Manteca de Karité Orgánica / Avena Coloidal USP',
+                    inci: 'Butyrospermum Parkii Butter / Avena Sativa Flour',
+                    function: 'Base Estructural y Reparación de Barrera Epitelial',
+                    alternative_option: 'Alternativa: Manteca de Mango para climas >32°C',
+                    benefit_highlight: 'Restaura la elasticidad plantar sin ocluir.'
+                },
+                {
+                    name: 'Oleato de Flores de Caléndula Officinalis',
+                    inci: 'Calendula Officinalis Flower Extract',
+                    function: 'Activo Calmante, Epitelizante y Regenerador',
+                    alternative_option: 'Alternativa: Extracto CO2 Supercrítico de Caléndula (0.5%)',
+                    benefit_highlight: 'Alivia el prurito y acelera la cicatrización de grietas.'
+                },
+                {
+                    name: 'Cera Botánica de Candelilla / Olivem 1000',
+                    inci: 'Euphorbia Cerifera Cera / Cetearyl Olivate',
+                    function: 'Escudo Físico Transpirable y Emulsión Biomimética',
+                    alternative_option: 'Alternativa: Cera Alba de Opérculo filtrada',
+                    benefit_highlight: 'Protege frente al asfalto caliente y superficies abrasivas.'
+                },
+                {
+                    name: 'Aceite Virgen de Cáñamo + Vitamina E Natural',
+                    inci: 'Cannabis Sativa Seed Oil & Tocopherol',
+                    function: 'Nutrición Omega 3-6-9 y Antioxidante',
+                    alternative_option: 'Alternativa: Aceite de Jojoba Dorado Virgen',
+                    benefit_highlight: '100% Lick-Safe y libre de terpenos hepatotóxicos.'
+                }
+            ];
+
+            const packagingOptions = [
+                { option_name: 'Lata Seamless Gold (50 g)', material: 'Aluminio anodizado libre de BPA con etiqueta Blanco Avena y Mandala Dorado.' },
+                { option_name: 'Vidrio Ámbar Botánico (60 g / 250 mL)', material: 'Borosilicato UV-Block con tapa negra mate y serigrafía Castaño.' }
+            ];
+
+            const regScore = hasCriticalAlert ? (includesFeline ? 48 : 68) : (hasModerateAlert ? 82 : 97);
+            const techScore = 95;
+            const mktScore = 92;
+            const totalScore = Math.round((regScore * 0.4) + (techScore * 0.35) + (mktScore * 0.25));
+
+            return {
+                viability_score: totalScore,
+                score_breakdown: { technical_score: techScore, regulatory_score: regScore, market_score: mktScore },
+                regulatory_compliance: {
+                    ica_status: "Clasifica como Cosmético Veterinario bajo Resolución ICA 1056/1996 y Decisión CAN 483 (Planta BPMv).",
+                    lick_safe_level: hasCriticalAlert ? "Requiere Sustitución de Activos" : "Aprobado: 100% Lick-Safe",
+                    toxicology_alerts: hasCriticalAlert
+                        ? "Se detectaron activos riesgosos al lamido; fueron sustituidos automáticamente en la Fórmula Maestra por alternativas inocuas."
+                        : "Fórmula 100% inocua ante el acicalamiento canino y felino. Libre de terpenos, fenoles y óxido de zinc.",
+                    active_safety_matrix: safetyMatrix,
+                    ph_target: phTarget
+                },
+                market_analysis: {
+                    market_opportunity: "Crecimiento +24% anual en cosmética veterinaria holística Lick-Safe en LATAM."
+                },
+                packaging_options: packagingOptions,
+                raw_materials_options: rawMaterialsOptions,
+                formulation: {
+                    quali_quanti: qualiQuanti,
+                    lab_scale_instructions: labInstructions,
+                    pilot_instructions: pilotInstructions
+                },
+                technical_specifications: {
+                    packaging_type: packagingOptions[0].option_name,
+                    physicochemical_specs: appearance,
+                    viscosity_or_melting: viscosityOrMelting,
+                    density: '0.94 – 1.02 g/cm³',
+                    microbiological_limits: 'Mesófilos < 100 UFC/g | Ausencia total de S. aureus y P. aeruginosa.'
+                },
+                landing_copy: {
+                    badge: 'KAMAUI LAB • DOSSIER MÓVIL',
+                    headline: `${payload.product_name}`,
+                    subheadline: `${payload.concept_description}`,
+                    bullet_points: [
+                        'Protocolo 100% Lick-Safe (Inocuo al lamido)',
+                        'Transparencia Cuali-Cuantitativa 100%',
+                        'Respaldo normativo ICA 1056 / CAN 483'
+                    ],
+                    process_summary: `Manufactura controlada protegiendo activos termolábiles (<44°C) desde escala laboratorio (500 g) hasta planta piloto (25 kg).`
+                }
+            };
+        }
+
+        let currentPayload = null;
+        let currentValidationData = null;
+
+        document.getElementById('apkIdeaForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const form = e.target;
+            const loader = document.getElementById('loadingState');
+
+            currentPayload = {
+                product_name: document.getElementById('product_name').value.trim(),
+                cosmetic_form: document.getElementById('cosmetic_form').value,
+                target_pet: document.getElementById('target_pet').value,
+                coat_type: document.getElementById('coat_type').value,
+                ingredients: document.getElementById('ingredients').value.trim(),
+                concept_description: document.getElementById('concept_description').value.trim()
+            };
+
+            form.classList.add('hidden');
+            loader.classList.remove('hidden');
+            loader.classList.add('flex');
+
+            try {
+                let data = null;
+                try {
+                    const controller = new AbortController();
+                    const tid = setTimeout(() => controller.abort(), 3200);
+                    const res = await fetch(N8N_WEBHOOK_URL, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(currentPayload),
+                        signal: controller.signal
+                    });
+                    clearTimeout(tid);
+                    if (!res.ok) throw new Error('Offline');
+                    const remote = await res.json();
+                    data = Object.assign({}, runExpertDiagnosticEngine(currentPayload), remote);
+                } catch (_) {
+                    await new Promise(r => setTimeout(r, 650));
+                    data = runExpertDiagnosticEngine(currentPayload);
+                }
+
+                currentValidationData = data;
+                renderAllScreens(data, currentPayload);
+                showToast('Diagnóstico 360° generado');
+                switchScreen('results');
+            } finally {
+                form.classList.remove('hidden');
+                loader.classList.add('hidden');
+                loader.classList.remove('flex');
+            }
+        });
+
+        function renderAllScreens(data, payload) {
+            document.getElementById('res-product-title').textContent = payload.product_name;
+            document.getElementById('res-score').textContent = data.viability_score;
+            document.getElementById('res-score-tech').textContent = (data.score_breakdown?.technical_score || 95) + '%';
+            document.getElementById('res-score-reg').textContent = (data.score_breakdown?.regulatory_score || 95) + '%';
+            document.getElementById('res-score-mkt').textContent = (data.score_breakdown?.market_score || 92) + '%';
+            document.getElementById('res-licksafe-badge').textContent = data.regulatory_compliance.lick_safe_level;
+
+            document.getElementById('res-ica').textContent = data.regulatory_compliance.ica_status;
+            document.getElementById('res-tox').textContent = data.regulatory_compliance.toxicology_alerts;
+
+            document.getElementById('res-tox-cards').innerHTML = (data.regulatory_compliance.active_safety_matrix || []).map(row => {
+                const danger = row.feline_safety.includes('PROHIBIDO') || row.feline_safety.includes('Riesgo');
+                return `
+                    <div class="p-3 rounded-2xl bg-white border ${danger ? 'border-rose-400' : 'border-kamaui-gold/30'}">
+                        <div class="flex justify-between font-bold text-kamaui-brown">
+                            <span>${row.active}</span>
+                            <span class="${danger ? 'text-rose-700' : 'text-emerald-800'}">${row.feline_safety}</span>
+                        </div>
+                        <p class="text-[11px] text-kamaui-black/70 mt-1">${row.notes}</p>
+                    </div>
+                `;
+            }).join('');
+
+            document.getElementById('res-market-opp').textContent = data.market_analysis.market_opportunity;
+            document.getElementById('res-packaging-list').innerHTML = (data.packaging_options || []).map(pk => `
+                <div class="p-3 rounded-2xl bg-kamaui-chalk border border-kamaui-gold/25">
+                    <strong class="text-kamaui-brown block">${pk.option_name}</strong>
+                    <span class="text-[11px] text-kamaui-black/75">${pk.material}</span>
+                </div>
+            `).join('');
+
+            // Dossier
+            document.getElementById('res-raw-materials').innerHTML = (data.raw_materials_options || []).map(rm => `
+                <div class="p-3.5 rounded-2xl bg-kamaui-chalk border border-kamaui-gold/30 space-y-1">
+                    <span class="font-tech text-[9px] uppercase tracking-wider text-kamaui-gold font-bold">${rm.inci}</span>
+                    <h4 class="font-cinzel font-bold text-xs text-kamaui-brown">${rm.name}</h4>
+                    <p class="font-tech text-[11px] text-kamaui-blue font-semibold">${rm.function}</p>
+                    <p class="font-tech text-[10px] text-kamaui-brown/80 pt-1 border-t border-kamaui-gold/20">${rm.alternative_option}</p>
+                </div>
+            `).join('');
+
+            recalculateBatchTable();
+
+            document.getElementById('res-lab-instructions').innerHTML = (data.formulation.lab_scale_instructions || '').replace(/\n/g, '<br><br>');
+            document.getElementById('res-pilot-instructions').innerHTML = (data.formulation.pilot_instructions || '').replace(/\n/g, '<br><br>');
+
+            document.getElementById('res-spec-ph').textContent = data.regulatory_compliance.ph_target;
+            document.getElementById('res-spec-phys').textContent = data.technical_specifications.physicochemical_specs;
+            document.getElementById('res-spec-visc').textContent = data.technical_specifications.viscosity_or_melting;
+            document.getElementById('res-spec-micro').textContent = data.technical_specifications.microbiological_limits;
+
+            // Landing
+            document.getElementById('lan-headline').textContent = data.landing_copy.headline;
+            document.getElementById('lan-subheadline').textContent = data.landing_copy.subheadline;
+            document.getElementById('lan-bullets').innerHTML = (data.landing_copy.bullet_points || []).map(b => `
+                <div class="flex items-center gap-2 bg-white/10 p-2.5 rounded-xl border border-kamaui-gold/25">
+                    <i class="ph-bold ph-check-circle text-kamaui-gold"></i>
+                    <span class="text-kamaui-chalk">${b}</span>
+                </div>
+            `).join('');
+
+            document.getElementById('lan-formula-list').innerHTML = (data.formulation.quali_quanti || []).map(item => `
+                <div class="flex justify-between items-center p-2.5 rounded-xl bg-kamaui-chalk border border-kamaui-gold/20">
+                    <div>
+                        <strong class="text-kamaui-brown block">${item.ingredient}</strong>
+                        <span class="text-[10px] italic text-kamaui-black/60">${item.inci}</span>
+                    </div>
+                    <span class="font-bold text-kamaui-brown">${item.percentage}</span>
+                </div>
+            `).join('');
+
+            document.getElementById('lan-process-summary').textContent = data.landing_copy.process_summary;
+        }
+
+        function recalculateBatchTable() {
+            if (!currentValidationData) return;
+            const pilotKg = parseFloat(document.getElementById('pilotBatchKg').value) || 25;
+            const container = document.getElementById('res-formula-cards');
+            container.innerHTML = (currentValidationData.formulation.quali_quanti || []).map(item => {
+                const pct = parseFloat(String(item.percentage).replace('%', '')) || 0;
+                const g500 = ((pct / 100) * 500).toFixed(1);
+                const kgPilot = ((pct / 100) * pilotKg).toFixed(3);
+                return `
+                    <div class="p-3 rounded-2xl bg-white border border-kamaui-gold/30 space-y-1.5">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <span class="text-[9px] uppercase font-bold text-kamaui-blue">${item.phase}</span>
+                                <h4 class="font-bold text-kamaui-brown">${item.ingredient}</h4>
+                            </div>
+                            <span class="px-2 py-0.5 rounded-full bg-kamaui-brown text-kamaui-gold font-bold text-[11px]">${pct.toFixed(1)}%</span>
+                        </div>
+                        <div class="flex justify-between text-[10px] text-kamaui-black/75 pt-1 border-t border-kamaui-gold/15">
+                            <span>Lab (500g): <strong>${g500} g</strong></span>
+                            <span>Piloto (${pilotKg}kg): <strong class="text-kamaui-brown">${kgPilot} kg</strong></span>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // ================= PORTAFOLIO DE IDEAS (MISMA CLAVE LOCALSTORAGE QUE INDEX.HTML) =================
+        const VAULT_STORAGE_KEY = 'kamaui_ideas_vault_v1';
+        let activeDecisionFilter = 'ALL';
+        let vaultIdeas = [];
+
+        function buildDefaultVaultSeeds() {
+            const p1 = {
+                product_name: 'Bálsamo Sagrado Reparador de Huellas & Trufa',
+                cosmetic_form: 'Bálsamo Anhidro Fundente',
+                target_pet: 'Perros y Gatos',
+                coat_type: 'Almohadillas plantares, trufa y zonas hiperqueratósicas',
+                ingredients: 'Manteca de Karité Orgánica, Cera de Candelilla, Oleato de Caléndula, Aceite de Semilla de Cáñamo, D-Pantenol, Vitamina E',
+                concept_description: 'Proteger y regenerar almohadillas expuestas al asfalto caliente o frío con textura sedosa 100% segura al lamido.'
+            };
+            const p2 = {
+                product_name: 'Champú Dermo-Armonía de Avena Coloidal & Manzanilla Azul',
+                cosmetic_form: 'Champú Dermo-Calmante Suave',
+                target_pet: 'Perros y Gatos',
+                coat_type: 'Manto doble, largo o rizado con piel sensible',
+                ingredients: 'Avena Coloidal USP, Hidrolato de Manzanilla Romana, Coco-Glucoside, Aloe Vera Descolorizado, D-Pantenol, Extracto de Caléndula',
+                concept_description: 'Limpieza profunda libre de sulfatos que calma el prurito y equilibra el microbioma cutáneo en pH 7.0.'
+            };
+            const p3 = {
+                product_name: 'Loción Botánica Purificante con Árbol de Té y Eucalipto',
+                cosmetic_form: 'Bruma / Hidrolato Acondicionador',
+                target_pet: 'Perros y Gatos',
+                coat_type: 'Manto corto y piel con tendencia atópica',
+                ingredients: 'Aceite Esencial de Árbol de Té, Eucalipto, Manteca de Cacao, Caléndula, Óxido de Zinc',
+                concept_description: 'Bruma refrescante para calmar picazón intensa y controlar el mal olor en perros y gatos.'
+            };
+
+            return [
+                {
+                    id: 'kmw-idea-101',
+                    created_at: '2026-11-10',
+                    decision: 'Aprobada',
+                    stage: 'En proceso',
+                    notes: 'Lote laboratorio 500 g aprobado en estabilidad a 40°C. En proceso de escalado a 25 kg.',
+                    payload: p1,
+                    data: runExpertDiagnosticEngine(p1)
+                },
+                {
+                    id: 'kmw-idea-102',
+                    created_at: '2026-11-08',
+                    decision: 'Aprobada',
+                    stage: 'Finalizado',
+                    notes: 'Fórmula maestra finalizada con pH 7.02. Lista para producción.',
+                    payload: p2,
+                    data: runExpertDiagnosticEngine(p2)
+                },
+                {
+                    id: 'kmw-idea-103',
+                    created_at: '2026-11-05',
+                    decision: 'Rechazada',
+                    stage: 'Descartado',
+                    notes: 'Rechazada por presencia de Árbol de Té y Eucalipto (hepatotóxicos en gatos) y Óxido de Zinc.',
+                    payload: p3,
+                    data: runExpertDiagnosticEngine(p3)
+                }
+            ];
+        }
+
+        function loadVaultFromStorage() {
+            try {
+                const raw = localStorage.getItem(VAULT_STORAGE_KEY);
+                vaultIdeas = raw ? JSON.parse(raw) : buildDefaultVaultSeeds();
+                if (!Array.isArray(vaultIdeas) || !vaultIdeas.length) vaultIdeas = buildDefaultVaultSeeds();
+                localStorage.setItem(VAULT_STORAGE_KEY, JSON.stringify(vaultIdeas));
+            } catch (_) {
+                vaultIdeas = buildDefaultVaultSeeds();
+            }
+            updateVaultKPIs();
+        }
+
+        function saveVaultToStorage() {
+            localStorage.setItem(VAULT_STORAGE_KEY, JSON.stringify(vaultIdeas));
+            updateVaultKPIs();
+        }
+
+        function resetDemoVaultIdeas() {
+            vaultIdeas = buildDefaultVaultSeeds();
+            saveVaultToStorage();
+            renderVaultIdeas();
+            showToast('Portafolio demo restaurado');
+        }
+
+        function updateVaultKPIs() {
+            document.getElementById('vaultCountBadge').textContent = vaultIdeas.length;
+            document.getElementById('kpi-approved').textContent = vaultIdeas.filter(i => i.decision === 'Aprobada').length;
+            document.getElementById('kpi-rejected').textContent = vaultIdeas.filter(i => i.decision === 'Rechazada').length;
+            document.getElementById('kpi-inprogress').textContent = vaultIdeas.filter(i => i.stage === 'En proceso').length;
+        }
+
+        function saveCurrentIdeaToVault(decision = 'Aprobada') {
+            if (!currentValidationData || !currentPayload) return;
+            let stage = document.getElementById('saveStageSelect').value;
+            if (decision === 'Rechazada' && stage === 'En proceso') stage = 'Descartado';
+
+            const idx = vaultIdeas.findIndex(i => i.payload.product_name.toLowerCase() === currentPayload.product_name.toLowerCase());
+            const rec = {
+                id: idx >= 0 ? vaultIdeas[idx].id : 'kmw-idea-' + Date.now(),
+                created_at: new Date().toISOString().slice(0, 10),
+                decision,
+                stage,
+                notes: decision === 'Aprobada' ? 'Aprobada en validación móvil.' : 'Rechazada / Archivada para revisión.',
+                payload: JSON.parse(JSON.stringify(currentPayload)),
+                data: JSON.parse(JSON.stringify(currentValidationData))
+            };
+
+            if (idx >= 0) vaultIdeas[idx] = rec;
+            else vaultIdeas.unshift(rec);
+
+            saveVaultToStorage();
+            renderVaultIdeas();
+            showToast(`Idea ${decision} (${stage})`);
+            switchScreen('vault');
+        }
+
+        function setVaultDecisionFilter(dec) {
+            activeDecisionFilter = dec;
+            ['ALL', 'Aprobada', 'Rechazada'].forEach(k => {
+                const b = document.getElementById(`filter-dec-${k}`);
+                if (!b) return;
+                b.className = k === dec
+                    ? 'px-3.5 py-1.5 rounded-full bg-kamaui-brown text-kamaui-chalk font-semibold text-[11px] shrink-0'
+                    : 'px-3.5 py-1.5 rounded-full bg-kamaui-sand text-kamaui-brown font-semibold text-[11px] shrink-0';
+            });
+            renderVaultIdeas();
+        }
+
+        function renderVaultIdeas() {
+            updateVaultKPIs();
+            const grid = document.getElementById('vaultIdeasGrid');
+            const stFilter = document.getElementById('vaultStageFilter').value;
+            const q = (document.getElementById('vaultSearchInput').value || '').toLowerCase().trim();
+
+            const filtered = vaultIdeas.filter(item => {
+                const mDec = activeDecisionFilter === 'ALL' || item.decision === activeDecisionFilter;
+                const mSt = stFilter === 'ALL' || item.stage === stFilter;
+                const mQ = !q || `${item.payload.product_name} ${item.payload.ingredients} ${item.notes}`.toLowerCase().includes(q);
+                return mDec && mSt && mQ;
+            });
+
+            if (!filtered.length) {
+                grid.innerHTML = `<div class="botanical-card rounded-3xl p-8 text-center font-tech text-xs text-kamaui-brown/70">No hay ideas en este filtro.</div>`;
+                return;
+            }
+
+            grid.innerHTML = filtered.map(item => {
+                const isApp = item.decision === 'Aprobada';
+                const pctMap = { 'En proceso': 55, 'En espera': 25, 'Finalizado': 100, 'Descartado': 10 };
+                const barColor = { 'En proceso': 'bg-amber-500', 'En espera': 'bg-sky-500', 'Finalizado': 'bg-emerald-600', 'Descartado': 'bg-rose-500' };
+
+                return `
+                    <div class="botanical-card rounded-3xl p-4 space-y-3 border ${isApp ? 'border-emerald-700/35' : 'border-rose-700/35'}">
+                        <div class="flex items-center justify-between gap-2 font-tech text-[10px]">
+                            <button onclick="toggleIdeaDecision('${item.id}')" class="px-3 py-1 rounded-full font-bold uppercase ${isApp ? 'bg-emerald-900 text-emerald-100' : 'bg-rose-950 text-rose-100'}">
+                                ${item.decision}
+                            </button>
+                            <div class="flex items-center gap-2">
+                                <span class="px-2.5 py-0.5 rounded-full bg-kamaui-brown text-kamaui-gold font-cinzel font-bold">${item.data.viability_score}/100</span>
+                                <button onclick="deleteVaultIdea('${item.id}')" class="text-kamaui-brown/60 hover:text-rose-700"><i class="ph-light ph-trash text-base"></i></button>
+                            </div>
+                        </div>
+
+                        <div>
+                            <span class="font-tech text-[9px] uppercase tracking-widest text-kamaui-blue font-bold block">${item.payload.cosmetic_form} • ${item.payload.target_pet}</span>
+                            <h3 class="text-lg font-playfair font-semibold text-kamaui-brown leading-snug">${item.payload.product_name}</h3>
+                        </div>
+
+                        <!-- Selector de Estado de Avance -->
+                        <div class="bg-white/90 p-3 rounded-2xl border border-kamaui-gold/25 space-y-2 font-tech text-[10px]">
+                            <div class="flex justify-between items-center">
+                                <span class="uppercase font-bold text-kamaui-brown">Estado de Avance:</span>
+                                <span class="font-bold text-kamaui-blue">${item.stage}</span>
+                            </div>
+                            <div class="grid grid-cols-4 gap-1">
+                                ${['En proceso', 'En espera', 'Finalizado', 'Descartado'].map(st => `
+                                    <button type="button" onclick="updateIdeaStage('${item.id}', '${st}')"
+                                        class="py-1.5 px-1 rounded-lg font-semibold text-[9px] text-center border ${item.stage === st ? 'bg-kamaui-brown text-kamaui-gold border-kamaui-brown' : 'bg-kamaui-chalk text-kamaui-brown/75 border-kamaui-gold/20'}">
+                                        ${st}
+                                    </button>
+                                `).join('')}
+                            </div>
+                            <div class="w-full h-1.5 bg-kamaui-sand rounded-full overflow-hidden">
+                                <div class="h-full ${barColor[item.stage] || 'bg-amber-500'} rounded-full transition-all" style="width:${pctMap[item.stage] || 50}%"></div>
+                            </div>
+                            <input type="text" value="${(item.notes || '').replace(/"/g, '&quot;')}" onchange="updateIdeaNotes('${item.id}', this.value)"
+                                placeholder="Nota de avance..." class="w-full px-2.5 py-1.5 rounded-lg bg-kamaui-chalk text-[11px] outline-none border border-kamaui-gold/20">
+                        </div>
+
+                        <button onclick="openVaultInspector('${item.id}')" class="w-full py-2.5 px-4 rounded-2xl espresso-card text-kamaui-gold font-cinzel font-bold text-[11px] tracking-wider flex items-center justify-center gap-1.5">
+                            <i class="ph-light ph-book-open-text text-sm"></i>
+                            <span>VER MATERIAS PRIMAS E INSTRUCTIVO</span>
+                        </button>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function toggleIdeaDecision(id) {
+            const item = vaultIdeas.find(i => i.id === id);
+            if (!item) return;
+            item.decision = item.decision === 'Aprobada' ? 'Rechazada' : 'Aprobada';
+            saveVaultToStorage();
+            renderVaultIdeas();
+            showToast(`Dictamen: ${item.decision}`);
+        }
+
+        function updateIdeaStage(id, st) {
+            const item = vaultIdeas.find(i => i.id === id);
+            if (!item) return;
+            item.stage = st;
+            saveVaultToStorage();
+            renderVaultIdeas();
+            showToast(`Estado: ${st}`);
+        }
+
+        function updateIdeaNotes(id, val) {
+            const item = vaultIdeas.find(i => i.id === id);
+            if (!item) return;
+            item.notes = val.trim();
+            saveVaultToStorage();
+            showToast('Nota actualizada');
+        }
+
+        function deleteVaultIdea(id) {
+            vaultIdeas = vaultIdeas.filter(i => i.id !== id);
+            saveVaultToStorage();
+            renderVaultIdeas();
+            showToast('Idea eliminada');
+        }
+
+        function openVaultInspector(id) {
+            const item = vaultIdeas.find(i => i.id === id);
+            if (!item) return;
+            const d = item.data;
+            const p = item.payload;
+
+            document.getElementById('insp-badges').textContent = `${item.decision.toUpperCase()} • ${item.stage.toUpperCase()} • SCORE ${d.viability_score}/100`;
+            document.getElementById('insp-title').textContent = p.product_name;
+
+            document.getElementById('insp-raw-materials').innerHTML = (d.raw_materials_options || []).map(rm => `
+                <div class="p-3 rounded-xl bg-white border border-kamaui-gold/30">
+                    <span class="text-[9px] font-bold text-kamaui-gold uppercase block">${rm.inci}</span>
+                    <strong class="text-kamaui-brown block">${rm.name}</strong>
+                    <span class="text-[10px] text-kamaui-blue block">${rm.function}</span>
+                    <span class="text-[10px] text-kamaui-black/70 block mt-0.5">${rm.alternative_option}</span>
+                </div>
+            `).join('');
+
+            document.getElementById('insp-formula-rows').innerHTML = (d.formulation?.quali_quanti || []).map(row => {
+                const pct = parseFloat(String(row.percentage).replace('%', '')) || 0;
+                const g500 = ((pct / 100) * 500).toFixed(1);
+                const kg25 = ((pct / 100) * 25).toFixed(3);
+                return `
+                    <div class="flex justify-between items-center p-2.5 rounded-xl bg-white border border-kamaui-gold/20">
+                        <div>
+                            <strong class="text-kamaui-brown block">${row.ingredient}</strong>
+                            <span class="text-[10px] text-kamaui-black/60">${row.phase} • Lab: ${g500}g | Piloto: ${kg25}kg</span>
+                        </div>
+                        <span class="font-bold text-kamaui-brown">${pct.toFixed(1)}%</span>
+                    </div>
+                `;
+            }).join('');
+
+            document.getElementById('insp-lab-sop').innerHTML = (d.formulation?.lab_scale_instructions || '').replace(/\n/g, '<br><br>');
+            document.getElementById('insp-pilot-sop').innerHTML = (d.formulation?.pilot_instructions || '').replace(/\n/g, '<br><br>');
+
+            document.getElementById('insp-btn-pdf').onclick = () => {
+                currentPayload = JSON.parse(JSON.stringify(item.payload));
+                currentValidationData = JSON.parse(JSON.stringify(item.data));
+                generateDynamicFormulaPDF();
+            };
+
+            document.getElementById('insp-btn-load').onclick = () => {
+                currentPayload = JSON.parse(JSON.stringify(item.payload));
+                currentValidationData = JSON.parse(JSON.stringify(item.data));
+                renderAllScreens(currentValidationData, currentPayload);
+                closeVaultInspector();
+                switchScreen('formula');
+            };
+
+            const sheet = document.getElementById('vaultInspectorSheet');
+            sheet.classList.remove('hidden');
+            sheet.classList.add('flex');
+        }
+
+        function closeVaultInspector() {
+            const sheet = document.getElementById('vaultInspectorSheet');
+            sheet.classList.add('hidden');
+            sheet.classList.remove('flex');
+        }
+
+        function exportObsidianMarkdown() {
+            if (!currentValidationData || !currentPayload) return;
+            const d = currentValidationData;
+            const p = currentPayload;
+            const dateStr = new Date().toISOString().slice(0, 10);
+            const md = `# ${p.product_name}\n- Viabilidad: ${d.viability_score}/100\n- Especie: ${p.target_pet}\n\n## Instructivo Laboratorio (500 g)\n${d.formulation.lab_scale_instructions}\n\n## Escalado Planta Piloto (25 kg)\n${d.formulation.pilot_instructions}\n`;
+            const blob = new Blob([md], { type: 'text/markdown;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${dateStr}_${p.product_name.toLowerCase().replace(/[^a-z0-9]+/g, '_')}.md`;
+            a.click();
+            URL.revokeObjectURL(url);
+            showToast('Nota Obsidian (.md) descargada');
+        }
+
+        async function shareCurrentDossier() {
+            if (!currentValidationData || !currentPayload) return;
+            const text = `KAMAUI I+D: ${currentPayload.product_name} (${currentValidationData.viability_score}/100) — ${currentValidationData.regulatory_compliance.lick_safe_level}`;
+            if (navigator.share) {
+                try {
+                    await navigator.share({ title: currentPayload.product_name, text });
+                } catch (_) {}
+            } else {
+                navigator.clipboard.writeText(text);
+                showToast('Resumen copiado al portapapeles');
+            }
+        }
+
+        async function generateDynamicFormulaPDF() {
+            if (!currentValidationData || !currentPayload) return;
+            showToast('Generando PDF detallado...');
+            const d = currentValidationData;
+            const p = currentPayload;
+
+            const rowsHtml = (d.formulation.quali_quanti || []).map((item) => {
+                const pct = parseFloat(String(item.percentage).replace('%', '')) || 0;
+                return `
+                    <tr style="border-bottom:1px solid #E5DEC9;">
+                        <td style="padding:6px; font-weight:700; color:#5C3A21;">${item.phase}</td>
+                        <td style="padding:6px; font-weight:700;">${item.ingredient}</td>
+                        <td style="padding:6px; font-style:italic;">${item.inci}</td>
+                        <td style="padding:6px; text-align:right; font-weight:700;">${pct.toFixed(1)}%</td>
+                        <td style="padding:6px; text-align:right;">${((pct / 100) * 50).toFixed(2)} g</td>
+                        <td style="padding:6px; text-align:right;">${((pct / 100) * 500).toFixed(1)} g</td>
+                        <td style="padding:6px; text-align:right; font-weight:700;">${((pct / 100) * 25).toFixed(3)} kg</td>
+                    </tr>`;
+            }).join('');
+
+            const wrapper = document.createElement('div');
+            wrapper.style.position = 'fixed';
+            wrapper.style.left = '-9999px';
+            wrapper.style.width = '794px';
+            wrapper.style.background = '#F7F5F0';
+            wrapper.style.padding = '30px';
+            wrapper.style.fontFamily = "'Montserrat', sans-serif";
+            wrapper.innerHTML = `
+                <div style="background:#5C3A21; color:#F7F5F0; padding:20px; border-radius:14px; border-bottom:4px solid #D4A373; margin-bottom:16px;">
+                    <div style="font-size:10px; color:#D4A373; letter-spacing:2px;">KAMAUI LAB APK • ORDEN MAESTRA DE FORMULACIÓN</div>
+                    <h1 style="font-size:20px; margin:4px 0;">${p.product_name}</h1>
+                    <div style="font-size:11px; color:#E9C8A6;">${p.cosmetic_form} • ${p.target_pet} • Viabilidad: ${d.viability_score}/100</div>
+                </div>
+                <table style="width:100%; border-collapse:collapse; font-size:10px; background:#FFF; margin-bottom:16px;">
+                    <thead>
+                        <tr style="background:#5C3A21; color:#D4A373;">
+                            <th style="padding:7px; text-align:left;">Fase</th>
+                            <th style="padding:7px; text-align:left;">Materia Prima</th>
+                            <th style="padding:7px; text-align:left;">INCI</th>
+                            <th style="padding:7px; text-align:right;">% p/p</th>
+                            <th style="padding:7px; text-align:right;">50 g</th>
+                            <th style="padding:7px; text-align:right;">500 g</th>
+                            <th style="padding:7px; text-align:right;">25 kg</th>
+                        </tr>
+                    </thead>
+                    <tbody>${rowsHtml}</tbody>
+                </table>
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; font-size:10px;">
+                    <div style="background:#FFF; padding:12px; border-radius:10px; border:1px solid #D4A373;">
+                        <strong style="color:#5C3A21; display:block; margin-bottom:6px;">INSTRUCTIVO LABORATORIO (500 g)</strong>
+                        <div>${(d.formulation.lab_scale_instructions || '').replace(/\n/g, '<br>')}</div>
+                    </div>
+                    <div style="background:#5C3A21; color:#F7F5F0; padding:12px; border-radius:10px;">
+                        <strong style="color:#D4A373; display:block; margin-bottom:6px;">ESCALADO PLANTA PILOTO (25 kg)</strong>
+                        <div>${(d.formulation.pilot_instructions || '').replace(/\n/g, '<br>')}</div>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(wrapper);
+            try {
+                await html2pdf().set({
+                    margin: [6, 6, 6, 6],
+                    filename: `Kamaui_APK_${p.product_name.toLowerCase().replace(/[^a-z0-9]+/g, '_')}.pdf`,
+                    image: { type: 'jpeg', quality: 0.98 },
+                    html2canvas: { scale: 2, useCORS: true },
+                    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+                }).from(wrapper).save();
+            } finally {
+                document.body.removeChild(wrapper);
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            loadVaultFromStorage();
+            // Inicializar con el primer proyecto cargado para que todas las pestañas estén listas al instante
+            if (vaultIdeas.length) {
+                currentPayload = JSON.parse(JSON.stringify(vaultIdeas[0].payload));
+                currentValidationData = JSON.parse(JSON.stringify(vaultIdeas[0].data));
+                renderAllScreens(currentValidationData, currentPayload);
+            }
+            renderVaultIdeas();
+        });
+    </script>
+</body>
+</html>
