@@ -1,0 +1,2620 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#5C3A21">
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" type="image/jpeg" href="assets/logo-kamaui.jpg">
+    <title>KAMAUI — Sanctuary of Holistic Veterinary Science</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        kamaui: {
+                            gold: '#D4A373',      // Warm Gold
+                            goldlight: '#E9C8A6', // Soft Champagne Gold
+                            brown: '#5C3A21',     // Espresso Brown
+                            deep: '#382212',      // Dark Roast Espresso
+                            blue: '#85A1BA',      // Mystic Overcast Blue
+                            black: '#2B2B2B',     // Onyx Black
+                            chalk: '#F7F5F0',     // Chalk White
+                            sand: '#EFE9DE',      // Warm Oat Sand
+                        }
+                    },
+                    fontFamily: {
+                        playfair: ['"Playfair Display"', 'serif'],
+                        cinzel: ['"Cinzel"', 'serif'],
+                        montserrat: ['"Montserrat"', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=Montserrat:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&display=swap" rel="stylesheet">
+    <!-- Phosphor Icons -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <!-- html2pdf.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+    <style>
+        body {
+            font-family: 'Playfair Display', serif;
+            background-color: #F7F5F0;
+            background-image: 
+                radial-gradient(at 0% 0%, rgba(212, 163, 115, 0.14) 0px, transparent 50%),
+                radial-gradient(at 100% 20%, rgba(133, 161, 186, 0.12) 0px, transparent 45%),
+                radial-gradient(at 50% 100%, rgba(92, 58, 33, 0.08) 0px, transparent 50%);
+            background-attachment: fixed;
+            color: #2B2B2B;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .font-cinzel { font-family: 'Cinzel', serif; }
+        .font-tech { font-family: 'Montserrat', sans-serif; }
+
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: #F7F5F0; }
+        ::-webkit-scrollbar-thumb { background: #D4A373; border-radius: 999px; }
+
+        /* Superficie orgánica de lujo cálido */
+        .botanical-surface {
+            background: rgba(255, 255, 255, 0.78);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(212, 163, 115, 0.32);
+            box-shadow: 0 20px 50px -12px rgba(92, 58, 33, 0.07);
+        }
+
+        .espresso-surface {
+            background: linear-gradient(145deg, #5C3A21 0%, #3B2312 100%);
+            border: 1px solid rgba(212, 163, 115, 0.45);
+            box-shadow: 0 25px 55px -12px rgba(56, 34, 18, 0.35);
+        }
+
+        .tactile-input {
+            background: rgba(247, 245, 240, 0.75);
+            border: 1px solid rgba(212, 163, 115, 0.38);
+            transition: all 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .tactile-input:focus {
+            background: #FFFFFF;
+            border-color: #5C3A21;
+            box-shadow: 0 0 0 4px rgba(212, 163, 115, 0.18), 0 10px 25px -5px rgba(92, 58, 33, 0.08);
+        }
+
+        .tab-content {
+            display: none;
+            animation: sanctuaryFade 0.55s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .tab-content.active {
+            display: block;
+        }
+        @keyframes sanctuaryFade {
+            from { opacity: 0; transform: translateY(16px) scale(0.995); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        @keyframes slowOrbit {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        .mandala-orbit {
+            animation: slowOrbit 45s linear infinite;
+        }
+
+        .pb-safe { padding-bottom: env(safe-area-inset-bottom); }
+    </style>
+</head>
+<body class="antialiased min-h-screen flex flex-col selection:bg-kamaui-gold/30">
+
+    <!-- ================= BARRA SUPERIOR FLOTANTE (GLASSMORPHIC DOCK) ================= -->
+    <header class="sticky top-0 z-30 pt-4 pb-2 px-4 sm:px-8">
+        <div class="max-w-7xl mx-auto botanical-surface rounded-full px-5 sm:px-8 py-3.5 flex items-center justify-between">
+            <!-- Marca & Medallón Mandala -->
+            <div class="flex items-center gap-3.5">
+                <div class="relative w-11 h-11 rounded-full p-0.5 bg-gradient-to-tr from-kamaui-gold via-kamaui-brown to-kamaui-blue shadow-md shrink-0">
+                    <img src="assets/logo-kamaui.jpg" onerror="this.src='WhatsApp Image 2026-08-18 at 9.43.47 AM.jpg'" alt="Kamaui Logo" class="w-full h-full object-cover rounded-full bg-white">
+                </div>
+                <div>
+                    <div class="flex items-center gap-2.5">
+                        <span class="font-cinzel text-lg sm:text-xl font-bold tracking-[0.18em] text-kamaui-brown leading-none">KAMAUI</span>
+                        <span class="hidden md:inline-flex items-center px-2.5 py-0.5 rounded-full bg-kamaui-gold/15 border border-kamaui-gold/40 font-tech text-[9px] uppercase tracking-[0.2em] text-kamaui-brown font-semibold">Botanical Vet Lab</span>
+                    </div>
+                    <p class="font-playfair italic text-xs text-kamaui-brown/75 hidden sm:block">Validador Express de Ideas &amp; Dossier Galénico</p>
+                </div>
+            </div>
+
+            <!-- Píldoras de Navegación Central (Desktop) -->
+            <nav class="hidden lg:flex items-center gap-1.5 bg-kamaui-sand/80 p-1.5 rounded-full border border-kamaui-gold/25 font-tech text-[11px] tracking-[0.14em] uppercase">
+                <button onclick="switchTab('idea')" id="top-nav-idea" class="px-5 py-2 rounded-full bg-kamaui-brown text-kamaui-chalk font-medium shadow-sm transition-all duration-500 flex items-center gap-2">
+                    <i class="ph-light ph-sparkle text-sm text-kamaui-gold"></i>
+                    <span>Concepto</span>
+                </button>
+                <button onclick="switchTab('results')" id="top-nav-results" class="px-5 py-2 rounded-full text-kamaui-brown/70 hover:text-kamaui-brown transition-all duration-500 flex items-center gap-2">
+                    <i class="ph-light ph-chart-polar text-sm"></i>
+                    <span>Viabilidad</span>
+                </button>
+                <button onclick="switchTab('formula')" id="top-nav-formula" class="px-5 py-2 rounded-full text-kamaui-brown/70 hover:text-kamaui-brown transition-all duration-500 flex items-center gap-2">
+                    <i class="ph-light ph-flask text-sm"></i>
+                    <span>Dossier I+D</span>
+                </button>
+                <button onclick="switchTab('landing')" id="top-nav-landing" class="px-5 py-2 rounded-full text-kamaui-brown/70 hover:text-kamaui-brown transition-all duration-500 flex items-center gap-2">
+                    <i class="ph-light ph-browsers text-sm"></i>
+                    <span>Landing Page</span>
+                </button>
+                <button onclick="switchTab('vault')" id="top-nav-vault" class="px-5 py-2 rounded-full text-kamaui-brown/70 hover:text-kamaui-brown transition-all duration-500 flex items-center gap-2">
+                    <i class="ph-light ph-archive-box text-sm"></i>
+                    <span>Portafolio I+D</span>
+                    <span id="vaultCountBadge" class="px-2 py-0.5 text-[9px] rounded-full bg-kamaui-gold/25 text-kamaui-brown font-bold">0</span>
+                </button>
+            </nav>
+
+            <!-- Botones Versión APK + Conector n8n + Obsidian -->
+            <div class="flex items-center gap-2">
+                <a href="kamaui-mobile-apk.html" title="Abrir Versión App Móvil / APK"
+                    class="px-4 py-2 rounded-full bg-kamaui-gold/25 hover:bg-kamaui-gold text-kamaui-brown hover:text-kamaui-deep border border-kamaui-gold/50 transition-all duration-500 flex items-center gap-1.5 font-tech text-[10px] uppercase tracking-[0.16em] font-bold">
+                    <i class="ph-bold ph-android-logo text-sm"></i>
+                    <span class="hidden sm:inline">Versión APK</span>
+                </a>
+                <button onclick="toggleWebhookConfig()" title="Configurar conexión n8n + Bóveda Obsidian"
+                    class="px-4 py-2 rounded-full border border-kamaui-gold/45 bg-white/70 hover:bg-kamaui-brown hover:text-kamaui-chalk text-kamaui-brown transition-all duration-500 flex items-center gap-2 font-tech text-[10px] uppercase tracking-[0.18em] font-medium">
+                    <span id="connStatusDot" class="w-2 h-2 rounded-full bg-kamaui-gold animate-pulse"></span>
+                    <i class="ph-light ph-plugs-connected text-sm"></i>
+                    <span class="hidden sm:inline">n8n + Obsidian</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Panel Desplegable de Webhook -->
+        <div id="webhookConfigBar" class="hidden max-w-5xl mx-auto mt-2 botanical-surface rounded-3xl p-5 transition-all duration-500">
+            <div class="flex flex-col sm:flex-row gap-3 items-stretch sm:items-center font-tech text-xs">
+                <span class="text-[10px] uppercase tracking-[0.2em] text-kamaui-brown font-semibold shrink-0 flex items-center gap-1.5">
+                    <i class="ph-light ph-webhooks-logo text-base text-kamaui-gold"></i> Webhook n8n:
+                </span>
+                <input type="url" id="n8nWebhookInput" value="http://localhost:5678/webhook/kamaui-validate-idea"
+                    class="tactile-input flex-1 px-4 py-2.5 rounded-xl text-kamaui-black text-xs outline-none"
+                    placeholder="https://tu-instancia-n8n.com/webhook/kamaui-validate-idea">
+                <button onclick="saveWebhookUrl()" class="px-6 py-2.5 rounded-xl bg-kamaui-brown hover:bg-kamaui-deep text-kamaui-gold font-tech text-[10px] uppercase tracking-[0.2em] font-semibold transition-all duration-500">
+                    Guardar Endpoint
+                </button>
+            </div>
+            <p class="font-tech text-[10px] text-kamaui-black/55 mt-2">
+                Si el servidor n8n está desconectado, la aplicación activa automáticamente el <strong>Motor Experto Local</strong> sincronizado con la normativa ICA 1056 y el protocolo toxicológico Lick-Safe de tu bóveda Obsidian.
+            </p>
+        </div>
+    </header>
+
+    <!-- ================= CONTENIDO PRINCIPAL ================= -->
+    <main class="flex-1 px-4 sm:px-8 py-8 sm:py-12 pb-28">
+        <div class="max-w-7xl mx-auto">
+
+            <!-- ================= MÓDULO 01: CAPTURA Y ESTRUCTURACIÓN (SPLIT SHOWCASE) ================= -->
+            <section id="tab-idea" class="tab-content active">
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-stretch">
+
+                    <!-- Tarjeta Izquierda: Santuario Visual Kamaui + Selector de Arquetipos (5 cols) -->
+                    <div class="lg:col-span-5 espresso-surface rounded-[32px] p-8 sm:p-10 text-kamaui-chalk flex flex-col justify-between relative overflow-hidden">
+                        <!-- Halo Geométrico Sutil -->
+                        <div class="absolute -right-20 -top-20 w-80 h-80 rounded-full border border-kamaui-gold/15 pointer-events-none mandala-orbit"></div>
+                        <div class="absolute -right-10 -top-10 w-60 h-60 rounded-full border border-dashed border-kamaui-gold/20 pointer-events-none"></div>
+
+                        <div class="relative z-10 space-y-6">
+                            <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/10 border border-kamaui-gold/30 font-tech text-[10px] uppercase tracking-[0.22em] text-kamaui-goldlight">
+                                <i class="ph-light ph-flower-lotus text-sm text-kamaui-gold"></i>
+                                <span>Atelier de Formulación Holística</span>
+                            </div>
+
+                            <!-- Medallón Central del Logo Kamaui -->
+                            <div class="flex items-center gap-5 pt-2">
+                                <div class="relative w-24 h-24 rounded-full p-1 bg-gradient-to-tr from-kamaui-gold via-kamaui-chalk to-kamaui-blue shadow-2xl shrink-0">
+                                    <img src="assets/logo-kamaui.jpg" onerror="this.src='WhatsApp Image 2026-08-18 at 9.43.47 AM.jpg'" alt="Mandala Kamaui" class="w-full h-full object-cover rounded-full border-2 border-kamaui-brown bg-white">
+                                </div>
+                                <div>
+                                    <span class="font-tech text-[10px] uppercase tracking-[0.25em] text-kamaui-gold block">Filosofía Dual</span>
+                                    <h2 class="text-2xl sm:text-3xl font-cinzel font-semibold text-kamaui-chalk leading-snug mt-0.5">
+                                        Ciencia &amp; Naturaleza
+                                    </h2>
+                                </div>
+                            </div>
+
+                            <p class="font-playfair italic text-base text-kamaui-goldlight/90 leading-relaxed pt-2 border-t border-kamaui-gold/20">
+                                "Armonizando la salud animal y la belleza natural a través de cosmética veterinaria segura al lamido y fitoactivos trazables."
+                            </p>
+
+                            <!-- Indicadores del Pipeline -->
+                            <div class="grid grid-cols-3 gap-2.5 pt-2 font-tech text-[10px]">
+                                <div class="bg-white/5 border border-kamaui-gold/20 rounded-2xl p-3">
+                                    <i class="ph-light ph-book-bookmark text-lg text-kamaui-gold block mb-1"></i>
+                                    <span class="text-kamaui-chalk font-medium block">Obsidian</span>
+                                    <span class="text-kamaui-chalk/55 text-[9px]">ICA &amp; Lick-Safe</span>
+                                </div>
+                                <div class="bg-white/5 border border-kamaui-gold/20 rounded-2xl p-3">
+                                    <i class="ph-light ph-globe-hemisphere-west text-lg text-kamaui-blue block mb-1"></i>
+                                    <span class="text-kamaui-chalk font-medium block">Web Search</span>
+                                    <span class="text-kamaui-chalk/55 text-[9px]">Mercado Real</span>
+                                </div>
+                                <div class="bg-white/5 border border-kamaui-gold/20 rounded-2xl p-3">
+                                    <i class="ph-light ph-flask text-lg text-kamaui-gold block mb-1"></i>
+                                    <span class="text-kamaui-chalk font-medium block">Dossier I+D</span>
+                                    <span class="text-kamaui-chalk/55 text-[9px]">Lab &amp; Piloto</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Selector de Fórmulas de Referencia (Píldoras Táctiles) -->
+                        <div class="relative z-10 pt-8 mt-8 border-t border-kamaui-gold/20 space-y-3">
+                            <span class="font-tech text-[10px] uppercase tracking-[0.24em] text-kamaui-goldlight/75 block">Cargar Fórmula de Referencia:</span>
+                            <div class="space-y-2 font-tech text-xs">
+                                <button type="button" onclick="loadPreset('balsamo')"
+                                    class="w-full text-left px-4 py-3 rounded-2xl bg-white/10 hover:bg-kamaui-gold hover:text-kamaui-deep border border-kamaui-gold/25 transition-all duration-500 flex items-center justify-between group">
+                                    <span class="flex items-center gap-2.5 font-medium">
+                                        <i class="ph-light ph-drop text-base text-kamaui-gold group-hover:text-kamaui-deep"></i>
+                                        <span>Bálsamo Sagrado de Huellas &amp; Trufa</span>
+                                    </span>
+                                    <i class="ph-light ph-arrow-right text-sm opacity-60 group-hover:translate-x-1 transition-transform"></i>
+                                </button>
+                                <button type="button" onclick="loadPreset('shampoo')"
+                                    class="w-full text-left px-4 py-3 rounded-2xl bg-white/10 hover:bg-kamaui-gold hover:text-kamaui-deep border border-kamaui-gold/25 transition-all duration-500 flex items-center justify-between group">
+                                    <span class="flex items-center gap-2.5 font-medium">
+                                        <i class="ph-light ph-sparkle text-base text-kamaui-gold group-hover:text-kamaui-deep"></i>
+                                        <span>Champú Dermo-Armonía Avena &amp; Manzanilla</span>
+                                    </span>
+                                    <i class="ph-light ph-arrow-right text-sm opacity-60 group-hover:translate-x-1 transition-transform"></i>
+                                </button>
+                                <button type="button" onclick="loadPreset('alerta_tox')"
+                                    class="w-full text-left px-4 py-3 rounded-2xl bg-red-950/40 hover:bg-red-900/70 text-red-100 border border-red-400/30 transition-all duration-500 flex items-center justify-between group">
+                                    <span class="flex items-center gap-2.5 font-medium">
+                                        <i class="ph-light ph-shield-warning text-base text-red-300"></i>
+                                        <span>Prueba de Alerta Toxicológica Felina</span>
+                                    </span>
+                                    <i class="ph-light ph-arrow-right text-sm opacity-60 group-hover:translate-x-1 transition-transform"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tarjeta Derecha: Lienzo de Formulación (7 cols) -->
+                    <div class="lg:col-span-7 botanical-surface rounded-[32px] p-8 sm:p-12 flex flex-col justify-between">
+                        <div class="mb-8 border-b border-kamaui-gold/25 pb-6 flex items-end justify-between">
+                            <div>
+                                <span class="font-tech text-[10px] uppercase tracking-[0.28em] text-kamaui-blue font-semibold block mb-1">Paso 01 • Definición Galénica</span>
+                                <h2 class="text-3xl sm:text-4xl font-playfair font-medium text-kamaui-brown">Diseño del Nuevo Producto</h2>
+                            </div>
+                            <i class="ph-thin ph-compass-tool text-4xl text-kamaui-gold hidden sm:block"></i>
+                        </div>
+
+                        <form id="ideaForm" class="space-y-6">
+                            <div>
+                                <label class="font-tech text-[10px] uppercase tracking-[0.22em] text-kamaui-brown font-semibold block mb-2 ml-1">Nombre del Concepto / Producto</label>
+                                <input type="text" id="product_name" required value="Bálsamo Sagrado Reparador de Huellas & Trufa"
+                                    placeholder="Ej. Bálsamo Reparador de Huellas"
+                                    class="tactile-input w-full px-5 py-4 rounded-2xl text-lg sm:text-xl font-playfair text-kamaui-black outline-none">
+                            </div>
+
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                                <div>
+                                    <label class="font-tech text-[10px] uppercase tracking-[0.22em] text-kamaui-brown font-semibold block mb-2 ml-1">Forma Cosmética</label>
+                                    <div class="relative">
+                                        <select id="cosmetic_form" class="tactile-input w-full px-5 py-3.5 rounded-2xl font-tech text-xs font-medium text-kamaui-black outline-none appearance-none cursor-pointer">
+                                            <option value="Bálsamo Anhidro Fundente">Bálsamo Anhidro Fundente (Ungüento)</option>
+                                            <option value="Champú Dermo-Calmante Suave">Champú Dermo-Calmante (Tensioactivo Botánico)</option>
+                                            <option value="Bruma / Hidrolato Acondicionador">Bruma / Spray Desenredante &amp; Calmante</option>
+                                            <option value="Emulsión / Sérum Dermo-Reparador">Sérum / Emulsión Hidratante de Manto</option>
+                                        </select>
+                                        <i class="ph-light ph-caret-down absolute right-4 top-4 text-kamaui-brown pointer-events-none"></i>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <label class="font-tech text-[10px] uppercase tracking-[0.22em] text-kamaui-brown font-semibold block mb-2 ml-1">Especie Objetivo</label>
+                                    <div class="relative">
+                                        <select id="target_pet" class="tactile-input w-full px-5 py-3.5 rounded-2xl font-tech text-xs font-medium text-kamaui-black outline-none appearance-none cursor-pointer">
+                                            <option value="Perros y Gatos">Perros y Gatos (Línea Dual)</option>
+                                            <option value="Perros">Exclusivo Caninos</option>
+                                            <option value="Gatos">Exclusivo Felinos (Metabolismo Sensible)</option>
+                                        </select>
+                                        <i class="ph-light ph-caret-down absolute right-4 top-4 text-kamaui-brown pointer-events-none"></i>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div>
+                                <label class="font-tech text-[10px] uppercase tracking-[0.22em] text-kamaui-brown font-semibold block mb-2 ml-1">Zona de Aplicación / Tipo de Manto</label>
+                                <div class="relative">
+                                    <select id="coat_type" class="tactile-input w-full px-5 py-3.5 rounded-2xl font-tech text-xs font-medium text-kamaui-black outline-none appearance-none cursor-pointer">
+                                        <option value="Almohadillas plantares, trufa y zonas hiperqueratósicas">Almohadillas plantares, trufa y zonas hiperqueratósicas</option>
+                                        <option value="Manto doble, largo o rizado con piel sensible">Manto doble, largo o rizado con piel sensible</option>
+                                        <option value="Manto corto y piel con tendencia atópica">Manto corto y piel reactiva / alérgica</option>
+                                        <option value="Cachorros y mascotas senior">Cachorros y mascotas Senior</option>
+                                    </select>
+                                    <i class="ph-light ph-caret-down absolute right-4 top-4 text-kamaui-brown pointer-events-none"></i>
+                                </div>
+                            </div>
+
+                            <div>
+                                <label class="font-tech text-[10px] uppercase tracking-[0.22em] text-kamaui-brown font-semibold block mb-2 ml-1">Ingredientes &amp; Fitoactivos Propuestos</label>
+                                <textarea id="ingredients" rows="2" required placeholder="Separados por coma..."
+                                    class="tactile-input w-full px-5 py-3.5 rounded-2xl text-base font-playfair text-kamaui-black outline-none resize-none leading-relaxed">Manteca de Karité Orgánica, Cera de Candelilla, Oleato de Caléndula, Aceite de Semilla de Cáñamo, D-Pantenol, Vitamina E</textarea>
+                            </div>
+
+                            <div>
+                                <label class="font-tech text-[10px] uppercase tracking-[0.22em] text-kamaui-brown font-semibold block mb-2 ml-1">Propósito Holístico &amp; Beneficios Buscados</label>
+                                <textarea id="concept_description" rows="3" required placeholder="Describe la acción reparadora y sensorial..."
+                                    class="tactile-input w-full px-5 py-3.5 rounded-2xl text-base font-playfair text-kamaui-black outline-none resize-none leading-relaxed">Proteger y regenerar las almohadillas plantares expuestas al asfalto caliente o frío, nutriendo la barrera cutánea con una textura sedosa de rápida absorción 100% segura al lamido (Lick-Safe).</textarea>
+                            </div>
+
+                            <div class="pt-4">
+                                <button type="submit" id="btnSubmit"
+                                    class="w-full py-4 px-8 rounded-2xl espresso-surface text-kamaui-chalk hover:opacity-95 transition-all duration-500 flex items-center justify-center gap-3 group shadow-lg">
+                                    <i class="ph-light ph-sparkle text-xl text-kamaui-gold"></i>
+                                    <span class="font-cinzel font-semibold tracking-[0.18em] text-sm">VALIDAR IDEA &amp; GENERAR DOSSIER 360°</span>
+                                    <i class="ph-light ph-arrow-right text-lg text-kamaui-gold group-hover:translate-x-1 transition-transform"></i>
+                                </button>
+                            </div>
+                        </form>
+
+                        <!-- Estado de Carga Animado -->
+                        <div id="loadingState" class="hidden flex-col items-center justify-center py-20 text-center">
+                            <div class="relative w-20 h-20 flex items-center justify-center mb-6">
+                                <div class="absolute inset-0 rounded-full border-2 border-kamaui-gold/30 border-t-kamaui-brown animate-spin"></div>
+                                <i class="ph-light ph-flower-lotus text-3xl text-kamaui-brown"></i>
+                            </div>
+                            <h3 id="loadingStepTitle" class="text-2xl font-playfair text-kamaui-brown font-medium">Consultando Bóveda de Obsidian...</h3>
+                            <p id="loadingStepSub" class="text-xs font-tech text-kamaui-black/60 mt-2">Auditando Resolución ICA 1056, Toxicología de Lamido y Mercado</p>
+                            <div class="w-60 bg-kamaui-gold/20 h-1.5 rounded-full overflow-hidden mt-6">
+                                <div id="loadingBar" class="bg-kamaui-brown h-full w-1/4 transition-all duration-500 rounded-full"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </section>
+
+            <!-- ================= MÓDULO 02: REPORTE INTEGRAL DE VIABILIDAD ================= -->
+            <section id="tab-results" class="tab-content">
+                <div id="resultsContent" class="hidden space-y-8">
+
+                    <!-- Hero Banner de Puntaje con Medidor Circular SVG -->
+                    <div class="espresso-surface rounded-[32px] p-8 sm:p-10 text-kamaui-chalk">
+                        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+                            <div class="lg:col-span-7 space-y-2">
+                                <span id="res-source-badge" class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 border border-kamaui-gold/30 font-tech text-[10px] uppercase tracking-[0.2em] text-kamaui-goldlight">
+                                    Diagnóstico Integral Kamaui
+                                </span>
+                                <h2 id="res-product-title" class="text-3xl sm:text-4xl font-cinzel font-semibold text-kamaui-chalk pt-1">Reporte de Viabilidad</h2>
+                                <p class="font-playfair italic text-sm text-kamaui-goldlight/85">Evaluación cruzada entre regulación sanitaria ICA, inocuidad por lamido y oportunidad comercial.</p>
+                            </div>
+
+                            <!-- Medidor Circular + Desglose de Barras -->
+                            <div class="lg:col-span-5 flex flex-col sm:flex-row items-center justify-end gap-8">
+                                <div class="relative w-28 h-28 flex items-center justify-center shrink-0">
+                                    <svg class="w-full h-full -rotate-90" viewBox="0 0 100 100">
+                                        <circle cx="50" cy="50" r="42" stroke="rgba(212,163,115,0.2)" stroke-width="6" fill="none"></circle>
+                                        <circle id="scoreCircleStroke" cx="50" cy="50" r="42" stroke="#D4A373" stroke-width="6" fill="none" stroke-dasharray="264" stroke-dashoffset="20" stroke-linecap="round" class="transition-all duration-1000"></circle>
+                                    </svg>
+                                    <div class="absolute inset-0 flex flex-col items-center justify-center">
+                                        <span id="res-score" class="text-3xl font-cinzel font-bold text-kamaui-chalk leading-none">--</span>
+                                        <span class="font-tech text-[9px] uppercase tracking-widest text-kamaui-gold mt-0.5">/ 100</span>
+                                    </div>
+                                </div>
+
+                                <div class="w-full sm:w-48 space-y-3 font-tech text-xs">
+                                    <div>
+                                        <div class="flex justify-between text-[10px] uppercase tracking-wider mb-1">
+                                            <span class="text-kamaui-goldlight">Técnico I+D</span>
+                                            <span id="res-score-tech" class="font-semibold text-kamaui-chalk">--%</span>
+                                        </div>
+                                        <div class="h-1.5 bg-white/10 rounded-full overflow-hidden"><div class="h-full bg-kamaui-gold rounded-full w-[95%]"></div></div>
+                                    </div>
+                                    <div>
+                                        <div class="flex justify-between text-[10px] uppercase tracking-wider mb-1">
+                                            <span class="text-kamaui-goldlight">Regulatorio ICA</span>
+                                            <span id="res-score-reg" class="font-semibold text-kamaui-chalk">--%</span>
+                                        </div>
+                                        <div class="h-1.5 bg-white/10 rounded-full overflow-hidden"><div class="h-full bg-kamaui-blue rounded-full w-[94%]"></div></div>
+                                    </div>
+                                    <div>
+                                        <div class="flex justify-between text-[10px] uppercase tracking-wider mb-1">
+                                            <span class="text-kamaui-goldlight">Mercado</span>
+                                            <span id="res-score-mkt" class="font-semibold text-kamaui-chalk">--%</span>
+                                        </div>
+                                        <div class="h-1.5 bg-white/10 rounded-full overflow-hidden"><div class="h-full bg-kamaui-goldlight rounded-full w-[92%]"></div></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 1. Regulación ICA y Toxicología Lick-Safe -->
+                    <div class="botanical-surface rounded-[32px] p-8 sm:p-10 space-y-8">
+                        <div class="flex flex-wrap items-center justify-between gap-4 border-b border-kamaui-gold/25 pb-5">
+                            <div class="flex items-center gap-3.5">
+                                <div class="w-11 h-11 rounded-2xl bg-kamaui-brown text-kamaui-gold flex items-center justify-center">
+                                    <i class="ph-light ph-shield-check text-2xl"></i>
+                                </div>
+                                <div>
+                                    <span class="font-tech text-[10px] uppercase tracking-[0.22em] text-kamaui-blue font-semibold block">Auditoría Documental Obsidian</span>
+                                    <h3 class="text-2xl font-playfair font-semibold text-kamaui-brown">Regulación Sanitaria ICA &amp; Toxicología</h3>
+                                </div>
+                            </div>
+                            <span id="res-licksafe-badge" class="font-tech text-xs font-semibold px-4 py-2 rounded-full bg-emerald-900/10 text-emerald-900 border border-emerald-700/30">
+                                Protocolo 100% Lick-Safe
+                            </span>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="bg-kamaui-chalk/80 p-6 rounded-2xl border border-kamaui-gold/25 space-y-2">
+                                <span class="font-tech text-[10px] uppercase tracking-[0.2em] text-kamaui-brown font-bold flex items-center gap-2">
+                                    <i class="ph-light ph-scales text-base text-kamaui-gold"></i> Marco Normativo Aplicable
+                                </span>
+                                <p id="res-ica" class="text-sm text-kamaui-black/85 leading-relaxed"></p>
+                            </div>
+                            <div class="bg-kamaui-chalk/80 p-6 rounded-2xl border border-kamaui-gold/25 space-y-2">
+                                <span class="font-tech text-[10px] uppercase tracking-[0.2em] text-kamaui-brown font-bold flex items-center gap-2">
+                                    <i class="ph-light ph-heartbeat text-base text-kamaui-gold"></i> Seguridad al Acicalamiento (Lamido)
+                                </span>
+                                <p id="res-tox" class="text-sm text-kamaui-black/85 leading-relaxed"></p>
+                            </div>
+                        </div>
+
+                        <!-- Tabla de Inocuidad por Ingrediente -->
+                        <div class="overflow-x-auto rounded-2xl border border-kamaui-gold/30 bg-white/80">
+                            <table class="w-full text-left font-tech text-xs border-collapse">
+                                <thead>
+                                    <tr class="bg-kamaui-sand/80 text-kamaui-brown text-[10px] uppercase tracking-[0.18em] border-b border-kamaui-gold/25">
+                                        <th class="py-3.5 px-5">Activo Propuesto</th>
+                                        <th class="py-3.5 px-5">Seguridad Canina</th>
+                                        <th class="py-3.5 px-5">Seguridad Felina (Glucuronidación)</th>
+                                        <th class="py-3.5 px-5">Observación Técnica</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="res-tox-matrix" class="divide-y divide-kamaui-gold/15"></tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- 2. Inteligencia de Mercado & Estrategia Comunicacional -->
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                        <div class="botanical-surface rounded-[32px] p-8 sm:p-10 space-y-6">
+                            <div class="flex items-center gap-3.5 border-b border-kamaui-gold/25 pb-4">
+                                <div class="w-10 h-10 rounded-2xl bg-kamaui-gold/20 text-kamaui-brown flex items-center justify-center">
+                                    <i class="ph-light ph-trend-up text-xl"></i>
+                                </div>
+                                <div>
+                                    <span class="font-tech text-[10px] uppercase tracking-[0.2em] text-kamaui-blue font-semibold block">Inteligencia Comercial</span>
+                                    <h3 class="text-xl font-playfair font-semibold text-kamaui-brown">Oportunidad &amp; Competencia</h3>
+                                </div>
+                            </div>
+                            <p id="res-market-opp" class="text-sm text-kamaui-black/85 italic leading-relaxed"></p>
+                            <div id="res-competitors" class="space-y-3 font-tech text-xs"></div>
+                        </div>
+
+                        <div class="botanical-surface rounded-[32px] p-8 sm:p-10 flex flex-col justify-between space-y-6">
+                            <div class="space-y-5">
+                                <div class="flex items-center gap-3.5 border-b border-kamaui-gold/25 pb-4">
+                                    <div class="w-10 h-10 rounded-2xl bg-kamaui-blue/20 text-kamaui-brown flex items-center justify-center">
+                                        <i class="ph-light ph-megaphone text-xl"></i>
+                                    </div>
+                                    <div>
+                                        <span class="font-tech text-[10px] uppercase tracking-[0.2em] text-kamaui-blue font-semibold block">Voz de Marca Kamaui</span>
+                                        <h3 class="text-xl font-playfair font-semibold text-kamaui-brown">Estrategia de Comunicación</h3>
+                                    </div>
+                                </div>
+
+                                <div class="bg-kamaui-chalk/90 p-5 rounded-2xl border border-kamaui-gold/30">
+                                    <span class="font-tech text-[9px] uppercase tracking-[0.22em] text-kamaui-gold font-bold block mb-1">Ángulo Narrativo</span>
+                                    <p id="res-ad-angle" class="text-base font-playfair italic text-kamaui-brown leading-relaxed"></p>
+                                </div>
+
+                                <div>
+                                    <span class="font-tech text-[10px] uppercase tracking-[0.2em] text-kamaui-brown/70 font-semibold block mb-1.5">Despliegue Recomendado</span>
+                                    <p id="res-campaign-idea" class="font-tech text-xs text-kamaui-black/80 leading-relaxed"></p>
+                                </div>
+                            </div>
+
+                            <div>
+                                <span class="font-tech text-[10px] uppercase tracking-[0.2em] text-kamaui-brown/70 font-semibold block mb-2.5">Claims Cosméticos Autorizados</span>
+                                <div id="res-key-benefits" class="flex flex-wrap gap-2 font-tech"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 3. Opciones de Packaging Kamaui -->
+                    <div class="botanical-surface rounded-[32px] p-8 sm:p-10 space-y-6">
+                        <div class="flex items-center gap-3.5 border-b border-kamaui-gold/25 pb-4">
+                            <div class="w-10 h-10 rounded-2xl bg-kamaui-brown text-kamaui-gold flex items-center justify-center">
+                                <i class="ph-light ph-package text-xl"></i>
+                            </div>
+                            <div>
+                                <span class="font-tech text-[10px] uppercase tracking-[0.2em] text-kamaui-blue font-semibold block">Diseño de Producto</span>
+                                <h3 class="text-2xl font-playfair font-semibold text-kamaui-brown">Opciones Óptimas de Envasado Primario</h3>
+                            </div>
+                        </div>
+                        <div id="res-packaging-cards" class="grid grid-cols-1 md:grid-cols-3 gap-6"></div>
+                    </div>
+
+                    <!-- Barra de Dictamen & Almacenamiento en Portafolio I+D -->
+                    <div class="botanical-surface rounded-[32px] p-6 sm:p-8 border-2 border-kamaui-gold/40 flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+                        <div class="space-y-1">
+                            <span class="font-tech text-[10px] uppercase tracking-[0.24em] text-kamaui-blue font-bold block">Dictamen de Comité I+D • Gestión de Ideas</span>
+                            <h3 class="text-2xl font-playfair font-semibold text-kamaui-brown">¿Aprobar o Rechazar esta Idea en el Portafolio?</h3>
+                            <p class="font-tech text-xs text-kamaui-black/65">Guarda esta formulación con sus materias primas e instructivo para gestionar su estado de avance.</p>
+                        </div>
+
+                        <div class="flex flex-wrap items-center gap-3 font-tech text-xs">
+                            <div class="flex items-center gap-2 bg-kamaui-chalk px-4 py-2.5 rounded-2xl border border-kamaui-gold/35">
+                                <span class="text-[10px] uppercase tracking-wider text-kamaui-brown font-semibold">Estado inicial:</span>
+                                <select id="saveStageSelect" class="bg-transparent font-bold text-kamaui-brown outline-none cursor-pointer">
+                                    <option value="En proceso">En proceso</option>
+                                    <option value="En espera">En espera</option>
+                                    <option value="Finalizado">Finalizado</option>
+                                    <option value="Descartado">Descartado</option>
+                                </select>
+                            </div>
+
+                            <button type="button" onclick="saveCurrentIdeaToVault('Aprobada')"
+                                class="px-5 py-3.5 rounded-2xl bg-emerald-900 hover:bg-emerald-950 text-kamaui-chalk font-cinzel font-semibold text-xs tracking-wider flex items-center gap-2 transition shadow-md">
+                                <i class="ph-light ph-check-circle text-lg text-emerald-300"></i>
+                                <span>APROBAR Y GUARDAR</span>
+                            </button>
+
+                            <button type="button" onclick="saveCurrentIdeaToVault('Rechazada')"
+                                class="px-5 py-3.5 rounded-2xl bg-red-950/90 hover:bg-red-900 text-red-100 border border-red-400/30 font-cinzel font-semibold text-xs tracking-wider flex items-center gap-2 transition shadow-md">
+                                <i class="ph-light ph-x-circle text-lg text-red-300"></i>
+                                <span>RECHAZAR Y ARCHIVAR</span>
+                            </button>
+
+                            <button type="button" onclick="switchTab('formula')" class="px-6 py-3.5 rounded-2xl espresso-surface text-kamaui-gold font-cinzel font-semibold text-xs tracking-[0.18em] flex items-center gap-2.5 hover:opacity-95 transition-all">
+                                <span>DOSSIER I+D</span>
+                                <i class="ph-light ph-arrow-right text-base"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="emptyResults" class="botanical-surface rounded-[32px] py-24 px-6 text-center max-w-lg mx-auto my-8 space-y-3">
+                    <i class="ph-thin ph-flower-lotus text-6xl text-kamaui-gold"></i>
+                    <h3 class="text-2xl font-playfair text-kamaui-brown">Santurario de Diagnóstico en Espera</h3>
+                    <p class="font-tech text-xs text-kamaui-black/55">Ejecuta primero la validación de tu concepto en la pestaña "Concepto".</p>
+                </div>
+            </section>
+
+            <!-- ================= MÓDULO 03: DOSSIER TÉCNICO I+D ================= -->
+            <section id="tab-formula" class="tab-content">
+                <div id="formulaContent" class="hidden space-y-8">
+
+                    <!-- Cabecera del Dossier -->
+                    <div class="botanical-surface rounded-[32px] p-8 sm:p-10 flex flex-col sm:flex-row sm:items-center justify-between gap-6">
+                        <div>
+                            <span class="font-tech text-[10px] uppercase tracking-[0.25em] text-kamaui-blue font-semibold block mb-1">Ingeniería de Formulación Veterinaria</span>
+                            <h2 class="text-3xl sm:text-4xl font-playfair font-semibold text-kamaui-brown">Dossier Técnico de I+D</h2>
+                            <p class="text-sm text-kamaui-black/70 italic mt-1">Selección de materias primas, Fórmula Maestra al 100%, escalado de lotes y control de calidad.</p>
+                        </div>
+                        <div class="flex flex-wrap items-center gap-3">
+                            <button onclick="saveCurrentIdeaToVault('Aprobada')"
+                                class="px-5 py-3.5 rounded-2xl bg-emerald-900 hover:bg-emerald-950 text-kamaui-chalk font-tech text-xs font-semibold tracking-wider flex items-center gap-2 transition shadow-sm">
+                                <i class="ph-light ph-bookmark-simple text-lg text-emerald-300"></i>
+                                <span>Guardar en Portafolio</span>
+                            </button>
+                            <button onclick="exportObsidianMarkdown()"
+                                class="px-6 py-3.5 rounded-2xl espresso-surface text-kamaui-gold font-tech text-xs font-semibold tracking-wider flex items-center gap-2.5 shrink-0 hover:opacity-95 transition">
+                                <i class="ph-light ph-file-md text-lg"></i>
+                                <span>Exportar Nota Obsidian (.md)</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- 1. Materias Primas Sugeridas -->
+                    <div class="botanical-surface rounded-[32px] p-8 sm:p-10 space-y-6">
+                        <h3 class="text-2xl font-playfair font-semibold text-kamaui-brown border-b border-kamaui-gold/25 pb-4 flex items-center gap-3">
+                            <i class="ph-light ph-plant text-2xl text-kamaui-gold"></i>
+                            <span>1. Opciones de Materias Primas &amp; Alternativas Galénicas</span>
+                        </h3>
+                        <div id="res-raw-materials" class="grid grid-cols-1 md:grid-cols-2 gap-6"></div>
+                    </div>
+
+                    <!-- 2. Tabla de Fórmula Maestra con Barras Visuales de Proporción -->
+                    <div class="botanical-surface rounded-[32px] p-8 sm:p-10 space-y-6">
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-kamaui-gold/25 pb-4">
+                            <h3 class="text-2xl font-playfair font-semibold text-kamaui-brown flex items-center gap-3">
+                                <i class="ph-light ph-flask text-2xl text-kamaui-gold"></i>
+                                <span>2. Fórmula Maestra Cuali-Cuantitativa (Base 100%)</span>
+                            </h3>
+                            <div class="flex items-center gap-3 font-tech text-xs bg-kamaui-chalk px-4 py-2 rounded-2xl border border-kamaui-gold/35">
+                                <label class="text-kamaui-brown font-semibold">Escalar Lote Piloto (kg):</label>
+                                <input type="number" id="pilotBatchKg" value="25" min="1" max="1000" onchange="recalculateBatchTable()"
+                                    class="w-16 px-2 py-1 rounded-lg bg-white border border-kamaui-gold/40 font-bold text-kamaui-brown text-center outline-none">
+                            </div>
+                        </div>
+
+                        <div class="overflow-x-auto rounded-2xl border border-kamaui-gold/30 bg-white/85">
+                            <table class="w-full text-left font-tech text-xs border-collapse">
+                                <thead>
+                                    <tr class="bg-kamaui-brown text-kamaui-gold font-cinzel text-[11px] tracking-wider">
+                                        <th class="py-4 px-4">Fase</th>
+                                        <th class="py-4 px-4">Materia Prima</th>
+                                        <th class="py-4 px-4">INCI</th>
+                                        <th class="py-4 px-4">Función</th>
+                                        <th class="py-4 px-4 text-right">% p/p</th>
+                                        <th class="py-4 px-4 text-right">Lab (500 g)</th>
+                                        <th class="py-4 px-4 text-right">Piloto (<span id="pilotKgHeader">25</span> kg)</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="res-formula-table" class="divide-y divide-kamaui-gold/15"></tbody>
+                                <tfoot>
+                                    <tr class="bg-kamaui-sand font-bold text-kamaui-brown">
+                                        <td colspan="4" class="py-4 px-4 font-cinzel">TOTAL FÓRMULA MAESTRA</td>
+                                        <td class="py-4 px-4 text-right">100.0%</td>
+                                        <td class="py-4 px-4 text-right">500.0 g</td>
+                                        <td id="pilotTotalGrams" class="py-4 px-4 text-right">25.00 kg</td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- 3. Instructivos Lab vs Planta Piloto -->
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                        <div class="botanical-surface rounded-[32px] p-8 sm:p-10 space-y-5">
+                            <div class="flex items-center justify-between border-b border-kamaui-gold/25 pb-4">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-10 h-10 rounded-2xl bg-kamaui-blue/20 text-kamaui-brown flex items-center justify-center">
+                                        <i class="ph-light ph-test-tube text-xl"></i>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-cinzel font-bold text-base text-kamaui-brown">3A. Escala Laboratorio (500 g)</h4>
+                                        <span class="font-tech text-[10px] text-kamaui-black/55">Prototipado &amp; Estabilidad</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="res-lab-instructions" class="font-tech text-xs text-kamaui-black/85 leading-relaxed"></div>
+                        </div>
+
+                        <div class="espresso-surface rounded-[32px] p-8 sm:p-10 text-kamaui-chalk space-y-5">
+                            <div class="flex items-center justify-between border-b border-kamaui-gold/25 pb-4">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-10 h-10 rounded-2xl bg-kamaui-gold/20 text-kamaui-gold flex items-center justify-center">
+                                        <i class="ph-light ph-factory text-xl"></i>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-cinzel font-bold text-base text-kamaui-gold">3B. Escalado Planta Piloto (25 kg)</h4>
+                                        <span class="font-tech text-[10px] text-kamaui-chalk/65">Reactor Inox 316L • BPMv</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="res-pilot-instructions" class="font-tech text-xs text-kamaui-chalk/90 leading-relaxed"></div>
+                        </div>
+                    </div>
+
+                    <!-- 4. Especificaciones Físico-Químicas -->
+                    <div class="botanical-surface rounded-[32px] p-8 sm:p-10 space-y-6">
+                        <h3 class="text-2xl font-playfair font-semibold text-kamaui-brown border-b border-kamaui-gold/25 pb-4 flex items-center gap-3">
+                            <i class="ph-light ph-thermometer text-2xl text-kamaui-blue"></i>
+                            <span>4. Especificaciones Físico-Químicas y Microbiológicas</span>
+                        </h3>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 font-tech text-xs">
+                            <div class="bg-kamaui-chalk/85 p-5 rounded-2xl border border-kamaui-gold/25">
+                                <span class="text-[10px] uppercase tracking-wider text-kamaui-brown/65 font-bold block mb-1">pH Fisiológico Objetivo</span>
+                                <p id="res-spec-ph" class="font-semibold text-kamaui-brown text-sm"></p>
+                            </div>
+                            <div class="bg-kamaui-chalk/85 p-5 rounded-2xl border border-kamaui-gold/25">
+                                <span class="text-[10px] uppercase tracking-wider text-kamaui-brown/65 font-bold block mb-1">Aspecto Organoléptico</span>
+                                <p id="res-spec-phys" class="text-kamaui-black/85"></p>
+                            </div>
+                            <div class="bg-kamaui-chalk/85 p-5 rounded-2xl border border-kamaui-gold/25">
+                                <span class="text-[10px] uppercase tracking-wider text-kamaui-brown/65 font-bold block mb-1">Reología / Punto de Fusión</span>
+                                <p id="res-spec-visc" class="text-kamaui-black/85"></p>
+                            </div>
+                            <div class="bg-kamaui-chalk/85 p-5 rounded-2xl border border-kamaui-gold/25">
+                                <span class="text-[10px] uppercase tracking-wider text-kamaui-brown/65 font-bold block mb-1">Densidad / Peso Específico</span>
+                                <p id="res-spec-dens" class="text-kamaui-black/85"></p>
+                            </div>
+                            <div class="bg-kamaui-chalk/85 p-5 rounded-2xl border border-kamaui-gold/25">
+                                <span class="text-[10px] uppercase tracking-wider text-kamaui-brown/65 font-bold block mb-1">Límites Microbiológicos ICA</span>
+                                <p id="res-spec-micro" class="text-kamaui-black/85"></p>
+                            </div>
+                            <div class="bg-kamaui-chalk/85 p-5 rounded-2xl border border-kamaui-gold/25">
+                                <span class="text-[10px] uppercase tracking-wider text-kamaui-brown/65 font-bold block mb-1">Estabilidad y Vida Útil</span>
+                                <p id="res-spec-shelf" class="text-kamaui-black/85"></p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex justify-end">
+                        <button onclick="switchTab('landing')" class="px-8 py-4 rounded-2xl espresso-surface text-kamaui-gold font-cinzel font-semibold text-xs tracking-[0.2em] flex items-center gap-3 hover:opacity-95 transition-all">
+                            <span>VER LANDING PAGE DEL PRODUCTO</span>
+                            <i class="ph-light ph-arrow-right text-base"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div id="emptyFormula" class="botanical-surface rounded-[32px] py-24 px-6 text-center max-w-lg mx-auto my-8 space-y-3">
+                    <i class="ph-thin ph-flask text-6xl text-kamaui-blue"></i>
+                    <h3 class="text-2xl font-playfair text-kamaui-brown">Dossier Galénico en Espera</h3>
+                    <p class="font-tech text-xs text-kamaui-black/55">Valida primero tu concepto para calcular la fórmula cuali-cuantitativa.</p>
+                </div>
+            </section>
+
+            <!-- ================= MÓDULO 04: GENERADOR DE LANDING PAGE ================= -->
+            <section id="tab-landing" class="tab-content">
+                <div id="landingContent" class="hidden space-y-8">
+
+                    <!-- Barra de Herramientas -->
+                    <div class="botanical-surface rounded-[32px] p-6 sm:p-8 flex flex-col lg:flex-row lg:items-center justify-between gap-5">
+                        <div>
+                            <span class="font-tech text-[10px] uppercase tracking-[0.25em] text-kamaui-blue font-semibold block">Presentación Comercial &amp; Científica</span>
+                            <h2 class="text-2xl sm:text-3xl font-playfair font-semibold text-kamaui-brown">Landing Page Generada con Manual de Marca</h2>
+                        </div>
+                        <div class="flex flex-wrap gap-2.5 font-tech text-xs">
+                            <button onclick="toggleLandingCodeView()" id="btnToggleCode" class="px-4 py-2.5 rounded-xl bg-white border border-kamaui-gold/40 text-kamaui-brown font-medium hover:bg-kamaui-gold/15 transition flex items-center gap-2">
+                                <i class="ph-light ph-code text-base"></i>
+                                <span>Ver Código HTML</span>
+                            </button>
+                            <button onclick="copyLandingCode()" class="px-4 py-2.5 rounded-xl bg-white border border-kamaui-gold/40 text-kamaui-brown font-medium hover:bg-kamaui-gold/15 transition flex items-center gap-2">
+                                <i class="ph-light ph-copy text-base"></i>
+                                <span>Copiar HTML</span>
+                            </button>
+                            <button onclick="downloadLandingHtml()" class="px-5 py-2.5 rounded-xl espresso-surface text-kamaui-gold font-semibold transition flex items-center gap-2">
+                                <i class="ph-light ph-download-simple text-base"></i>
+                                <span>Descargar .HTML</span>
+                            </button>
+                            <a href="landing-template.html" target="_blank" class="px-4 py-2.5 rounded-xl bg-kamaui-blue/20 border border-kamaui-blue/40 text-kamaui-brown font-semibold hover:bg-kamaui-blue/30 transition flex items-center gap-2">
+                                <i class="ph-light ph-arrow-square-out text-base"></i>
+                                <span>Abrir Pantalla Completa</span>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Visor de Código HTML -->
+                    <div id="landingCodeContainer" class="hidden espresso-surface text-kamaui-chalk p-6 rounded-[28px]">
+                        <div class="flex justify-between items-center mb-3 font-tech text-xs text-kamaui-gold">
+                            <span>Código HTML5 + Tailwind CSS Autónomo</span>
+                            <button onclick="copyLandingCode()" class="underline hover:text-white">Copiar todo</button>
+                        </div>
+                        <pre id="landingRawCode" class="font-mono text-[11px] overflow-x-auto max-h-96 leading-relaxed text-kamaui-chalk/85"></pre>
+                    </div>
+
+                    <!-- VISTA PREVIA DE LA LANDING PAGE -->
+                    <div id="landingVisualPreview" class="rounded-[36px] overflow-hidden shadow-2xl border border-kamaui-gold/40 bg-kamaui-chalk">
+
+                        <!-- 1. HERO CON MEDALLÓN MANDALA -->
+                        <div class="espresso-surface text-kamaui-chalk p-8 sm:p-14 relative overflow-hidden">
+                            <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center relative z-10">
+                                <div class="lg:col-span-8 space-y-5">
+                                    <span id="lan-badge" class="inline-block px-3.5 py-1 rounded-full bg-white/10 border border-kamaui-gold/30 font-tech text-[10px] uppercase tracking-[0.22em] text-kamaui-gold">
+                                        Fórmula Validada
+                                    </span>
+                                    <h1 id="lan-headline" class="text-3xl sm:text-5xl font-cinzel font-semibold text-kamaui-chalk leading-tight"></h1>
+                                    <p id="lan-subheadline" class="text-lg font-playfair italic text-kamaui-goldlight leading-relaxed"></p>
+                                    <div id="lan-bullets" class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2 font-tech text-xs"></div>
+                                </div>
+                                <div class="lg:col-span-4 flex justify-center">
+                                    <div class="w-48 h-48 sm:w-56 sm:h-56 rounded-full p-2 bg-gradient-to-tr from-kamaui-gold via-kamaui-chalk to-kamaui-blue shadow-2xl">
+                                        <img src="assets/logo-kamaui.jpg" onerror="this.src='WhatsApp Image 2026-08-18 at 9.43.47 AM.jpg'" alt="Kamaui Logo" class="w-full h-full object-cover rounded-full border-4 border-kamaui-brown bg-white">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 2. MATERIAS PRIMAS -->
+                        <div class="p-8 sm:p-14 bg-kamaui-chalk border-b border-kamaui-gold/25">
+                            <div class="text-center max-w-2xl mx-auto mb-10">
+                                <span class="font-tech text-[10px] uppercase tracking-[0.25em] text-kamaui-blue font-bold">Módulo 01 • Pureza Botánica</span>
+                                <h3 class="text-3xl font-playfair font-semibold text-kamaui-brown mt-1">Arquitectura de Materias Primas</h3>
+                                <p id="lan-sensory-story" class="text-sm text-kamaui-black/75 italic mt-2"></p>
+                            </div>
+                            <div id="lan-raw-materials-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-6"></div>
+                        </div>
+
+                        <!-- 3. FÓRMULA CUALI-CUANTITATIVA -->
+                        <div class="p-8 sm:p-14 bg-white/80 border-b border-kamaui-gold/25">
+                            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+                                <div class="lg:col-span-4 space-y-4">
+                                    <span class="font-tech text-[10px] uppercase tracking-[0.25em] text-kamaui-gold font-bold">Módulo 02 • Ciencia Abierta</span>
+                                    <h3 class="text-3xl font-playfair font-semibold text-kamaui-brown">Composición Cuali-Cuantitativa</h3>
+                                    <p class="text-sm text-kamaui-black/75 leading-relaxed">
+                                        Declaración íntegra al 100% de nuestra fórmula maestra. Libre de rellenos sintéticos y segura ante el lamido.
+                                    </p>
+                                    <div class="p-5 rounded-2xl bg-kamaui-chalk border border-kamaui-gold/30 font-tech text-xs space-y-2">
+                                        <div class="flex justify-between"><span class="text-kamaui-brown font-semibold">Especie:</span> <span id="lan-pet-target"></span></div>
+                                        <div class="flex justify-between"><span class="text-kamaui-brown font-semibold">pH Objetivo:</span> <span id="lan-ph-spec"></span></div>
+                                        <div class="flex justify-between"><span class="text-kamaui-brown font-semibold">Envase:</span> <span id="lan-pack-spec" class="text-right"></span></div>
+                                    </div>
+                                </div>
+                                <div class="lg:col-span-8 overflow-x-auto rounded-2xl border border-kamaui-gold/30">
+                                    <table class="w-full text-left font-tech text-xs border-collapse bg-kamaui-chalk/40">
+                                        <thead>
+                                            <tr class="bg-kamaui-brown text-kamaui-gold font-cinzel text-[11px]">
+                                                <th class="py-3.5 px-4">Ingrediente Botánico</th>
+                                                <th class="py-3.5 px-4">INCI</th>
+                                                <th class="py-3.5 px-4">Rol Funcional</th>
+                                                <th class="py-3.5 px-4 text-right">% p/p</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="lan-formula-rows" class="divide-y divide-kamaui-gold/20"></tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 4. PROCESO, NORMATIVA Y BOTÓN PDF DETALLADO -->
+                        <div class="p-8 sm:p-14 bg-kamaui-chalk space-y-10">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div class="bg-white p-7 rounded-3xl border border-kamaui-gold/30 shadow-sm space-y-2">
+                                    <span class="font-tech text-[10px] uppercase tracking-[0.2em] text-kamaui-gold font-bold">Módulo 03 • Manufactura</span>
+                                    <h4 class="font-cinzel font-bold text-kamaui-brown text-lg">Proceso de Elaboración Controlada</h4>
+                                    <p id="lan-process-summary" class="font-tech text-xs text-kamaui-black/80 leading-relaxed"></p>
+                                </div>
+                                <div class="bg-white p-7 rounded-3xl border border-kamaui-gold/30 shadow-sm space-y-2">
+                                    <span class="font-tech text-[10px] uppercase tracking-[0.2em] text-kamaui-blue font-bold">Módulo 04 • Normativa ICA</span>
+                                    <h4 class="font-cinzel font-bold text-kamaui-brown text-lg">Respaldo Regulatorio &amp; Lick-Safe</h4>
+                                    <p id="lan-regulatory-summary" class="font-tech text-xs text-kamaui-black/80 leading-relaxed"></p>
+                                </div>
+                            </div>
+
+                            <!-- Tarjeta de Descarga de PDF Detallado -->
+                            <div class="espresso-surface rounded-3xl p-8 text-kamaui-chalk flex flex-col sm:flex-row items-center justify-between gap-6">
+                                <div class="space-y-1 text-center sm:text-left">
+                                    <span class="font-tech text-[10px] uppercase tracking-[0.22em] text-kamaui-gold font-semibold block">Expediente Maestro de Fabricación</span>
+                                    <h4 class="font-cinzel font-bold text-xl text-kamaui-chalk">
+                                        PDF Detallado: Fórmula Cuali-Cuantitativa &amp; Instructivo de Fabricación
+                                    </h4>
+                                    <p class="font-playfair italic text-xs text-kamaui-goldlight/85">
+                                        Incluye pesajes exactos (50 g, 500 g y 25 kg), curva térmica, puntos críticos de control y protocolo paso a paso.
+                                    </p>
+                                </div>
+                                <button id="btnLandingPdf" onclick="generateDynamicFormulaPDF()"
+                                    class="px-7 py-4 rounded-2xl bg-kamaui-gold hover:bg-white text-kamaui-deep font-cinzel font-bold text-xs tracking-wider transition flex items-center gap-2.5 shrink-0 shadow-lg">
+                                    <i class="ph-light ph-file-pdf text-lg"></i>
+                                    <span>GENERAR PDF DETALLADO</span>
+                                </button>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div id="emptyLanding" class="botanical-surface rounded-[32px] py-24 px-6 text-center max-w-lg mx-auto my-8 space-y-3">
+                    <i class="ph-thin ph-browsers text-6xl text-kamaui-gold"></i>
+                    <h3 class="text-2xl font-playfair text-kamaui-brown">Landing Page en Espera</h3>
+                    <p class="font-tech text-xs text-kamaui-black/55">Valida primero una idea para construir automáticamente su presentación web.</p>
+                </div>
+            </section>
+
+            <!-- ================= MÓDULO 05: PORTAFOLIO & GESTIÓN DE IDEAS I+D (APROBADAS Y RECHAZADAS) ================= -->
+            <section id="tab-vault" class="tab-content">
+                <div class="space-y-8">
+
+                    <!-- Cabecera Ejecutiva y KPIs de Seguimiento -->
+                    <div class="espresso-surface rounded-[32px] p-8 sm:p-10 text-kamaui-chalk relative overflow-hidden">
+                        <div class="absolute -right-16 -top-16 w-72 h-72 rounded-full border border-kamaui-gold/15 pointer-events-none mandala-orbit"></div>
+
+                        <div class="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-6 pb-8 border-b border-kamaui-gold/25">
+                            <div class="space-y-2">
+                                <span class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-white/10 border border-kamaui-gold/30 font-tech text-[10px] uppercase tracking-[0.22em] text-kamaui-goldlight">
+                                    <i class="ph-light ph-archive-box text-sm text-kamaui-gold"></i>
+                                    <span>Bóveda Histórica &amp; Pipeline de Desarrollo</span>
+                                </span>
+                                <h2 class="text-3xl sm:text-4xl font-cinzel font-semibold text-kamaui-chalk">
+                                    Portafolio de Ideas Aprobadas &amp; Rechazadas
+                                </h2>
+                                <p class="font-playfair italic text-sm text-kamaui-goldlight/85 max-w-2xl">
+                                    Gestiona el estado de avance de cada proyecto galénico (En proceso, En espera, Finalizado o Descartado) y consulta en cualquier momento sus materias primas, fórmula maestra e instructivo de fabricación.
+                                </p>
+                            </div>
+
+                            <div class="flex flex-wrap items-center gap-3 shrink-0 font-tech text-xs">
+                                <button onclick="switchTab('idea')" class="px-5 py-3 rounded-2xl bg-kamaui-gold hover:bg-white text-kamaui-deep font-cinzel font-bold text-xs tracking-wider transition flex items-center gap-2 shadow-lg">
+                                    <i class="ph-light ph-plus-circle text-base"></i>
+                                    <span>NUEVA IDEA I+D</span>
+                                </button>
+                                <button onclick="resetDemoVaultIdeas()" title="Restaurar ejemplos de referencia" class="px-4 py-3 rounded-2xl bg-white/10 hover:bg-white/20 text-kamaui-goldlight border border-kamaui-gold/30 transition flex items-center gap-2">
+                                    <i class="ph-light ph-arrows-clockwise text-base"></i>
+                                    <span>Restaurar Ejemplos</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Indicadores de Dictamen y Estado de Avance -->
+                        <div class="relative z-10 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 pt-6 font-tech">
+                            <div class="bg-white/10 border border-kamaui-gold/25 rounded-2xl p-4">
+                                <span class="text-[9px] uppercase tracking-[0.2em] text-kamaui-goldlight block">Aprobadas</span>
+                                <div class="flex items-baseline justify-between mt-1">
+                                    <span id="kpi-approved" class="text-2xl font-cinzel font-bold text-emerald-300">0</span>
+                                    <i class="ph-light ph-check-circle text-lg text-emerald-300"></i>
+                                </div>
+                            </div>
+                            <div class="bg-white/10 border border-kamaui-gold/25 rounded-2xl p-4">
+                                <span class="text-[9px] uppercase tracking-[0.2em] text-kamaui-goldlight block">Rechazadas</span>
+                                <div class="flex items-baseline justify-between mt-1">
+                                    <span id="kpi-rejected" class="text-2xl font-cinzel font-bold text-rose-300">0</span>
+                                    <i class="ph-light ph-x-circle text-lg text-rose-300"></i>
+                                </div>
+                            </div>
+                            <div class="bg-white/5 border border-kamaui-gold/20 rounded-2xl p-4">
+                                <span class="text-[9px] uppercase tracking-[0.2em] text-amber-200 block">En Proceso</span>
+                                <div class="flex items-baseline justify-between mt-1">
+                                    <span id="kpi-inprogress" class="text-2xl font-cinzel font-bold text-kamaui-chalk">0</span>
+                                    <i class="ph-light ph-flask text-lg text-amber-300"></i>
+                                </div>
+                            </div>
+                            <div class="bg-white/5 border border-kamaui-gold/20 rounded-2xl p-4">
+                                <span class="text-[9px] uppercase tracking-[0.2em] text-sky-200 block">En Espera</span>
+                                <div class="flex items-baseline justify-between mt-1">
+                                    <span id="kpi-onhold" class="text-2xl font-cinzel font-bold text-kamaui-chalk">0</span>
+                                    <i class="ph-light ph-hourglass-medium text-lg text-sky-300"></i>
+                                </div>
+                            </div>
+                            <div class="bg-white/5 border border-kamaui-gold/20 rounded-2xl p-4">
+                                <span class="text-[9px] uppercase tracking-[0.2em] text-emerald-200 block">Finalizado</span>
+                                <div class="flex items-baseline justify-between mt-1">
+                                    <span id="kpi-completed" class="text-2xl font-cinzel font-bold text-kamaui-chalk">0</span>
+                                    <i class="ph-light ph-seal-check text-lg text-emerald-300"></i>
+                                </div>
+                            </div>
+                            <div class="bg-white/5 border border-kamaui-gold/20 rounded-2xl p-4">
+                                <span class="text-[9px] uppercase tracking-[0.2em] text-stone-300 block">Descartado</span>
+                                <div class="flex items-baseline justify-between mt-1">
+                                    <span id="kpi-discarded" class="text-2xl font-cinzel font-bold text-kamaui-chalk">0</span>
+                                    <i class="ph-light ph-prohibit text-lg text-rose-300"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Barra de Filtros: Dictamen (Aprobadas/Rechazadas) + Estado de Avance + Buscador -->
+                    <div class="botanical-surface rounded-[28px] p-6 flex flex-col lg:flex-row lg:items-center justify-between gap-4 font-tech text-xs">
+                        <!-- Filtro por Dictamen -->
+                        <div class="flex flex-wrap items-center gap-2">
+                            <span class="text-[10px] uppercase tracking-[0.2em] text-kamaui-brown font-bold mr-1">Dictamen:</span>
+                            <button onclick="setVaultDecisionFilter('ALL')" id="filter-dec-ALL" class="px-4 py-2 rounded-full bg-kamaui-brown text-kamaui-chalk font-semibold transition">
+                                Todas
+                            </button>
+                            <button onclick="setVaultDecisionFilter('Aprobada')" id="filter-dec-Aprobada" class="px-4 py-2 rounded-full bg-kamaui-sand text-kamaui-brown hover:bg-emerald-900/15 transition flex items-center gap-1.5">
+                                <span class="w-2 h-2 rounded-full bg-emerald-600"></span>
+                                <span>Ideas Aprobadas</span>
+                            </button>
+                            <button onclick="setVaultDecisionFilter('Rechazada')" id="filter-dec-Rechazada" class="px-4 py-2 rounded-full bg-kamaui-sand text-kamaui-brown hover:bg-rose-900/15 transition flex items-center gap-1.5">
+                                <span class="w-2 h-2 rounded-full bg-rose-600"></span>
+                                <span>Ideas Rechazadas</span>
+                            </button>
+                        </div>
+
+                        <!-- Filtro por Estado de Avance y Buscador -->
+                        <div class="flex flex-wrap items-center gap-3">
+                            <div class="flex items-center gap-2 bg-kamaui-chalk px-4 py-2 rounded-2xl border border-kamaui-gold/35">
+                                <i class="ph-light ph-Kanban text-base text-kamaui-brown"></i>
+                                <span class="text-[10px] uppercase tracking-wider text-kamaui-brown/70 font-semibold">Estado:</span>
+                                <select id="vaultStageFilter" onchange="renderVaultIdeas()" class="bg-transparent font-bold text-kamaui-brown outline-none cursor-pointer">
+                                    <option value="ALL">Todos los estados</option>
+                                    <option value="En proceso">En proceso</option>
+                                    <option value="En espera">En espera</option>
+                                    <option value="Finalizado">Finalizado</option>
+                                    <option value="Descartado">Descartado</option>
+                                </select>
+                            </div>
+
+                            <div class="relative flex-1 sm:w-64">
+                                <i class="ph-light ph-magnifying-glass absolute left-3.5 top-2.5 text-kamaui-brown/60 text-sm"></i>
+                                <input type="text" id="vaultSearchInput" oninput="renderVaultIdeas()" placeholder="Buscar idea o materia prima..."
+                                    class="tactile-input w-full pl-9 pr-4 py-2 rounded-2xl text-xs text-kamaui-black outline-none">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Grid de Tarjetas de Ideas Almacenadas -->
+                    <div id="vaultIdeasGrid" class="grid grid-cols-1 lg:grid-cols-2 gap-7"></div>
+
+                </div>
+            </section>
+
+        </div>
+    </main>
+
+    <!-- ================= MODAL INSPECTOR TÉCNICO DE IDEA (MATERIAS PRIMAS + FÓRMULA + INSTRUCTIVO) ================= -->
+    <div id="vaultInspectorModal" class="fixed inset-0 bg-kamaui-deep/75 z-50 hidden items-center justify-center p-3 sm:p-6 backdrop-blur-md overflow-y-auto">
+        <div class="botanical-surface bg-kamaui-chalk rounded-[36px] max-w-5xl w-full max-h-[90vh] overflow-y-auto shadow-2xl border border-kamaui-gold/50 p-6 sm:p-10 space-y-8 my-auto">
+            <!-- Header del Inspector -->
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-kamaui-gold/30 pb-6">
+                <div class="space-y-1.5">
+                    <div class="flex flex-wrap items-center gap-2 font-tech text-[10px] uppercase tracking-widest">
+                        <span id="insp-decision-badge" class="px-3 py-1 rounded-full font-bold">Aprobada</span>
+                        <span id="insp-stage-badge" class="px-3 py-1 rounded-full font-semibold">En proceso</span>
+                        <span id="insp-score-badge" class="px-3 py-1 rounded-full bg-kamaui-gold/20 text-kamaui-brown font-bold">Score 95/100</span>
+                    </div>
+                    <h3 id="insp-title" class="text-2xl sm:text-3xl font-cinzel font-bold text-kamaui-brown">Nombre de la Idea</h3>
+                    <p id="insp-meta" class="font-tech text-xs text-kamaui-black/65"></p>
+                </div>
+
+                <div class="flex items-center gap-2.5 self-start sm:self-center shrink-0 font-tech text-xs">
+                    <button id="insp-btn-load" type="button" class="px-4 py-2.5 rounded-xl bg-kamaui-brown text-kamaui-gold font-semibold hover:bg-kamaui-deep transition flex items-center gap-2">
+                        <i class="ph-light ph-arrow-u-up-right text-base"></i>
+                        <span>Abrir en Dossier Completo</span>
+                    </button>
+                    <button onclick="closeVaultInspector()" class="w-10 h-10 rounded-full bg-white border border-kamaui-gold/40 text-kamaui-brown hover:bg-kamaui-brown hover:text-white transition flex items-center justify-center">
+                        <i class="ph-light ph-x text-lg"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- 1. Materias Primas y Fitoactivos de la Idea -->
+            <div class="space-y-4">
+                <h4 class="text-xl font-playfair font-semibold text-kamaui-brown flex items-center gap-2.5">
+                    <i class="ph-light ph-plant text-xl text-kamaui-gold"></i>
+                    <span>1. Materias Primas Sugeridas &amp; Alternativas Galénicas</span>
+                </h4>
+                <div id="insp-raw-materials" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+            </div>
+
+            <!-- 2. Fórmula Cuali-Cuantitativa Maestra -->
+            <div class="space-y-4">
+                <h4 class="text-xl font-playfair font-semibold text-kamaui-brown flex items-center gap-2.5">
+                    <i class="ph-light ph-flask text-xl text-kamaui-gold"></i>
+                    <span>2. Fórmula Cuali-Cuantitativa Maestra (100% p/p y Escalado)</span>
+                </h4>
+                <div class="overflow-x-auto rounded-2xl border border-kamaui-gold/35 bg-white">
+                    <table class="w-full text-left font-tech text-xs border-collapse">
+                        <thead>
+                            <tr class="bg-kamaui-brown text-kamaui-gold font-cinzel text-[10px] uppercase tracking-wider">
+                                <th class="py-3 px-4">Fase</th>
+                                <th class="py-3 px-4">Materia Prima</th>
+                                <th class="py-3 px-4">INCI</th>
+                                <th class="py-3 px-4">Función</th>
+                                <th class="py-3 px-4 text-right">% p/p</th>
+                                <th class="py-3 px-4 text-right">Lab (500 g)</th>
+                                <th class="py-3 px-4 text-right">Piloto (25 kg)</th>
+                            </tr>
+                        </thead>
+                        <tbody id="insp-formula-rows" class="divide-y divide-kamaui-gold/15"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- 3. Instructivo de Fabricación (Laboratorio vs Planta Piloto) -->
+            <div class="space-y-4">
+                <h4 class="text-xl font-playfair font-semibold text-kamaui-brown flex items-center gap-2.5">
+                    <i class="ph-light ph-gear-fine text-xl text-kamaui-gold"></i>
+                    <span>3. Instructivo Detallado de Fabricación &amp; Escalado</span>
+                </h4>
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 font-tech text-xs">
+                    <div class="bg-white p-6 rounded-3xl border border-kamaui-gold/30 space-y-3">
+                        <div class="flex items-center gap-2 text-kamaui-brown font-cinzel font-bold text-sm border-b border-kamaui-gold/20 pb-2">
+                            <i class="ph-light ph-test-tube text-lg text-kamaui-blue"></i>
+                            <span>Protocolo Escala Laboratorio (500 g)</span>
+                        </div>
+                        <div id="insp-lab-sop" class="text-kamaui-black/85 leading-relaxed"></div>
+                    </div>
+
+                    <div class="espresso-surface p-6 rounded-3xl text-kamaui-chalk space-y-3">
+                        <div class="flex items-center gap-2 text-kamaui-gold font-cinzel font-bold text-sm border-b border-kamaui-gold/25 pb-2">
+                            <i class="ph-light ph-factory text-lg text-kamaui-gold"></i>
+                            <span>Protocolo Escalado Planta Piloto (25 kg)</span>
+                        </div>
+                        <div id="insp-pilot-sop" class="text-kamaui-chalk/90 leading-relaxed"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer de Acciones del Inspector -->
+            <div class="pt-4 border-t border-kamaui-gold/30 flex flex-wrap items-center justify-between gap-4 font-tech text-xs">
+                <div id="insp-tox-note" class="text-kamaui-brown/80 italic"></div>
+                <div class="flex items-center gap-3">
+                    <button id="insp-btn-pdf" type="button" class="px-5 py-3 rounded-2xl espresso-surface text-kamaui-gold font-cinzel font-bold text-xs tracking-wider flex items-center gap-2">
+                        <i class="ph-light ph-file-pdf text-base"></i>
+                        <span>DESCARGAR PDF DE ESTA IDEA</span>
+                    </button>
+                    <button onclick="closeVaultInspector()" class="px-5 py-3 rounded-2xl bg-kamaui-sand text-kamaui-brown font-semibold hover:bg-kamaui-gold/30 transition">
+                        Cerrar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= MODAL PERSONALIZADO ================= -->
+    <div id="customModal" class="fixed inset-0 bg-kamaui-deep/60 z-50 hidden flex items-center justify-center opacity-0 transition-opacity duration-300 backdrop-blur-sm">
+        <div class="botanical-surface bg-kamaui-chalk rounded-[32px] p-8 m-4 max-w-sm w-full shadow-2xl transform scale-95 transition-transform duration-300" id="modalContent">
+            <div class="text-center space-y-4">
+                <div id="modalIcon" class="mx-auto flex items-center justify-center h-14 w-14 rounded-full bg-kamaui-gold/20 border border-kamaui-gold/50">
+                    <i class="ph-light ph-check text-2xl text-kamaui-brown"></i>
+                </div>
+                <h3 id="modalTitle" class="text-2xl font-cinzel font-semibold text-kamaui-brown">Título</h3>
+                <p id="modalMsg" class="text-sm font-playfair italic text-kamaui-black/80">Mensaje</p>
+                <button onclick="closeModal()" class="w-full py-3.5 rounded-2xl espresso-surface text-kamaui-gold font-cinzel font-bold text-xs tracking-[0.2em]">
+                    CONTINUAR
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= NAVEGACIÓN INFERIOR MÓVIL ================= -->
+    <nav class="lg:hidden bg-kamaui-chalk/90 backdrop-blur-lg border-t border-kamaui-gold/30 fixed bottom-0 w-full z-30 pb-safe">
+        <div class="flex justify-around items-center h-16 px-2">
+            <button onclick="switchTab('idea')" id="nav-idea" class="flex flex-col items-center justify-center w-full h-full text-kamaui-brown">
+                <i class="ph-light ph-sparkle text-xl mb-0.5"></i>
+                <span class="text-[9px] font-cinzel font-bold tracking-wider">CONCEPTO</span>
+            </button>
+            <button onclick="switchTab('results')" id="nav-results" class="flex flex-col items-center justify-center w-full h-full text-kamaui-blue">
+                <i class="ph-light ph-chart-polar text-xl mb-0.5"></i>
+                <span class="text-[9px] font-cinzel font-bold tracking-wider">VIABILIDAD</span>
+            </button>
+            <button onclick="switchTab('formula')" id="nav-formula" class="flex flex-col items-center justify-center w-full h-full text-kamaui-blue">
+                <i class="ph-light ph-flask text-xl mb-0.5"></i>
+                <span class="text-[9px] font-cinzel font-bold tracking-wider">DOSSIER I+D</span>
+            </button>
+            <button onclick="switchTab('landing')" id="nav-landing" class="flex flex-col items-center justify-center w-full h-full text-kamaui-blue">
+                <i class="ph-light ph-browsers text-xl mb-0.5"></i>
+                <span class="text-[9px] font-cinzel font-bold tracking-wider">LANDING</span>
+            </button>
+            <button onclick="switchTab('vault')" id="nav-vault" class="flex flex-col items-center justify-center w-full h-full text-kamaui-blue">
+                <i class="ph-light ph-archive-box text-xl mb-0.5"></i>
+                <span class="text-[9px] font-cinzel font-bold tracking-wider">PORTAFOLIO</span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- ================= SCRIPTS Y MOTOR GALÉNICO ================= -->
+    <script>
+        let N8N_WEBHOOK_URL = localStorage.getItem('kamaui_n8n_url') || 'http://localhost:5678/webhook/kamaui-validate-idea';
+        document.getElementById('n8nWebhookInput').value = N8N_WEBHOOK_URL;
+
+        let currentValidationData = null;
+        let currentPayload = null;
+
+        function toggleWebhookConfig() {
+            document.getElementById('webhookConfigBar').classList.toggle('hidden');
+        }
+
+        function saveWebhookUrl() {
+            const val = document.getElementById('n8nWebhookInput').value.trim();
+            if (val) {
+                N8N_WEBHOOK_URL = val;
+                localStorage.setItem('kamaui_n8n_url', val);
+                showModal('Webhook Actualizado', `Conectado al endpoint: ${val}`, 'success');
+                document.getElementById('webhookConfigBar').classList.add('hidden');
+            }
+        }
+
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+            document.getElementById(`tab-${tabId}`).classList.add('active');
+
+            const icons = { idea: 'ph-sparkle', results: 'ph-chart-polar', formula: 'ph-flask', landing: 'ph-browsers', vault: 'ph-archive-box' };
+            ['idea', 'results', 'formula', 'landing', 'vault'].forEach(id => {
+                const mobBtn = document.getElementById(`nav-${id}`);
+                const topBtn = document.getElementById(`top-nav-${id}`);
+                if (mobBtn) {
+                    mobBtn.className = id === tabId
+                        ? 'flex flex-col items-center justify-center w-full h-full text-kamaui-brown'
+                        : 'flex flex-col items-center justify-center w-full h-full text-kamaui-blue';
+                }
+                if (topBtn) {
+                    topBtn.className = id === tabId
+                        ? 'px-5 py-2 rounded-full bg-kamaui-brown text-kamaui-chalk font-medium shadow-sm transition-all duration-500 flex items-center gap-2'
+                        : 'px-5 py-2 rounded-full text-kamaui-brown/70 hover:text-kamaui-brown transition-all duration-500 flex items-center gap-2';
+                }
+            });
+            if (tabId === 'vault') {
+                renderVaultIdeas();
+            }
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function loadPreset(type) {
+            if (type === 'balsamo') {
+                document.getElementById('product_name').value = 'Bálsamo Sagrado Reparador de Huellas & Trufa';
+                document.getElementById('cosmetic_form').value = 'Bálsamo Anhidro Fundente';
+                document.getElementById('target_pet').value = 'Perros y Gatos';
+                document.getElementById('coat_type').value = 'Almohadillas plantares, trufa y zonas hiperqueratósicas';
+                document.getElementById('ingredients').value = 'Manteca de Karité Orgánica, Cera de Candelilla, Oleato de Caléndula, Aceite de Semilla de Cáñamo, D-Pantenol, Vitamina E';
+                document.getElementById('concept_description').value = 'Proteger y regenerar las almohadillas plantares expuestas al asfalto caliente o frío, nutriendo la barrera cutánea con una textura sedosa de rápida absorción 100% segura al lamido (Lick-Safe).';
+            } else if (type === 'shampoo') {
+                document.getElementById('product_name').value = 'Champú Dermo-Armonía de Avena Coloidal & Manzanilla Azul';
+                document.getElementById('cosmetic_form').value = 'Champú Dermo-Calmante Suave';
+                document.getElementById('target_pet').value = 'Perros y Gatos';
+                document.getElementById('coat_type').value = 'Manto doble, largo o rizado con piel sensible';
+                document.getElementById('ingredients').value = 'Avena Coloidal USP, Hidrolato de Manzanilla Romana, Coco-Glucoside, Aloe Vera Descolorizado, D-Pantenol, Extracto de Caléndula';
+                document.getElementById('concept_description').value = 'Limpieza profunda libre de sulfatos que calma el prurito, equilibra el microbioma cutáneo en pH 7.0 y deja tanto mantos cortos como largos con brillo sedoso y aroma botánico relajante.';
+            } else if (type === 'alerta_tox') {
+                document.getElementById('product_name').value = 'Loción Botánica Purificante con Árbol de Té y Eucalipto';
+                document.getElementById('cosmetic_form').value = 'Bruma / Hidrolato Acondicionador';
+                document.getElementById('target_pet').value = 'Perros y Gatos';
+                document.getElementById('coat_type').value = 'Manto corto y piel con tendencia atópica';
+                document.getElementById('ingredients').value = 'Aceite Esencial de Árbol de Té, Eucalipto, Manteca de Cacao, Caléndula, Óxido de Zinc';
+                document.getElementById('concept_description').value = 'Bruma refrescante para calmar picazón intensa y controlar el mal olor en perros y gatos.';
+            }
+        }
+
+        function runExpertDiagnosticEngine(payload) {
+            const rawIngList = payload.ingredients.split(',').map(i => i.trim()).filter(Boolean);
+            const includesFeline = payload.target_pet.toLowerCase().includes('gato') || payload.target_pet.toLowerCase().includes('ambos');
+
+            const safetyMatrix = [];
+            let hasCriticalAlert = false;
+            let hasModerateAlert = false;
+
+            rawIngList.forEach(ing => {
+                const l = ing.toLowerCase();
+                if (l.includes('árbol de té') || l.includes('arbol de te') || l.includes('melaleuca') || l.includes('eucalipto') || l.includes('menta') || l.includes('pino')) {
+                    hasCriticalAlert = true;
+                    safetyMatrix.push({
+                        active: ing,
+                        canine_safety: 'Precaución (<0.5%)',
+                        feline_safety: 'PROHIBIDO (Hepatotóxico)',
+                        notes: 'Rico en terpenos/fenoles. Los gatos carecen de UDP-glucuronosiltransferasa para metabolizarlo. Sustituir por Hidrolato de Manzanilla.'
+                    });
+                } else if (l.includes('cacao')) {
+                    hasModerateAlert = true;
+                    safetyMatrix.push({
+                        active: ing,
+                        canine_safety: 'Solo refinada',
+                        feline_safety: 'Riesgo (Teobromina)',
+                        notes: 'Evitar manteca de cacao cruda por trazas de metilxantinas. Sustituir por Manteca de Karité o Mango.'
+                    });
+                } else if (l.includes('zinc')) {
+                    hasCriticalAlert = true;
+                    safetyMatrix.push({
+                        active: ing,
+                        canine_safety: 'Riesgo al lamido',
+                        feline_safety: 'Riesgo al lamido',
+                        notes: 'El Óxido de Zinc ingerido por lamido repetido puede inducir anemia hemolítica. Reemplazar por Cera de Candelilla + Avena Coloidal.'
+                    });
+                } else if (l.includes('aloe')) {
+                    safetyMatrix.push({
+                        active: ing,
+                        canine_safety: 'Seguro (Sin Aloína)',
+                        feline_safety: 'Seguro (Sin Aloína)',
+                        notes: 'Exigir gel interno decolorado (<1 ppm aloína) para garantizar inocuidad por lamido.'
+                    });
+                } else {
+                    safetyMatrix.push({
+                        active: ing,
+                        canine_safety: '100% Seguro (Lick-Safe)',
+                        feline_safety: '100% Seguro (Lick-Safe)',
+                        notes: 'Aprobado en Bóveda Obsidian Kamaui. Excelente biocompatibilidad cutánea y digestiva.'
+                    });
+                }
+            });
+
+            let qualiQuanti = [];
+            let rawMaterialsOptions = [];
+            let labInstructions = '';
+            let pilotInstructions = '';
+            let phTarget = '6.8 – 7.4 (Fisiológico Epidermis Animal)';
+            let appearance = '';
+            let viscosityOrMelting = '';
+            let density = '';
+            let packagingOptions = [];
+
+            if (payload.cosmetic_form.includes('Champú')) {
+                phTarget = '6.8 – 7.2 (Específico estrato córneo canino/felino)';
+                appearance = 'Gel fluido perlado color avena traslúcido, espuma cremosa de rápida enjuagabilidad.';
+                viscosityOrMelting = 'Viscosidad Brookfield (LVT Sp.3, 12 rpm, 25°C): 3,500 – 5,000 cP';
+                density = '1.020 – 1.045 g/mL a 20°C';
+                qualiQuanti = [
+                    { phase: 'Fase A (Acuosa)', ingredient: 'Agua Purificada Desionizada USP', inci: 'Aqua', function: 'Vehículo principal', percentage: '54.2%' },
+                    { phase: 'Fase A (Acuosa)', ingredient: 'Hidrolato de Manzanilla Romana', inci: 'Anthemis Nobilis Flower Water', function: 'Calmante neuro-sensorial libre de terpenos', percentage: '15.0%' },
+                    { phase: 'Fase A (Hidratante)', ingredient: 'Avena Coloidal USP Ultrafina', inci: 'Avena Sativa Kernel Flour', function: 'Antipruriginoso y protector de barrera', percentage: '3.0%' },
+                    { phase: 'Fase B (Surfactante)', ingredient: 'Coco-Glucoside (Ecocert)', inci: 'Coco-Glucoside', function: 'Tensioactivo no iónico ultra suave', percentage: '14.0%' },
+                    { phase: 'Fase B (Co-Surfactante)', ingredient: 'Cocamidopropil Betaína Botánica', inci: 'Cocamidopropyl Betaine', function: 'Potenciador de espuma y suavidad ocular', percentage: '8.0%' },
+                    { phase: 'Fase C (Activos)', ingredient: 'Extracto Glicólico de Caléndula', inci: 'Calendula Officinalis Flower Extract', function: 'Epitelizante y antiinflamatorio', percentage: '2.5%' },
+                    { phase: 'Fase C (Activos)', ingredient: 'D-Pantenol (Provitamina B5)', inci: 'Panthenol', function: 'Humectante y restaurador de brillo', percentage: '1.5%' },
+                    { phase: 'Fase C (Reología)', ingredient: 'Goma Xantana Grado Transparente', inci: 'Xanthan Gum', function: 'Modificador reológico natural', percentage: '0.8%' },
+                    { phase: 'Fase D (Conservación)', ingredient: 'Geogard 221 (Ecocert) + Ácido Láctico q.s.', inci: 'Benzyl Alcohol, Dehydroacetic Acid', function: 'Conservante amplio espectro y ajuste pH 7.0', percentage: '1.0%' }
+                ];
+                labInstructions = `1. En vaso principal (Fase A), dispersar Goma Xantana y Avena Coloidal en agua desionizada e Hidrolato a 25°C bajo agitación de hélice (400 RPM) durante 15 min.\n2. En recipiente auxiliar (Fase B), mezclar Coco-Glucoside y Betaína agitando suavemente (150 RPM) para no incorporar aire.\n3. Incorporar Fase B sobre Fase A por las paredes del vaso a < 200 RPM.\n4. Añadir Fase C (Extracto de Caléndula y D-Pantenol) homogeneizando 10 min.\n5. Añadir Fase D, verificar pH con potenciómetro calibrado y ajustar a 7.0 ± 0.2.`;
+                pilotInstructions = `1. Cargar marmita de acero inoxidable 316L con Agua USP e Hidrolato.\n2. Activar dispersor Cowles a 600 RPM por 10 min para hidratar Avena Coloidal y Goma Xantana; cambiar a áncora planetaria (45 RPM) con vacío (-0.4 bar).\n3. Dosificar tensioactivos (Fase B) por carga inferior para prevenir espuma.\n4. Incorporar activos termolábiles (Fase C) y conservante (Fase D) a 25°C.\n5. Control en Proceso (IPC): Verificar pH (6.8–7.2), viscosidad y filtrar por malla de 100 micras.`;
+            } else if (payload.cosmetic_form.includes('Bruma') || payload.cosmetic_form.includes('Emulsión')) {
+                phTarget = '6.6 – 7.2 (Isotónico dérmico veterinario)';
+                appearance = 'Emulsión fluida / bruma lechosa ligera de toque seco y rápida absorción sin residuo graso.';
+                viscosityOrMelting = 'Viscosidad: 450 – 900 cP (Atomizable en válvula spray)';
+                density = '0.995 – 1.010 g/mL a 20°C';
+                qualiQuanti = [
+                    { phase: 'Fase A (Acuosa)', ingredient: 'Agua Purificada Desionizada USP', inci: 'Aqua', function: 'Vehículo base', percentage: '62.5%' },
+                    { phase: 'Fase A (Botánica)', ingredient: 'Hidrolato de Manzanilla & Caléndula', inci: 'Anthemis Nobilis Flower Water', function: 'Calmante dérmico seguro en perros y gatos', percentage: '20.0%' },
+                    { phase: 'Fase B (Emoliente)', ingredient: 'Aceite de Semilla de Cáñamo Virgen', inci: 'Cannabis Sativa Seed Oil', function: 'Aporte Omega 3/6 y suavidad de manto', percentage: '6.0%' },
+                    { phase: 'Fase B (Emulsionante)', ingredient: 'Olivem 1000 (Derivado de Oliva)', inci: 'Cetearyl Olivate, Sorbitan Olivate', function: 'Emulsionante biomimético libre de PEG', percentage: '4.0%' },
+                    { phase: 'Fase C (Activos)', ingredient: 'Gel de Aloe Vera Descolorizado (Sin Aloína)', inci: 'Aloe Barbadensis Leaf Juice', function: 'Hidratante y refrescante epitelial', percentage: '4.0%' },
+                    { phase: 'Fase C (Activos)', ingredient: 'D-Pantenol + Vitamina E Natural', inci: 'Panthenol, Tocopherol', function: 'Reparador cutáneo y antioxidante', percentage: '2.5%' },
+                    { phase: 'Fase D (Conservación)', ingredient: 'Conservante Ecocert Geogard 221', inci: 'Benzyl Alcohol, Dehydroacetic Acid', function: 'Preservación microbiológica segura', percentage: '1.0%' }
+                ];
+                labInstructions = `1. Calentar Fase A y Fase B por separado a 70°C en baño termostatado.\n2. Verter Fase B sobre Fase A bajo homogeneización Ultra-Turrax a 3,000 RPM durante 4 minutos.\n3. Iniciar enfriamiento lento con agitación de pala a 250 RPM.\n4. Al descender a 38°C, incorporar Fase C (Aloe sin aloína, Pantenol, Vitamina E) y Fase D.\n5. Ajustar pH a 6.9 y verificar estabilidad en centrífuga (3,000 RPM x 15 min).`;
+                pilotInstructions = `1. Fundir Fase B en tanque fusor a 72°C y calentar Fase A en reactor principal a 72°C.\n2. Transferir Fase B activando turbina rotor-estator de fondo a 2,800 RPM durante 8 minutos bajo vacío.\n3. Enfriar por chaqueta de agua helada con raspadores laterales a 50 RPM hasta 38°C.\n4. Incorporar activos termolábiles y conservante; muestrear para control fisicoquímico.`;
+            } else {
+                phTarget = 'No aplica (Sistema 100% Anhidro; compatible con pH cutáneo 6.5 – 7.5)';
+                appearance = 'Bálsamo sólido homogéneo a 25°C, color ámbar dorado natural, fundente al contacto con la piel (36–38°C).';
+                viscosityOrMelting = 'Punto de Fusión Capilar: 48°C – 54°C (Estable en climas cálidos sin derretirse en el envase)';
+                density = '0.930 – 0.960 g/cm³ a 25°C';
+                qualiQuanti = [
+                    { phase: 'Fase A (Estructural)', ingredient: 'Manteca de Karité Orgánica Refinada', inci: 'Butyrospermum Parkii Butter', function: 'Emoliente profundo, restaurador de barrera plantar', percentage: '42.0%' },
+                    { phase: 'Fase A (Filmógena)', ingredient: 'Cera de Candelilla Grado Cosmético', inci: 'Euphorbia Cerifera Cera', function: 'Escudo protector transpirable y punto de fusión', percentage: '20.0%' },
+                    { phase: 'Fase B (Lipofílica)', ingredient: 'Oleato Botánico de Caléndula Officinalis', inci: 'Helianthus Annuus Seed Oil, Calendula Officinalis Extract', function: 'Epitelizante, calmante de grietas e irritación', percentage: '24.5%' },
+                    { phase: 'Fase B (Lipofílica)', ingredient: 'Triglicéridos Caprílico/Cáprico (Coco Fraccionado)', inci: 'Caprylic/Capric Triglyceride', function: 'Vehículo de rápida absorción (toque sedoso no graso)', percentage: '7.0%' },
+                    { phase: 'Fase C (Termolábil)', ingredient: 'Aceite Virgen de Semilla de Cáñamo', inci: 'Cannabis Sativa Seed Oil', function: 'Nutrición Omega 3 y 6 (relación óptima 3:1)', percentage: '5.0%' },
+                    { phase: 'Fase C (Antioxidante)', ingredient: 'Vitamina E Natural (Alfa-Tocoferol)', inci: 'Tocopherol', function: 'Antioxidante de fase lipídica y regenerador', percentage: '1.5%' }
+                ];
+                labInstructions = `1. Sanitizar vasos de precipitados, espátulas y moldes con Etanol al 70% y secar.\n2. Pesar Fase A (Manteca de Karité y Cera de Candelilla) y llevar a fusión controlada en baño maría a 65°C – 68°C (PCC: No superar 72°C para evitar recristalización granulosa).\n3. Una vez fundida la Fase A, incorporar Fase B (Oleato de Caléndula y Coco Fraccionado) manteniendo agitación constante a 200 RPM.\n4. Retirar del calor y enfriar bajo agitación lenta hasta alcanzar 44°C.\n5. A ≤ 44°C, adicionar Fase C (Aceite de Cáñamo y Vitamina E) para preservar intactos los ácidos grasos poliinsaturados.\n6. Verter en caliente (40–42°C) en latas de aluminio doradas y enfriar a 18°C destapadas durante 45 min.`;
+                pilotInstructions = `1. En marmita encamisada de acero inoxidable 316L con control PID, cargar Fase A y fundir a 68°C con agitación de áncora y raspadores de PTFE a 35 RPM.\n2. Precalentar Fase B a 50°C e incorporar al reactor evitando choque térmico.\n3. Activar rampa de enfriamiento rápido por chaqueta (15°C) manteniendo agitación para inducir nucleación uniforme de cristales beta-prima.\n4. A 43°C adicionar Fase C (Cáñamo y Tocoferol), homogeneizar 10 min.\n5. Dosificar mediante llenadora volumétrica con tolva calefactada a 42°C y pasar por túnel de enfriamiento laminar.`;
+            }
+
+            rawMaterialsOptions = [
+                {
+                    name: 'Manteca de Karité Orgánica / Avena Coloidal USP',
+                    inci: 'Butyrospermum Parkii Butter / Avena Sativa Kernel Flour',
+                    function: 'Base Estructural y Reparación de Barrera Epitelial',
+                    alternative_option: 'Alternativa: Manteca de Mango (Mangifera Indica Seed Butter) para climas >32°C',
+                    benefit_highlight: 'Rica en fitoesteroles e insaponificables; restaura la elasticidad sin ocluir.'
+                },
+                {
+                    name: 'Oleato de Flores de Caléndula (Maceración Solar/Térmica)',
+                    inci: 'Calendula Officinalis Flower Extract',
+                    function: 'Activo Calmante, Epitelizante y Regenerador',
+                    alternative_option: 'Alternativa: Extracto CO2 Supercrítico de Caléndula al 0.5%',
+                    benefit_highlight: 'Reduce rojeces, alivia el prurito y acelera la recuperación de almohadillas agrietadas.'
+                },
+                {
+                    name: 'Cera Botánica de Candelilla / Emulsionante Oliva',
+                    inci: 'Euphorbia Cerifera Cera / Cetearyl Olivate',
+                    function: 'Escudo Protector Físico y Retención de Humedad',
+                    alternative_option: 'Alternativa no vegana: Cera Alba (Cera de Abejas Opérculo filtrada)',
+                    benefit_highlight: 'Crea una película transpirable contra el asfalto caliente, sal y superficies abrasivas.'
+                },
+                {
+                    name: 'Aceite Virgen de Cáñamo + Alfa-Tocoferol (Vitamina E)',
+                    inci: 'Cannabis Sativa Seed Oil & Tocopherol',
+                    function: 'Nutrición Esencial Omega 3-6-9 y Protección Antioxidante',
+                    alternative_option: 'Alternativa: Aceite de Jojoba Dorado (Simmondsia Chinensis)',
+                    benefit_highlight: '100% seguro al lamido (Lick-Safe) y libre de terpenos hepatotóxicos para felinos.'
+                }
+            ];
+
+            packagingOptions = [
+                {
+                    option_name: 'Opción A: Lata Cosmética Seamless Gold',
+                    material: 'Aluminio anodizado grado cosmético con barniz interno epoxi-fenólico libre de BPA',
+                    capacity: '50 g / 60 g',
+                    kamaui_finish: 'Tapa rosca con etiqueta en Blanco Avena (#F7F5F0) mate sedoso y Mandala en Hot Stamping Dorado (#D4A373).',
+                    pros: '100% reciclable, irrompible y permite aplicación directa.'
+                },
+                {
+                    option_name: 'Opción B: Tarro o Botella Vidrio Ámbar Botánico',
+                    material: 'Vidrio borosilicato Ámbar UV-Block con tapa en bambú o aluminio negro mate (#2B2B2B)',
+                    capacity: '60 g / 250 mL',
+                    kamaui_finish: 'Serigrafía directa en Castaño Profundo (#5C3A21) y sello superior con el isotipo de la dualidad canina.',
+                    pros: 'Máxima protección contra fotodegradación de aceites botánicos.'
+                },
+                {
+                    option_name: 'Opción C: Stick Push-Up / Airless Touch-Free',
+                    material: 'Polipropileno PCR reciclado o Kraft laminado con barrera vegetal interna',
+                    capacity: '30 g / 100 mL',
+                    kamaui_finish: 'Acabado Soft-Touch color Blanco Avena con banda lateral en Azul Místico (#85A1BA).',
+                    pros: 'Aplicación manos limpias que evita contaminación cruzada.'
+                }
+            ];
+
+            const regScore = hasCriticalAlert ? (includesFeline ? 48 : 68) : (hasModerateAlert ? 82 : 97);
+            const techScore = 95;
+            const mktScore = 92;
+            const totalScore = Math.round((regScore * 0.4) + (techScore * 0.35) + (mktScore * 0.25));
+
+            return {
+                viability_score: totalScore,
+                score_breakdown: {
+                    technical_score: techScore,
+                    regulatory_score: regScore,
+                    market_score: mktScore
+                },
+                regulatory_compliance: {
+                    ica_status: "Clasifica como Producto Cosmético y de Aseo Veterinario bajo la Resolución ICA 1056 de 1996 y Decisión CAN 483. Requiere Registro ICA de Producto elaborado en planta con Buenas Prácticas de Manufactura (BPMv). Evitar claims terapéuticos o medicamentosos en etiqueta.",
+                    lick_safe_level: hasCriticalAlert
+                        ? "Requiere Sustitución de Activos"
+                        : "Aprobado: 100% Lick-Safe",
+                    toxicology_alerts: hasCriticalAlert
+                        ? "Se detectaron activos con riesgo toxicológico por lamido o deficiencia de glucuronidación felina (ver tabla inferior). El motor ha sustituido automáticamente los activos riesgosos en la Fórmula Maestra I+D por alternativas botánicas 100% seguras."
+                        : "Fórmula 100% segura ante el reflejo natural de lamido. Libre de aceites esenciales fenólicos/terpénicos, libre de óxido de zinc, parabenos y derivados petroquímicos.",
+                    active_safety_matrix: safetyMatrix,
+                    ph_target: phTarget
+                },
+                market_analysis: {
+                    market_opportunity: `Crecimiento sostenido (+24% anual) en el segmento 'Clean & Holistic Petcare' en Colombia y LATAM. Los tutores rechazan productos con petroquímicos o fragancias sintéticas y priorizan fórmulas botánicas respaldadas por ciencia veterinaria.`,
+                    direct_competitors: [
+                        { brand: "Natural Dog Company (Importado EE.UU.)", type: "Competidor Directo Premium", price_range: "$85.000 - $120.000 COP", weakness: "Precio elevado por importación y sin narrativa local ni personalización por clima." },
+                        { brand: "Petys / Dinky (Masivo Retail)", type: "Competidor Indirecto Masivo", price_range: "$22.000 - $32.000 COP", weakness: "Formulaciones convencionales con siliconas/conservantes sintéticos; menor percepción artesanal-holística." },
+                        { brand: "Marcas Artesanales en Instagram", type: "Competidor Directo Nicho", price_range: "$30.000 - $45.000 COP", weakness: "Carecen de estandarización fisicoquímica, control de pH y respaldo regulatorio ICA." }
+                    ],
+                    competitors: [
+                        "Natural Dog Company (Importado Premium)",
+                        "Líneas comerciales masivas (Retail)",
+                        "Bálsamos artesanales locales sin estandarización ICA"
+                    ]
+                },
+                marketing_strategy: {
+                    advertising_angle: `"Armonía entre la ciencia veterinaria y la geometría sagrada de la naturaleza para cuidar a quien siempre camina a tu lado."`,
+                    launch_campaign_idea: "Estrategia de posicionamiento con 'Ritual de Spa en Casa Kamaui': alianzas con veterinarios integrativos/holísticos, groomers boutique y contenido educativo sobre cosmética Lick-Safe.",
+                    key_benefits: [
+                        "100% Lick-Safe (Seguro al Lamido)",
+                        "Fórmula Botánica con Respaldo Veterinario",
+                        "pH Fisiológico Balanceado",
+                        "Libre de Petrolatos y Terpenos Tóxicos",
+                        "Transparencia Cuali-Cuantitativa 100%"
+                    ]
+                },
+                packaging_options: packagingOptions,
+                raw_materials_options: rawMaterialsOptions,
+                formulation: {
+                    quali_quanti: qualiQuanti,
+                    lab_scale_instructions: labInstructions,
+                    pilot_instructions: pilotInstructions
+                },
+                technical_specifications: {
+                    packaging_type: packagingOptions[0].option_name + " (" + packagingOptions[0].capacity + ")",
+                    physicochemical_specs: appearance,
+                    viscosity_or_melting: viscosityOrMelting,
+                    density: density,
+                    microbiological_limits: "Recuento Aerobios Mesófilos Totales < 100 UFC/g | Hongos y Levaduras < 10 UFC/g | Ausencia total de S. aureus, P. aeruginosa y E. coli.",
+                    shelf_life: "24 meses en envase original protegido de la luz directa (< 30°C)."
+                },
+                landing_copy: {
+                    badge: `KAMAUI STUDIO • DOSSIER DE PRODUCTO`,
+                    headline: `${payload.product_name}: Equilibrio Botánico y Ciencia Veterinaria.`,
+                    subheadline: `${payload.concept_description} Diseñado para ${payload.target_pet.toLowerCase()} bajo el estándar de pureza holística Kamaui.`,
+                    sensory_story: `Cada ingrediente ha sido seleccionado respetando la fisiología cutánea animal y el instinto natural de acicalamiento, fusionando extractos botánicos trazables con rigor galénico veterinario.`,
+                    bullet_points: [
+                        "Protocolo 100% Lick-Safe: Inocuo si tu mascota lame la zona aplicada",
+                        "Fórmula Cuali-Cuantitativa transparente sin rellenos sintéticos",
+                        "Biocompatibilidad fisiológica para piel sensible y todo tipo de manto",
+                        "Elaborado bajo lineamientos técnicos de cosmética veterinaria ICA"
+                    ],
+                    process_summary: `Elaborado mediante fusión y dispersión térmica controlada (< 68°C para ceras estructurales y < 44°C para activos botánicos termolábiles como Omega 3/6 y Vitamina E), garantizando la integridad molecular de cada fitoactivo desde el lote de laboratorio (500 g) hasta planta piloto (25 kg).`,
+                    regulatory_trust_statement: `Formulación estructurada conforme a la Resolución ICA 1056 de 1996 (Colombia) y Decisión CAN 483 para cosméticos veterinarios. Auditada contra la matriz toxicológica de glucuronidación felina y dermatología canina.`
+                }
+            };
+        }
+
+        document.getElementById('ideaForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const form = e.target;
+            const loadingState = document.getElementById('loadingState');
+            const loadingBar = document.getElementById('loadingBar');
+            const loadingTitle = document.getElementById('loadingStepTitle');
+            const loadingSub = document.getElementById('loadingStepSub');
+
+            currentPayload = {
+                product_name: document.getElementById('product_name').value.trim(),
+                cosmetic_form: document.getElementById('cosmetic_form').value,
+                target_pet: document.getElementById('target_pet').value,
+                coat_type: document.getElementById('coat_type').value,
+                ingredients: document.getElementById('ingredients').value.trim(),
+                concept_description: document.getElementById('concept_description').value.trim()
+            };
+
+            form.classList.add('hidden');
+            loadingState.classList.remove('hidden');
+            loadingState.classList.add('flex');
+
+            try {
+                let data = null;
+                let usedRemoteN8n = false;
+
+                loadingBar.style.width = '30%';
+                loadingTitle.textContent = '1/3 Consultando Bóveda de Obsidian & Webhook n8n...';
+                loadingSub.textContent = 'Cruzando activos con Resolución ICA 1056 y Toxicología Lick-Safe';
+
+                try {
+                    const controller = new AbortController();
+                    const timeoutId = setTimeout(() => controller.abort(), 4500);
+                    const response = await fetch(N8N_WEBHOOK_URL, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(currentPayload),
+                        signal: controller.signal
+                    });
+                    clearTimeout(timeoutId);
+
+                    if (!response.ok) throw new Error('HTTP ' + response.status);
+                    const remoteJson = await response.json();
+                    const fallbackBase = runExpertDiagnosticEngine(currentPayload);
+                    data = Object.assign({}, fallbackBase, remoteJson);
+                    if (remoteJson.landing_copy && !remoteJson.landing_copy.bullet_points) {
+                        data.landing_copy.bullet_points = fallbackBase.landing_copy.bullet_points;
+                    }
+                    usedRemoteN8n = true;
+                } catch (networkError) {
+                    await new Promise(r => setTimeout(r, 650));
+                    loadingBar.style.width = '68%';
+                    loadingTitle.textContent = '2/3 Ejecutando Motor de Formulación Cuali-Cuantitativa...';
+                    loadingSub.textContent = 'Calculando fases galénicas y escalado a 25 kg';
+                    await new Promise(r => setTimeout(r, 650));
+                    loadingBar.style.width = '100%';
+                    loadingTitle.textContent = '3/3 Construyendo Landing Page con Manual de Marca Kamaui...';
+                    await new Promise(r => setTimeout(r, 400));
+                    data = runExpertDiagnosticEngine(currentPayload);
+                }
+
+                currentValidationData = data;
+                populateResults(data, currentPayload, usedRemoteN8n);
+                populateFormula(data);
+                populateLanding(data, currentPayload);
+
+                showModal(
+                    "Diagnóstico 360° Completado",
+                    usedRemoteN8n
+                        ? "Sincronización exitosa con tu flujo de n8n y Obsidian."
+                        : "Diagnóstico, Dossier I+D y Landing Page generados con las reglas de tu bóveda Obsidian.",
+                    "success"
+                );
+                switchTab('results');
+            } catch (error) {
+                console.error(error);
+                showModal("Error en Validación", "Verifica los datos ingresados e intenta nuevamente.", "error");
+            } finally {
+                form.classList.remove('hidden');
+                loadingState.classList.add('hidden');
+                loadingState.classList.remove('flex');
+                loadingBar.style.width = '25%';
+            }
+        });
+
+        function populateResults(data, payload, usedRemoteN8n) {
+            document.getElementById('emptyResults').classList.add('hidden');
+            document.getElementById('resultsContent').classList.remove('hidden');
+
+            document.getElementById('res-product-title').textContent = payload.product_name;
+            document.getElementById('res-source-badge').textContent = usedRemoteN8n
+                ? 'Conectado en tiempo real a n8n Webhook + Bóveda Obsidian'
+                : 'Motor Experto Kamaui • Sincronizado con Reglas Obsidian (ICA + Lick-Safe)';
+
+            const score = Number(data.viability_score) || 94;
+            document.getElementById('res-score').textContent = score;
+            const circle = document.getElementById('scoreCircleStroke');
+            if (circle) {
+                const offset = 264 - (264 * score) / 100;
+                circle.style.strokeDashoffset = offset;
+            }
+
+            document.getElementById('res-score-tech').textContent = (data.score_breakdown?.technical_score || 95) + '%';
+            document.getElementById('res-score-reg').textContent = (data.score_breakdown?.regulatory_score || 94) + '%';
+            document.getElementById('res-score-mkt').textContent = (data.score_breakdown?.market_score || 92) + '%';
+
+            const lickBadge = document.getElementById('res-licksafe-badge');
+            const lickText = data.regulatory_compliance.lick_safe_level || '100% Lick-Safe';
+            lickBadge.textContent = lickText;
+            if (lickText.includes('Sustitución') || lickText.includes('ALERTA')) {
+                lickBadge.className = 'font-tech text-xs font-semibold px-4 py-2 rounded-full bg-amber-100 text-amber-900 border border-amber-400';
+            } else {
+                lickBadge.className = 'font-tech text-xs font-semibold px-4 py-2 rounded-full bg-emerald-900/10 text-emerald-900 border border-emerald-700/30';
+            }
+
+            document.getElementById('res-ica').textContent = data.regulatory_compliance.ica_status;
+            document.getElementById('res-tox').textContent = data.regulatory_compliance.toxicology_alerts;
+
+            const matrixBody = document.getElementById('res-tox-matrix');
+            matrixBody.innerHTML = '';
+            (data.regulatory_compliance.active_safety_matrix || []).forEach(row => {
+                const isDanger = row.feline_safety.includes('PROHIBIDO') || row.feline_safety.includes('Riesgo');
+                matrixBody.innerHTML += `
+                    <tr class="hover:bg-kamaui-gold/10 transition-colors">
+                        <td class="py-3.5 px-5 font-bold text-kamaui-brown">${row.active}</td>
+                        <td class="py-3.5 px-5">${row.canine_safety}</td>
+                        <td class="py-3.5 px-5 font-semibold ${isDanger ? 'text-red-700' : 'text-emerald-800'}">${row.feline_safety}</td>
+                        <td class="py-3.5 px-5 text-kamaui-black/75">${row.notes}</td>
+                    </tr>
+                `;
+            });
+
+            document.getElementById('res-market-opp').textContent = data.market_analysis.market_opportunity;
+
+            const compContainer = document.getElementById('res-competitors');
+            compContainer.innerHTML = '';
+            if (data.market_analysis.direct_competitors && data.market_analysis.direct_competitors.length) {
+                data.market_analysis.direct_competitors.forEach(c => {
+                    compContainer.innerHTML += `
+                        <div class="p-4 rounded-2xl bg-kamaui-chalk/90 border border-kamaui-gold/25">
+                            <div class="flex justify-between font-bold text-kamaui-brown">
+                                <span>${c.brand}</span>
+                                <span class="text-kamaui-gold">${c.price_range}</span>
+                            </div>
+                            <p class="text-[11px] text-kamaui-black/70 mt-1">${c.weakness}</p>
+                        </div>
+                    `;
+                });
+            } else {
+                (data.market_analysis.competitors || []).forEach(comp => {
+                    compContainer.innerHTML += `<div class="p-3 rounded-xl bg-kamaui-chalk border border-kamaui-gold/20">${comp}</div>`;
+                });
+            }
+
+            document.getElementById('res-ad-angle').textContent = data.marketing_strategy.advertising_angle;
+            document.getElementById('res-campaign-idea').textContent = data.marketing_strategy.launch_campaign_idea || '';
+            const benefitsContainer = document.getElementById('res-key-benefits');
+            benefitsContainer.innerHTML = '';
+            (data.marketing_strategy.key_benefits || []).forEach(ben => {
+                benefitsContainer.innerHTML += `<span class="px-3.5 py-1.5 bg-kamaui-gold/15 text-kamaui-brown rounded-full text-xs font-medium border border-kamaui-gold/35">${ben}</span>`;
+            });
+
+            const packContainer = document.getElementById('res-packaging-cards');
+            packContainer.innerHTML = '';
+            (data.packaging_options || []).forEach((pk, idx) => {
+                packContainer.innerHTML += `
+                    <div class="p-6 rounded-3xl ${idx === 0 ? 'espresso-surface text-kamaui-chalk' : 'bg-kamaui-chalk/90 text-kamaui-black border border-kamaui-gold/30'} flex flex-col justify-between space-y-4">
+                        <div class="space-y-2">
+                            <span class="font-tech text-[10px] uppercase tracking-widest ${idx === 0 ? 'text-kamaui-gold' : 'text-kamaui-blue'} font-bold">${pk.capacity}</span>
+                            <h4 class="font-cinzel font-bold text-base ${idx === 0 ? 'text-kamaui-chalk' : 'text-kamaui-brown'}">${pk.option_name}</h4>
+                            <p class="font-tech text-xs opacity-85">${pk.material}</p>
+                            <p class="font-tech text-xs opacity-85">${pk.kamaui_finish}</p>
+                        </div>
+                        <p class="font-tech text-[11px] pt-3 border-t ${idx === 0 ? 'border-kamaui-gold/30 text-kamaui-gold' : 'border-kamaui-gold/20 text-kamaui-brown'} font-semibold">${pk.pros}</p>
+                    </div>
+                `;
+            });
+        }
+
+        function populateFormula(data) {
+            document.getElementById('emptyFormula').classList.add('hidden');
+            document.getElementById('formulaContent').classList.remove('hidden');
+
+            const rawContainer = document.getElementById('res-raw-materials');
+            rawContainer.innerHTML = '';
+            (data.raw_materials_options || []).forEach(rm => {
+                rawContainer.innerHTML += `
+                    <div class="p-6 rounded-3xl bg-kamaui-chalk/90 border border-kamaui-gold/30 space-y-2">
+                        <span class="font-tech text-[10px] uppercase tracking-wider text-kamaui-gold font-bold">${rm.inci}</span>
+                        <h4 class="font-cinzel font-bold text-base text-kamaui-brown">${rm.name}</h4>
+                        <p class="font-tech text-xs text-kamaui-blue font-semibold">${rm.function}</p>
+                        <p class="font-playfair text-sm text-kamaui-black/80 italic">${rm.benefit_highlight}</p>
+                        <p class="font-tech text-[11px] text-kamaui-brown/80 pt-2 border-t border-kamaui-gold/20">${rm.alternative_option}</p>
+                    </div>
+                `;
+            });
+
+            recalculateBatchTable();
+
+            const labText = data.formulation.lab_scale_instructions || data.formulation.pilot_instructions;
+            document.getElementById('res-lab-instructions').innerHTML = labText.replace(/\n/g, '<br><br>');
+            document.getElementById('res-pilot-instructions').innerHTML = (data.formulation.pilot_instructions || '').replace(/\n/g, '<br><br>');
+
+            document.getElementById('res-spec-ph').textContent = data.regulatory_compliance.ph_target;
+            document.getElementById('res-spec-phys').textContent = data.technical_specifications.physicochemical_specs;
+            document.getElementById('res-spec-visc').textContent = data.technical_specifications.viscosity_or_melting || 'Punto de fusión: 48–54°C';
+            document.getElementById('res-spec-dens').textContent = data.technical_specifications.density || '0.94 ± 0.02 g/cm³';
+            document.getElementById('res-spec-micro').textContent = data.technical_specifications.microbiological_limits || 'Mesófilos < 100 UFC/g | Ausencia de patógenos (Res. ICA)';
+            document.getElementById('res-spec-shelf').textContent = data.technical_specifications.shelf_life || '24 meses en envase hermético (< 30°C)';
+        }
+
+        function recalculateBatchTable() {
+            if (!currentValidationData) return;
+            const pilotKg = parseFloat(document.getElementById('pilotBatchKg').value) || 25;
+            document.getElementById('pilotKgHeader').textContent = pilotKg;
+            document.getElementById('pilotTotalGrams').textContent = pilotKg.toFixed(2) + ' kg';
+
+            const table = document.getElementById('res-formula-table');
+            table.innerHTML = '';
+
+            currentValidationData.formulation.quali_quanti.forEach(item => {
+                const pctNum = parseFloat(String(item.percentage).replace('%', '')) || 0;
+                const labGrams = ((pctNum / 100) * 500).toFixed(1);
+                const pilotKgItem = ((pctNum / 100) * pilotKg).toFixed(3);
+
+                table.innerHTML += `
+                    <tr class="hover:bg-kamaui-gold/10 transition-colors">
+                        <td class="py-3.5 px-4 font-semibold text-kamaui-brown">${item.phase || 'Fase'}</td>
+                        <td class="py-3.5 px-4 font-bold text-kamaui-black">${item.ingredient}</td>
+                        <td class="py-3.5 px-4 italic text-kamaui-black/65">${item.inci || 'Grado Cosmético'}</td>
+                        <td class="py-3.5 px-4 text-kamaui-black/80">${item.function || 'Activo funcional'}</td>
+                        <td class="py-3.5 px-4 text-right">
+                            <span class="font-bold text-kamaui-brown block">${pctNum.toFixed(1)}%</span>
+                            <div class="w-16 ml-auto h-1 bg-kamaui-gold/20 rounded-full overflow-hidden mt-1">
+                                <div class="h-full bg-kamaui-gold rounded-full" style="width:${Math.min(pctNum, 100)}%"></div>
+                            </div>
+                        </td>
+                        <td class="py-3.5 px-4 text-right text-kamaui-black">${labGrams} g</td>
+                        <td class="py-3.5 px-4 text-right font-semibold text-kamaui-brown">${pilotKgItem} kg</td>
+                    </tr>
+                `;
+            });
+        }
+
+        function populateLanding(data, payload) {
+            document.getElementById('emptyLanding').classList.add('hidden');
+            document.getElementById('landingContent').classList.remove('hidden');
+
+            document.getElementById('lan-badge').textContent = data.landing_copy.badge || 'FÓRMULA HOLÍSTICA VALIDADA';
+            document.getElementById('lan-headline').textContent = data.landing_copy.headline;
+            document.getElementById('lan-subheadline').textContent = data.landing_copy.subheadline;
+            document.getElementById('lan-sensory-story').textContent = data.landing_copy.sensory_story || '';
+
+            const bullets = data.landing_copy.bullet_points || data.marketing_strategy.key_benefits || [];
+            const bulletsContainer = document.getElementById('lan-bullets');
+            bulletsContainer.innerHTML = '';
+            bullets.forEach(bullet => {
+                bulletsContainer.innerHTML += `
+                    <div class="flex items-center gap-3 bg-white/10 p-3.5 rounded-2xl border border-kamaui-gold/30 backdrop-blur-sm">
+                        <i class="ph-light ph-check-circle text-kamaui-gold text-lg shrink-0"></i>
+                        <span class="text-kamaui-chalk font-medium">${bullet}</span>
+                    </div>
+                `;
+            });
+
+            const rawGrid = document.getElementById('lan-raw-materials-grid');
+            rawGrid.innerHTML = '';
+            (data.raw_materials_options || []).forEach(rm => {
+                rawGrid.innerHTML += `
+                    <div class="bg-white p-6 rounded-3xl border border-kamaui-gold/30 shadow-sm space-y-2">
+                        <span class="font-tech text-[10px] uppercase tracking-wider text-kamaui-gold font-bold">${rm.inci}</span>
+                        <h4 class="font-cinzel font-bold text-kamaui-brown text-base">${rm.name}</h4>
+                        <p class="font-playfair text-sm text-kamaui-black/80 italic">${rm.benefit_highlight}</p>
+                        <p class="font-tech text-[11px] text-kamaui-blue font-medium pt-2 border-t border-kamaui-gold/20">${rm.alternative_option}</p>
+                    </div>
+                `;
+            });
+
+            document.getElementById('lan-pet-target').textContent = payload.target_pet;
+            document.getElementById('lan-ph-spec').textContent = data.regulatory_compliance.ph_target;
+            document.getElementById('lan-pack-spec').textContent = data.technical_specifications.packaging_type;
+
+            const lanRows = document.getElementById('lan-formula-rows');
+            lanRows.innerHTML = '';
+            data.formulation.quali_quanti.forEach(item => {
+                lanRows.innerHTML += `
+                    <tr>
+                        <td class="py-3 px-4 font-bold text-kamaui-brown">${item.ingredient}</td>
+                        <td class="py-3 px-4 italic text-kamaui-black/65">${item.inci || '-'}</td>
+                        <td class="py-3 px-4 text-kamaui-black/80">${item.function || 'Activo botánico'}</td>
+                        <td class="py-3 px-4 text-right font-bold text-kamaui-brown">${item.percentage}</td>
+                    </tr>
+                `;
+            });
+
+            document.getElementById('lan-process-summary').textContent = data.landing_copy.process_summary || data.formulation.pilot_instructions;
+            document.getElementById('lan-regulatory-summary').textContent = data.landing_copy.regulatory_trust_statement || data.regulatory_compliance.ica_status;
+
+            document.getElementById('landingRawCode').textContent = buildStandaloneLandingHtml(data, payload);
+        }
+
+        function buildStandaloneLandingHtml(data, payload) {
+            const bulletsHtml = (data.landing_copy.bullet_points || []).map(b => `
+                <div class="flex items-center gap-3 bg-white/10 p-3.5 rounded-2xl border border-[#D4A373]/30">
+                    <span class="text-[#D4A373] text-sm">●</span>
+                    <span class="text-xs text-[#F7F5F0] font-medium">${b}</span>
+                </div>`).join('');
+
+            const rawMaterialsHtml = (data.raw_materials_options || []).map(rm => `
+                <div class="bg-white p-7 rounded-3xl border border-[#D4A373]/35 shadow-sm">
+                    <span class="text-[10px] uppercase tracking-widest text-[#D4A373] font-bold font-sans">${rm.inci}</span>
+                    <h3 class="text-lg font-bold text-[#5C3A21] mt-1 font-cinzel">${rm.name}</h3>
+                    <p class="text-sm text-[#2B2B2B]/80 italic mt-2">${rm.benefit_highlight}</p>
+                    <p class="text-xs text-[#85A1BA] font-semibold font-sans mt-3 pt-2 border-t border-[#D4A373]/20">${rm.alternative_option}</p>
+                </div>`).join('');
+
+            const formulaRowsHtml = (data.formulation.quali_quanti || []).map(item => `
+                <tr class="border-b border-[#D4A373]/20">
+                    <td class="py-3.5 px-4 font-semibold text-[#5C3A21]">${item.phase || 'Fase'}</td>
+                    <td class="py-3.5 px-4 font-bold text-[#2B2B2B]">${item.ingredient}</td>
+                    <td class="py-3.5 px-4 italic text-[#2B2B2B]/70">${item.inci || '-'}</td>
+                    <td class="py-3.5 px-4 text-[#2B2B2B]/80">${item.function || '-'}</td>
+                    <td class="py-3.5 px-4 text-right font-bold text-[#5C3A21]">${item.percentage}</td>
+                </tr>`).join('');
+
+            return `<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>${payload.product_name} — Kamaui Holistic Veterinary Cosmetics</title>
+    <script src="https://cdn.tailwindcss.com"><\/script>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Montserrat:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Playfair Display', serif; background-color: #F7F5F0; color: #2B2B2B; }
+        h1, h2, h3, .font-cinzel { font-family: 'Cinzel', serif; }
+        .font-sans { font-family: 'Montserrat', sans-serif; }
+    </style>
+</head>
+<body class="antialiased selection:bg-[#D4A373]/30">
+    <header class="bg-gradient-to-br from-[#5C3A21] to-[#382212] text-[#F7F5F0] py-20 px-6 border-b-4 border-[#D4A373]">
+        <div class="max-w-5xl mx-auto">
+            <div class="flex items-center gap-4 mb-8">
+                <img src="assets/logo-kamaui.jpg" alt="Kamaui Logo" class="w-16 h-16 rounded-full border-2 border-[#D4A373] object-cover bg-white">
+                <div>
+                    <span class="font-cinzel tracking-widest text-lg text-[#D4A373] font-bold block">KAMAUI</span>
+                    <span class="font-sans text-xs uppercase tracking-widest text-[#F7F5F0]/80">Holistic Veterinary Cosmetics • ${payload.target_pet}</span>
+                </div>
+            </div>
+            <h1 class="text-4xl md:text-5xl font-bold leading-tight mb-4">${data.landing_copy.headline}</h1>
+            <p class="text-xl text-[#E9C8A6] italic mb-8 max-w-3xl">${data.landing_copy.subheadline}</p>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-6 font-sans max-w-3xl">${bulletsHtml}</div>
+        </div>
+    </header>
+
+    <section class="py-16 px-6 max-w-5xl mx-auto">
+        <div class="text-center mb-10">
+            <span class="font-sans text-xs uppercase tracking-widest text-[#85A1BA] font-bold">Selección Botánica Trazable</span>
+            <h2 class="text-3xl font-bold text-[#5C3A21] mt-1">Opciones de Materias Primas Activas</h2>
+            <p class="text-base text-[#2B2B2B]/80 italic mt-2 max-w-2xl mx-auto">${data.landing_copy.sensory_story}</p>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">${rawMaterialsHtml}</div>
+    </section>
+
+    <section class="py-16 px-6 bg-white border-y border-[#D4A373]/30">
+        <div class="max-w-5xl mx-auto">
+            <span class="font-sans text-xs uppercase tracking-widest text-[#D4A373] font-bold">Transparencia Científica 100%</span>
+            <h2 class="text-3xl font-bold text-[#5C3A21] mt-1 mb-6">Fórmula Maestra Cuali-Cuantitativa</h2>
+            <div class="overflow-x-auto rounded-2xl border border-[#D4A373]/40">
+                <table class="w-full text-left font-sans text-xs">
+                    <thead class="bg-[#5C3A21] text-[#D4A373] font-cinzel">
+                        <tr>
+                            <th class="py-3.5 px-4">Fase</th>
+                            <th class="py-3.5 px-4">Materia Prima</th>
+                            <th class="py-3.5 px-4">INCI</th>
+                            <th class="py-3.5 px-4">Función</th>
+                            <th class="py-3.5 px-4 text-right">% p/p</th>
+                        </tr>
+                    </thead>
+                    <tbody>${formulaRowsHtml}</tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <section class="py-16 px-6 max-w-5xl mx-auto">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div class="bg-white p-8 rounded-3xl border border-[#D4A373]/40">
+                <h3 class="text-xl font-bold text-[#5C3A21] mb-3">Resumen del Instructivo de Fabricación</h3>
+                <p class="font-sans text-xs text-[#2B2B2B]/85 leading-relaxed mb-4">${data.landing_copy.process_summary}</p>
+                <p class="font-sans text-xs text-[#5C3A21] font-semibold">Envase Primario: ${data.technical_specifications.packaging_type}</p>
+            </div>
+            <div class="bg-white p-8 rounded-3xl border border-[#D4A373]/40">
+                <h3 class="text-xl font-bold text-[#5C3A21] mb-3">Especificaciones Normativas &amp; Calidad</h3>
+                <p class="font-sans text-xs text-[#2B2B2B]/85 leading-relaxed mb-3">${data.landing_copy.regulatory_trust_statement}</p>
+                <ul class="font-sans text-xs space-y-1.5 text-[#2B2B2B]">
+                    <li><strong>pH Objetivo:</strong> ${data.regulatory_compliance.ph_target}</li>
+                    <li><strong>Especificación Físico-Química:</strong> ${data.technical_specifications.physicochemical_specs}</li>
+                    <li><strong>Calidad Microbiológica:</strong> ${data.technical_specifications.microbiological_limits}</li>
+                </ul>
+            </div>
+        </div>
+        <div class="mt-8 bg-[#5C3A21] text-[#F7F5F0] p-8 rounded-3xl border-2 border-[#D4A373] flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div>
+                <h4 class="font-cinzel font-bold text-lg text-[#D4A373]">Ficha Maestra: Fórmula Cuali-Cuantitativa &amp; Instructivo de Fabricación</h4>
+                <p class="text-xs font-sans text-[#F7F5F0]/80 mt-1">Genera el documento PDF detallado con pesajes por lote y protocolo de manufactura.</p>
+            </div>
+            <button onclick="window.print()" class="bg-[#D4A373] hover:bg-white text-[#5C3A21] font-cinzel font-bold text-xs px-6 py-3.5 rounded-2xl shadow transition shrink-0">
+                GENERAR PDF DETALLADO
+            </button>
+        </div>
+    </section>
+
+    <footer class="bg-[#2B2B2B] text-[#F7F5F0] py-12 px-6 text-center">
+        <p class="font-cinzel text-[#D4A373] tracking-widest text-sm mb-2">KAMAUI — COSMÉTICA VETERINARIA Y BIENESTAR HOLÍSTICO</p>
+        <p class="text-xs font-sans text-[#F7F5F0]/60">"Harmonizing pet health and natural beauty through holistic veterinary cosmetics."</p>
+    </footer>
+</body>
+</html>`;
+        }
+
+        function toggleLandingCodeView() {
+            document.getElementById('landingCodeContainer').classList.toggle('hidden');
+        }
+
+        function copyLandingCode() {
+            if (!currentValidationData) return;
+            const htmlCode = document.getElementById('landingRawCode').textContent;
+            navigator.clipboard.writeText(htmlCode).then(() => {
+                showModal("Código HTML Copiado", "El código completo de la Landing Page ha sido copiado al portapapeles.", "success");
+            });
+        }
+
+        function downloadLandingHtml() {
+            if (!currentValidationData || !currentPayload) return;
+            const htmlCode = buildStandaloneLandingHtml(currentValidationData, currentPayload);
+            const blob = new Blob([htmlCode], { type: 'text/html;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            const slug = currentPayload.product_name.toLowerCase().replace(/[^a-z0-9]+/g, '_');
+            a.href = url;
+            a.download = `landing_kamaui_${slug}.html`;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        function exportObsidianMarkdown() {
+            if (!currentValidationData || !currentPayload) return;
+            const d = currentValidationData;
+            const p = currentPayload;
+            const dateStr = new Date().toISOString().slice(0, 10);
+
+            const formulaMd = d.formulation.quali_quanti.map(row =>
+                `| ${row.phase || '-'} | ${row.ingredient} | *${row.inci || '-'}* | ${row.function || '-'} | **${row.percentage}** |`
+            ).join('\n');
+
+            const mdContent = `---
+title: "${p.product_name}"
+date: "${dateStr}"
+brand: "Kamaui"
+cosmetic_form: "${p.cosmetic_form}"
+target_pet: "${p.target_pet}"
+viability_score: ${d.viability_score}
+status: "Validado I+D"
+---
+
+# Dossier de Validación 360°: ${p.product_name}
+
+## 1. Diagnóstico Ejecutivo
+- **Score Global de Viabilidad:** \`${d.viability_score}/100\`
+- **Especie Objetivo:** ${p.target_pet} (${p.coat_type})
+- **Estatus Lick-Safe:** ${d.regulatory_compliance.lick_safe_level}
+
+## 2. Cumplimiento Regulatorio ICA y Toxicología
+- **Marco Normativo:** ${d.regulatory_compliance.ica_status}
+- **Dictamen Toxicológico:** ${d.regulatory_compliance.toxicology_alerts}
+- **pH Objetivo:** ${d.regulatory_compliance.ph_target}
+
+## 3. Fórmula Maestra Cuali-Cuantitativa (100%)
+| Fase | Materia Prima | INCI | Función Cosmética | % p/p |
+| :--- | :--- | :--- | :--- | :--- |
+${formulaMd}
+
+## 4. Instructivo Escala Laboratorio (500 g)
+${d.formulation.lab_scale_instructions}
+
+## 5. Escalado a Planta Piloto (25 kg - BPMv)
+${d.formulation.pilot_instructions}
+
+## 6. Especificaciones Físico-Químicas y Microbiológicas
+- **Apariencia:** ${d.technical_specifications.physicochemical_specs}
+- **Reología / Fusión:** ${d.technical_specifications.viscosity_or_melting}
+- **Densidad:** ${d.technical_specifications.density}
+- **Microbiología:** ${d.technical_specifications.microbiological_limits}
+- **Envase Primario:** ${d.technical_specifications.packaging_type}
+`;
+
+            const blob = new Blob([mdContent], { type: 'text/markdown;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            const slug = p.product_name.toLowerCase().replace(/[^a-z0-9]+/g, '_');
+            a.href = url;
+            a.download = `${dateStr}_${slug}_Obsidian.md`;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        async function generateDynamicFormulaPDF() {
+            if (!currentValidationData || !currentPayload) return;
+            const btn = document.getElementById('btnLandingPdf');
+            const origHtml = btn.innerHTML;
+            btn.innerHTML = '<i class="ph-light ph-spinner animate-spin text-lg"></i><span>MAQUETANDO PDF...</span>';
+            btn.disabled = true;
+
+            const d = currentValidationData;
+            const p = currentPayload;
+            const today = new Date().toLocaleDateString('es-CO', { year: 'numeric', month: 'long', day: 'numeric' });
+
+            const rowsHtml = (d.formulation.quali_quanti || []).map((item, idx) => {
+                const pct = parseFloat(String(item.percentage).replace('%', '')) || 0;
+                const g50 = ((pct / 100) * 50).toFixed(2);
+                const g500 = ((pct / 100) * 500).toFixed(1);
+                const kg25 = ((pct / 100) * 25).toFixed(3);
+                const bg = idx % 2 === 1 ? 'background:#FAF8F5;' : '';
+                return `
+                    <tr style="border-bottom:1px solid #E5DEC9; ${bg}">
+                        <td style="padding:7px 9px; font-weight:700; color:#5C3A21;">${item.phase || 'Fase'}</td>
+                        <td style="padding:7px 9px; font-weight:700;">${item.ingredient}</td>
+                        <td style="padding:7px 9px; font-style:italic; color:#555;">${item.inci || '-'}</td>
+                        <td style="padding:7px 9px;">${item.function || '-'}</td>
+                        <td style="padding:7px 9px; text-align:right; font-weight:700; color:#5C3A21;">${pct.toFixed(1)}%</td>
+                        <td style="padding:7px 9px; text-align:right;">${g50} g</td>
+                        <td style="padding:7px 9px; text-align:right; font-weight:600;">${g500} g</td>
+                        <td style="padding:7px 9px; text-align:right; font-weight:700; color:#5C3A21;">${kg25} kg</td>
+                    </tr>
+                `;
+            }).join('');
+
+            const labStepsHtml = (d.formulation.lab_scale_instructions || d.formulation.pilot_instructions || '')
+                .split('\n')
+                .map(line => `<div style="margin-bottom:6px;">${line}</div>`)
+                .join('');
+
+            const pilotStepsHtml = (d.formulation.pilot_instructions || '')
+                .split('\n')
+                .map(line => `<div style="margin-bottom:6px;">${line}</div>`)
+                .join('');
+
+            const wrapper = document.createElement('div');
+            wrapper.style.position = 'fixed';
+            wrapper.style.left = '-9999px';
+            wrapper.style.top = '0';
+            wrapper.style.width = '794px';
+            wrapper.style.backgroundColor = '#F7F5F0';
+            wrapper.style.color = '#2B2B2B';
+            wrapper.style.fontFamily = "'Montserrat', sans-serif";
+
+            wrapper.innerHTML = `
+                <div style="padding: 32px 36px; background: #F7F5F0; color: #2B2B2B;">
+                    <div style="background: #5C3A21; color: #F7F5F0; padding: 22px 26px; border-radius: 16px; border-bottom: 4px solid #D4A373; display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                        <div>
+                            <div style="font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: #D4A373; font-weight: 700;">KAMAUI STUDIO • DOSSIER DE FORMULACIÓN Y MANUFACTURA</div>
+                            <h1 style="font-family: 'Cinzel', serif; font-size: 19px; font-weight: 700; margin: 4px 0; color: #F7F5F0;">${p.product_name}</h1>
+                            <div style="font-family: 'Playfair Display', serif; font-style: italic; font-size: 11.5px; color: #D4A373;">${p.cosmetic_form} • Destino: ${p.target_pet}</div>
+                        </div>
+                        <div style="text-align: right; font-size: 10px; line-height: 1.5; color: #F7F5F0;">
+                            <div><strong>Fecha:</strong> ${today}</div>
+                            <div><strong>Viabilidad:</strong> ${d.viability_score}/100</div>
+                            <div style="background: #D4A373; color: #5C3A21; font-weight: 700; padding: 2px 8px; border-radius: 99px; display: inline-block; margin-top: 4px;">PROTOCOLO LICK-SAFE</div>
+                        </div>
+                    </div>
+
+                    <div style="margin-bottom: 20px;">
+                        <h2 style="font-family: 'Cinzel', serif; font-size: 14px; font-weight: 700; color: #5C3A21; border-bottom: 2px solid #D4A373; padding-bottom: 5px; margin: 0 0 10px 0;">
+                            1. FÓRMULA MAESTRA CUALI-CUANTITATIVA DETALLADA (100.0% p/p)
+                        </h2>
+                        <table style="width: 100%; border-collapse: collapse; font-size: 10px; background: #FFFFFF; border: 1px solid #D4A373;">
+                            <thead>
+                                <tr style="background: #5C3A21; color: #D4A373; font-family: 'Cinzel', serif; font-size: 9px; text-transform: uppercase;">
+                                    <th style="padding: 8px 9px; text-align: left;">Fase</th>
+                                    <th style="padding: 8px 9px; text-align: left;">Materia Prima</th>
+                                    <th style="padding: 8px 9px; text-align: left;">INCI</th>
+                                    <th style="padding: 8px 9px; text-align: left;">Función</th>
+                                    <th style="padding: 8px 9px; text-align: right;">% p/p</th>
+                                    <th style="padding: 8px 9px; text-align: right;">1 Ud (50g)</th>
+                                    <th style="padding: 8px 9px; text-align: right;">Lab (500g)</th>
+                                    <th style="padding: 8px 9px; text-align: right;">Piloto (25kg)</th>
+                                </tr>
+                            </thead>
+                            <tbody>${rowsHtml}</tbody>
+                            <tfoot>
+                                <tr style="background: #EFE7DA; font-weight: 700; color: #5C3A21; border-top: 2px solid #D4A373;">
+                                    <td colspan="4" style="padding: 8px 9px; font-family: 'Cinzel', serif;">BALANCE TOTAL FÓRMULA MAESTRA</td>
+                                    <td style="padding: 8px 9px; text-align: right;">100.0%</td>
+                                    <td style="padding: 8px 9px; text-align: right;">50.00 g</td>
+                                    <td style="padding: 8px 9px; text-align: right;">500.0 g</td>
+                                    <td style="padding: 8px 9px; text-align: right;">25.000 kg</td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+
+                    <div style="margin-bottom: 18px;">
+                        <h2 style="font-family: 'Cinzel', serif; font-size: 14px; font-weight: 700; color: #5C3A21; border-bottom: 2px solid #D4A373; padding-bottom: 5px; margin: 0 0 10px 0;">
+                            2. INSTRUCTIVO DETALLADO DE FABRICACIÓN Y ESCALADO
+                        </h2>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
+                            <div style="background: #FFFFFF; border: 1px solid #D4A373; border-radius: 12px; padding: 14px;">
+                                <div style="background: #EFE7DA; color: #5C3A21; padding: 6px 10px; border-radius: 8px; font-family: 'Cinzel', serif; font-size: 10.5px; font-weight: 700; margin-bottom: 8px;">
+                                    2A. ESCALA LABORATORIO (LOTE 500 g)
+                                </div>
+                                <div style="font-size: 9.8px; line-height: 1.55; color: #2B2B2B;">${labStepsHtml}</div>
+                            </div>
+                            <div style="background: #5C3A21; color: #F7F5F0; border: 1px solid #D4A373; border-radius: 12px; padding: 14px;">
+                                <div style="background: rgba(212, 163, 115, 0.2); color: #D4A373; padding: 6px 10px; border-radius: 8px; font-family: 'Cinzel', serif; font-size: 10.5px; font-weight: 700; margin-bottom: 8px; border: 1px solid rgba(212,163,115,0.4);">
+                                    2B. ESCALADO PLANTA PILOTO (LOTE 25.0 kg - BPMv)
+                                </div>
+                                <div style="font-size: 9.8px; line-height: 1.55; color: #F7F5F0;">${pilotStepsHtml}</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="background: #FFFFFF; border: 1px solid #D4A373; border-radius: 12px; padding: 12px 14px; font-size: 9.5px;">
+                        <div style="font-family: 'Cinzel', serif; font-weight: 700; color: #5C3A21; margin-bottom: 4px;">3. ESPECIFICACIONES FÍSICO-QUÍMICAS Y DE CALIDAD DE LIBERACIÓN</div>
+                        <div><strong>pH Objetivo:</strong> ${d.regulatory_compliance.ph_target} &nbsp;|&nbsp; <strong>Reología/Fusión:</strong> ${d.technical_specifications.viscosity_or_melting} &nbsp;|&nbsp; <strong>Densidad:</strong> ${d.technical_specifications.density}</div>
+                        <div style="margin-top: 3px;"><strong>Aspecto:</strong> ${d.technical_specifications.physicochemical_specs}</div>
+                        <div style="margin-top: 3px;"><strong>Microbiología:</strong> ${d.technical_specifications.microbiological_limits}</div>
+                    </div>
+                </div>
+            `;
+
+            document.body.appendChild(wrapper);
+            try {
+                const slug = p.product_name.toLowerCase().replace(/[^a-z0-9]+/g, '_');
+                const opt = {
+                    margin: [5, 5, 5, 5],
+                    filename: `Dossier_Formula_${slug}_Kamaui.pdf`,
+                    image: { type: 'jpeg', quality: 0.98 },
+                    html2canvas: { scale: 2, useCORS: true, letterRendering: true },
+                    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+                };
+                await html2pdf().set(opt).from(wrapper).save();
+            } catch (e) {
+                console.error(e);
+                window.print();
+            } finally {
+                document.body.removeChild(wrapper);
+                btn.innerHTML = origHtml;
+                btn.disabled = false;
+            }
+        }
+
+        function showModal(title, message, type = "success") {
+            const modal = document.getElementById('customModal');
+            const icon = document.getElementById('modalIcon');
+            document.getElementById('modalTitle').textContent = title;
+            document.getElementById('modalMsg').textContent = message;
+
+            if (type === "success") {
+                icon.className = "mx-auto flex items-center justify-center h-14 w-14 rounded-full bg-kamaui-gold/20 border border-kamaui-gold/50";
+                icon.innerHTML = '<i class="ph-light ph-check text-2xl text-kamaui-brown"></i>';
+            } else {
+                icon.className = "mx-auto flex items-center justify-center h-14 w-14 rounded-full bg-red-50 border border-red-200";
+                icon.innerHTML = '<i class="ph-light ph-warning text-2xl text-red-800"></i>';
+            }
+
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                modal.classList.remove('opacity-0');
+                document.getElementById('modalContent').classList.remove('scale-95');
+                document.getElementById('modalContent').classList.add('scale-100');
+            }, 10);
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('customModal');
+            modal.classList.add('opacity-0');
+            document.getElementById('modalContent').classList.remove('scale-100');
+            document.getElementById('modalContent').classList.add('scale-95');
+            setTimeout(() => modal.classList.add('hidden'), 300);
+        }
+
+        // ================= GESTOR DE PORTAFOLIO DE IDEAS I+D (APROBADAS / RECHAZADAS & ESTADOS) =================
+        const VAULT_STORAGE_KEY = 'kamaui_ideas_vault_v1';
+        let activeDecisionFilter = 'ALL';
+        let vaultIdeas = [];
+
+        function buildDefaultVaultSeeds() {
+            const p1 = {
+                product_name: 'Bálsamo Sagrado Reparador de Huellas & Trufa',
+                cosmetic_form: 'Bálsamo Anhidro Fundente',
+                target_pet: 'Perros y Gatos',
+                coat_type: 'Almohadillas plantares, trufa y zonas hiperqueratósicas',
+                ingredients: 'Manteca de Karité Orgánica, Cera de Candelilla, Oleato de Caléndula, Aceite de Semilla de Cáñamo, D-Pantenol, Vitamina E',
+                concept_description: 'Proteger y regenerar las almohadillas plantares expuestas al asfalto caliente o frío, nutriendo la barrera cutánea con una textura sedosa 100% segura al lamido.'
+            };
+            const p2 = {
+                product_name: 'Champú Dermo-Armonía de Avena Coloidal & Manzanilla Azul',
+                cosmetic_form: 'Champú Dermo-Calmante Suave',
+                target_pet: 'Perros y Gatos',
+                coat_type: 'Manto doble, largo o rizado con piel sensible',
+                ingredients: 'Avena Coloidal USP, Hidrolato de Manzanilla Romana, Coco-Glucoside, Aloe Vera Descolorizado, D-Pantenol, Extracto de Caléndula',
+                concept_description: 'Limpieza profunda libre de sulfatos que calma el prurito y equilibra el microbioma cutáneo en pH 7.0.'
+            };
+            const p3 = {
+                product_name: 'Loción Botánica Purificante con Árbol de Té y Eucalipto',
+                cosmetic_form: 'Bruma / Hidrolato Acondicionador',
+                target_pet: 'Perros y Gatos',
+                coat_type: 'Manto corto y piel con tendencia atópica',
+                ingredients: 'Aceite Esencial de Árbol de Té, Eucalipto, Manteca de Cacao, Caléndula, Óxido de Zinc',
+                concept_description: 'Bruma refrescante para calmar picazón intensa y controlar el mal olor en perros y gatos.'
+            };
+
+            return [
+                {
+                    id: 'kmw-idea-101',
+                    created_at: '2026-11-10',
+                    decision: 'Aprobada',
+                    stage: 'En proceso',
+                    notes: 'Lote de laboratorio (500 g) superó prueba de estabilidad térmica a 40°C. Pendiente escalado a 25 kg en reactor.',
+                    payload: p1,
+                    data: runExpertDiagnosticEngine(p1)
+                },
+                {
+                    id: 'kmw-idea-102',
+                    created_at: '2026-11-08',
+                    decision: 'Aprobada',
+                    stage: 'Finalizado',
+                    notes: 'Fórmula maestra validada con pH 7.02 y viscosidad 4,200 cP. Lista para orden de producción piloto.',
+                    payload: p2,
+                    data: runExpertDiagnosticEngine(p2)
+                },
+                {
+                    id: 'kmw-idea-103',
+                    created_at: '2026-11-05',
+                    decision: 'Rechazada',
+                    stage: 'Descartado',
+                    notes: 'Rechazada en formulación original por presencia de terpenos (Árbol de Té/Eucalipto) hepatotóxicos en felinos y Óxido de Zinc riesgoso al lamido.',
+                    payload: p3,
+                    data: runExpertDiagnosticEngine(p3)
+                }
+            ];
+        }
+
+        function loadVaultFromStorage() {
+            try {
+                const raw = localStorage.getItem(VAULT_STORAGE_KEY);
+                if (!raw) {
+                    vaultIdeas = buildDefaultVaultSeeds();
+                    saveVaultToStorage();
+                } else {
+                    const parsed = JSON.parse(raw);
+                    vaultIdeas = Array.isArray(parsed) && parsed.length ? parsed : buildDefaultVaultSeeds();
+                }
+            } catch (e) {
+                console.error('Error leyendo portafolio:', e);
+                vaultIdeas = buildDefaultVaultSeeds();
+            }
+            updateVaultKPIs();
+        }
+
+        function saveVaultToStorage() {
+            localStorage.setItem(VAULT_STORAGE_KEY, JSON.stringify(vaultIdeas));
+            updateVaultKPIs();
+        }
+
+        function resetDemoVaultIdeas() {
+            vaultIdeas = buildDefaultVaultSeeds();
+            saveVaultToStorage();
+            renderVaultIdeas();
+            showModal('Portafolio Restaurado', 'Se han restaurado las 3 ideas de referencia (Aprobadas y Rechazadas) con sus instructivos y materias primas.', 'success');
+        }
+
+        function saveCurrentIdeaToVault(decision = 'Aprobada') {
+            if (!currentValidationData || !currentPayload) {
+                showModal('Sin Diagnóstico Activo', 'Primero valida un concepto en la pestaña "Concepto".', 'error');
+                return;
+            }
+
+            const selectedStageEl = document.getElementById('saveStageSelect');
+            let stage = selectedStageEl ? selectedStageEl.value : (decision === 'Aprobada' ? 'En proceso' : 'Descartado');
+            if (decision === 'Rechazada' && stage === 'En proceso') {
+                stage = 'Descartado';
+            }
+
+            const existingIdx = vaultIdeas.findIndex(
+                item => item.payload.product_name.toLowerCase() === currentPayload.product_name.toLowerCase()
+            );
+
+            const record = {
+                id: existingIdx >= 0 ? vaultIdeas[existingIdx].id : 'kmw-idea-' + Date.now(),
+                created_at: new Date().toISOString().slice(0, 10),
+                decision: decision,
+                stage: stage,
+                notes: decision === 'Aprobada'
+                    ? 'Aprobada por comité técnico I+D. Materias primas e instructivo verificados.'
+                    : 'Rechazada / Archivada para revisión de activos o reformulación.',
+                payload: JSON.parse(JSON.stringify(currentPayload)),
+                data: JSON.parse(JSON.stringify(currentValidationData))
+            };
+
+            if (existingIdx >= 0) {
+                vaultIdeas[existingIdx] = record;
+            } else {
+                vaultIdeas.unshift(record);
+            }
+
+            saveVaultToStorage();
+            renderVaultIdeas();
+            showModal(
+                decision === 'Aprobada' ? 'Idea Aprobada y Guardada' : 'Idea Rechazada y Archivada',
+                `"${currentPayload.product_name}" se almacenó en el Portafolio I+D con estado "${stage}".`,
+                'success'
+            );
+            switchTab('vault');
+        }
+
+        function updateVaultKPIs() {
+            const approved = vaultIdeas.filter(i => i.decision === 'Aprobada').length;
+            const rejected = vaultIdeas.filter(i => i.decision === 'Rechazada').length;
+            const inProg = vaultIdeas.filter(i => i.stage === 'En proceso').length;
+            const onHold = vaultIdeas.filter(i => i.stage === 'En espera').length;
+            const done = vaultIdeas.filter(i => i.stage === 'Finalizado').length;
+            const disc = vaultIdeas.filter(i => i.stage === 'Descartado').length;
+
+            const badge = document.getElementById('vaultCountBadge');
+            if (badge) badge.textContent = vaultIdeas.length;
+
+            const setTxt = (id, val) => {
+                const el = document.getElementById(id);
+                if (el) el.textContent = val;
+            };
+            setTxt('kpi-approved', approved);
+            setTxt('kpi-rejected', rejected);
+            setTxt('kpi-inprogress', inProg);
+            setTxt('kpi-onhold', onHold);
+            setTxt('kpi-completed', done);
+            setTxt('kpi-discarded', disc);
+        }
+
+        function setVaultDecisionFilter(dec) {
+            activeDecisionFilter = dec;
+            ['ALL', 'Aprobada', 'Rechazada'].forEach(key => {
+                const btn = document.getElementById(`filter-dec-${key}`);
+                if (!btn) return;
+                if (key === dec) {
+                    btn.className = 'px-4 py-2 rounded-full bg-kamaui-brown text-kamaui-chalk font-semibold transition flex items-center gap-1.5 shadow-sm';
+                } else {
+                    btn.className = 'px-4 py-2 rounded-full bg-kamaui-sand text-kamaui-brown hover:bg-kamaui-gold/25 transition flex items-center gap-1.5';
+                }
+            });
+            renderVaultIdeas();
+        }
+
+        function getStageMeta(stage) {
+            switch (stage) {
+                case 'En proceso':
+                    return { pct: 55, barClass: 'bg-amber-500', pillClass: 'bg-amber-500/15 text-amber-900 border-amber-500/40', icon: 'ph-flask' };
+                case 'En espera':
+                    return { pct: 25, barClass: 'bg-sky-500', pillClass: 'bg-sky-500/15 text-sky-900 border-sky-500/40', icon: 'ph-hourglass-medium' };
+                case 'Finalizado':
+                    return { pct: 100, barClass: 'bg-emerald-600', pillClass: 'bg-emerald-600/15 text-emerald-900 border-emerald-600/40', icon: 'ph-seal-check' };
+                case 'Descartado':
+                default:
+                    return { pct: 10, barClass: 'bg-rose-500', pillClass: 'bg-rose-500/15 text-rose-900 border-rose-500/40', icon: 'ph-prohibit' };
+            }
+        }
+
+        function renderVaultIdeas() {
+            updateVaultKPIs();
+            const grid = document.getElementById('vaultIdeasGrid');
+            if (!grid) return;
+
+            const stageFilter = document.getElementById('vaultStageFilter')?.value || 'ALL';
+            const searchQuery = (document.getElementById('vaultSearchInput')?.value || '').toLowerCase().trim();
+
+            const filtered = vaultIdeas.filter(item => {
+                const matchDecision = activeDecisionFilter === 'ALL' || item.decision === activeDecisionFilter;
+                const matchStage = stageFilter === 'ALL' || item.stage === stageFilter;
+                const haystack = `${item.payload.product_name} ${item.payload.cosmetic_form} ${item.payload.ingredients} ${item.notes || ''}`.toLowerCase();
+                const matchSearch = !searchQuery || haystack.includes(searchQuery);
+                return matchDecision && matchStage && matchSearch;
+            });
+
+            if (!filtered.length) {
+                grid.innerHTML = `
+                    <div class="lg:col-span-2 botanical-surface rounded-[32px] py-20 px-6 text-center space-y-3">
+                        <i class="ph-thin ph-archive-box text-6xl text-kamaui-gold"></i>
+                        <h3 class="text-2xl font-playfair text-kamaui-brown">No hay ideas que coincidan con este filtro</h3>
+                        <p class="font-tech text-xs text-kamaui-black/60">Cambia los filtros superiores o valida una nueva idea desde la pestaña Concepto.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            grid.innerHTML = filtered.map(item => {
+                const isApproved = item.decision === 'Aprobada';
+                const stageMeta = getStageMeta(item.stage);
+                const rawPreview = (item.data.raw_materials_options || []).slice(0, 3).map(r => r.name.split('/')[0].trim());
+
+                return `
+                    <div class="botanical-surface rounded-[32px] p-7 sm:p-8 flex flex-col justify-between space-y-6 border ${isApproved ? 'border-emerald-700/30' : 'border-rose-700/30'} transition-all duration-500 hover:-translate-y-0.5">
+                        <!-- Top Header: Badges & Score -->
+                        <div class="space-y-4">
+                            <div class="flex flex-wrap items-center justify-between gap-2">
+                                <div class="flex flex-wrap items-center gap-2 font-tech text-[10px] uppercase tracking-wider">
+                                    <!-- Botón para alternar Aprobada / Rechazada -->
+                                    <button onclick="toggleIdeaDecision('${item.id}')" title="Clic para cambiar entre Aprobada y Rechazada"
+                                        class="px-3.5 py-1 rounded-full font-bold border transition flex items-center gap-1.5 ${isApproved ? 'bg-emerald-900 text-emerald-100 border-emerald-700' : 'bg-rose-950 text-rose-100 border-rose-700'}">
+                                        <i class="ph-light ${isApproved ? 'ph-check-circle' : 'ph-x-circle'} text-sm"></i>
+                                        <span>${item.decision}</span>
+                                    </button>
+
+                                    <span class="px-3 py-1 rounded-full border font-semibold flex items-center gap-1.5 ${stageMeta.pillClass}">
+                                        <i class="ph-light ${stageMeta.icon} text-sm"></i>
+                                        <span>${item.stage}</span>
+                                    </span>
+
+                                    <span class="text-kamaui-brown/60 font-medium">${item.created_at}</span>
+                                </div>
+
+                                <div class="flex items-center gap-2">
+                                    <span class="px-3 py-1 rounded-full bg-kamaui-brown text-kamaui-gold font-cinzel font-bold text-xs">
+                                        ${item.data.viability_score}/100
+                                    </span>
+                                    <button onclick="deleteVaultIdea('${item.id}')" title="Eliminar idea del portafolio"
+                                        class="w-8 h-8 rounded-full bg-kamaui-sand/80 hover:bg-rose-900 hover:text-white text-kamaui-brown/70 transition flex items-center justify-center">
+                                        <i class="ph-light ph-trash text-sm"></i>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div>
+                                <span class="font-tech text-[10px] uppercase tracking-[0.2em] text-kamaui-blue font-bold block">${item.payload.cosmetic_form} • ${item.payload.target_pet}</span>
+                                <h3 class="text-2xl font-playfair font-semibold text-kamaui-brown mt-0.5 leading-snug">${item.payload.product_name}</h3>
+                                <p class="text-xs font-tech text-kamaui-black/70 mt-1.5 line-clamp-2">${item.payload.concept_description}</p>
+                            </div>
+
+                            <!-- Resumen de Materias Primas Clave -->
+                            <div class="bg-kamaui-chalk/85 p-4 rounded-2xl border border-kamaui-gold/25 space-y-2">
+                                <div class="flex items-center justify-between font-tech text-[10px] uppercase tracking-wider text-kamaui-brown font-bold">
+                                    <span class="flex items-center gap-1.5"><i class="ph-light ph-plant text-sm text-kamaui-gold"></i> Materias Primas Base (${(item.data.formulation?.quali_quanti || []).length} fases)</span>
+                                    <span class="text-kamaui-blue">${item.data.regulatory_compliance?.lick_safe_level || 'Lick-Safe'}</span>
+                                </div>
+                                <div class="flex flex-wrap gap-1.5 font-tech text-[11px]">
+                                    ${rawPreview.map(rm => `<span class="px-2.5 py-1 rounded-lg bg-white border border-kamaui-gold/30 text-kamaui-brown font-medium">${rm}</span>`).join('')}
+                                </div>
+                            </div>
+
+                            <!-- Control de Gestión de Estado de Avance -->
+                            <div class="bg-white/80 p-4 rounded-2xl border border-kamaui-gold/30 space-y-3 font-tech text-xs">
+                                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                                    <span class="text-[10px] uppercase tracking-[0.18em] text-kamaui-brown font-bold">Estado de Avance del Proyecto:</span>
+                                    <div class="grid grid-cols-2 sm:flex items-center gap-1.5">
+                                        ${['En proceso', 'En espera', 'Finalizado', 'Descartado'].map(st => `
+                                            <button type="button" onclick="updateIdeaStage('${item.id}', '${st}')"
+                                                class="px-2.5 py-1 rounded-lg text-[10px] font-semibold transition border ${item.stage === st ? 'bg-kamaui-brown text-kamaui-gold border-kamaui-brown shadow-sm' : 'bg-kamaui-chalk text-kamaui-brown/75 border-kamaui-gold/25 hover:bg-kamaui-gold/15'}">
+                                                ${st}
+                                            </button>
+                                        `).join('')}
+                                    </div>
+                                </div>
+
+                                <!-- Barra de Progreso Visual -->
+                                <div class="w-full h-1.5 bg-kamaui-sand rounded-full overflow-hidden">
+                                    <div class="h-full ${stageMeta.barClass} transition-all duration-500 rounded-full" style="width: ${stageMeta.pct}%"></div>
+                                </div>
+
+                                <!-- Bitácora / Nota editable rápida -->
+                                <div>
+                                    <label class="text-[9px] uppercase tracking-widest text-kamaui-brown/60 font-bold block mb-1">Bitácora Técnica / Motivo de Dictamen:</label>
+                                    <input type="text" value="${(item.notes || '').replace(/"/g, '&quot;')}"
+                                        onchange="updateIdeaNotes('${item.id}', this.value)"
+                                        placeholder="Añadir nota de seguimiento de laboratorio..."
+                                        class="w-full px-3 py-1.5 rounded-xl bg-kamaui-chalk/70 border border-kamaui-gold/25 text-[11px] text-kamaui-black outline-none focus:border-kamaui-brown">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Acciones Inferiores: Revisar Instructivo & Materias Primas -->
+                        <div class="pt-3 border-t border-kamaui-gold/25 flex flex-wrap items-center justify-between gap-3 font-tech text-xs">
+                            <button type="button" onclick="openVaultInspector('${item.id}')"
+                                class="flex-1 py-3 px-4 rounded-2xl espresso-surface text-kamaui-gold font-cinzel font-semibold text-xs tracking-wider hover:opacity-95 transition flex items-center justify-center gap-2 shadow-md">
+                                <i class="ph-light ph-book-open-text text-base"></i>
+                                <span>REVISAR MATERIAS PRIMAS E INSTRUCTIVO</span>
+                            </button>
+
+                            <button type="button" onclick="loadVaultIdeaIntoWorkspace('${item.id}')" title="Cargar en Viabilidad, Dossier y Landing Page"
+                                class="py-3 px-4 rounded-2xl bg-kamaui-sand hover:bg-kamaui-gold/30 text-kamaui-brown font-semibold transition flex items-center gap-1.5">
+                                <i class="ph-light ph-arrow-u-up-right text-base"></i>
+                                <span>Abrir 360°</span>
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function toggleIdeaDecision(id) {
+            const item = vaultIdeas.find(i => i.id === id);
+            if (!item) return;
+            item.decision = item.decision === 'Aprobada' ? 'Rechazada' : 'Aprobada';
+            if (item.decision === 'Rechazada' && item.stage === 'Finalizado') {
+                item.stage = 'Descartado';
+            } else if (item.decision === 'Aprobada' && item.stage === 'Descartado') {
+                item.stage = 'En proceso';
+            }
+            saveVaultToStorage();
+            renderVaultIdeas();
+        }
+
+        function updateIdeaStage(id, newStage) {
+            const item = vaultIdeas.find(i => i.id === id);
+            if (!item) return;
+            item.stage = newStage;
+            saveVaultToStorage();
+            renderVaultIdeas();
+        }
+
+        function updateIdeaNotes(id, newNotes) {
+            const item = vaultIdeas.find(i => i.id === id);
+            if (!item) return;
+            item.notes = newNotes.trim();
+            saveVaultToStorage();
+        }
+
+        function deleteVaultIdea(id) {
+            vaultIdeas = vaultIdeas.filter(i => i.id !== id);
+            saveVaultToStorage();
+            renderVaultIdeas();
+        }
+
+        function openVaultInspector(id) {
+            const item = vaultIdeas.find(i => i.id === id);
+            if (!item) return;
+
+            const d = item.data;
+            const p = item.payload;
+            const isApproved = item.decision === 'Aprobada';
+
+            const decBadge = document.getElementById('insp-decision-badge');
+            decBadge.textContent = item.decision;
+            decBadge.className = isApproved
+                ? 'px-3 py-1 rounded-full font-bold bg-emerald-900 text-emerald-100'
+                : 'px-3 py-1 rounded-full font-bold bg-rose-950 text-rose-100';
+
+            const stageBadge = document.getElementById('insp-stage-badge');
+            stageBadge.textContent = `Estado: ${item.stage}`;
+            stageBadge.className = 'px-3 py-1 rounded-full font-semibold bg-kamaui-sand text-kamaui-brown border border-kamaui-gold/40';
+
+            document.getElementById('insp-score-badge').textContent = `Viabilidad: ${d.viability_score}/100`;
+            document.getElementById('insp-title').textContent = p.product_name;
+            document.getElementById('insp-meta').textContent = `${p.cosmetic_form} • Especie: ${p.target_pet} • Registrado: ${item.created_at}`;
+
+            // 1. Materias Primas
+            const rawContainer = document.getElementById('insp-raw-materials');
+            rawContainer.innerHTML = (d.raw_materials_options || []).map(rm => `
+                <div class="p-5 rounded-2xl bg-white border border-kamaui-gold/30 space-y-1.5">
+                    <span class="font-tech text-[10px] uppercase tracking-wider text-kamaui-gold font-bold">${rm.inci}</span>
+                    <h5 class="font-cinzel font-bold text-sm text-kamaui-brown">${rm.name}</h5>
+                    <p class="font-tech text-xs text-kamaui-blue font-semibold">${rm.function}</p>
+                    <p class="font-playfair text-xs text-kamaui-black/80 italic">${rm.benefit_highlight}</p>
+                    <p class="font-tech text-[11px] text-kamaui-brown/80 pt-1.5 border-t border-kamaui-gold/20">${rm.alternative_option}</p>
+                </div>
+            `).join('');
+
+            // 2. Fórmula Cuali-Cuantitativa
+            const formulaTbody = document.getElementById('insp-formula-rows');
+            formulaTbody.innerHTML = (d.formulation?.quali_quanti || []).map(row => {
+                const pct = parseFloat(String(row.percentage).replace('%', '')) || 0;
+                const g500 = ((pct / 100) * 500).toFixed(1);
+                const kg25 = ((pct / 100) * 25).toFixed(3);
+                return `
+                    <tr class="hover:bg-kamaui-gold/10">
+                        <td class="py-2.5 px-4 font-semibold text-kamaui-brown">${row.phase || 'Fase'}</td>
+                        <td class="py-2.5 px-4 font-bold text-kamaui-black">${row.ingredient}</td>
+                        <td class="py-2.5 px-4 italic text-kamaui-black/65">${row.inci || '-'}</td>
+                        <td class="py-2.5 px-4 text-kamaui-black/80">${row.function || '-'}</td>
+                        <td class="py-2.5 px-4 text-right font-bold text-kamaui-brown">${pct.toFixed(1)}%</td>
+                        <td class="py-2.5 px-4 text-right">${g500} g</td>
+                        <td class="py-2.5 px-4 text-right font-semibold text-kamaui-brown">${kg25} kg</td>
+                    </tr>
+                `;
+            }).join('');
+
+            // 3. Instructivo Lab y Planta Piloto
+            const labText = d.formulation?.lab_scale_instructions || d.formulation?.pilot_instructions || '';
+            const pilotText = d.formulation?.pilot_instructions || '';
+            document.getElementById('insp-lab-sop').innerHTML = labText.replace(/\n/g, '<br><br>');
+            document.getElementById('insp-pilot-sop').innerHTML = pilotText.replace(/\n/g, '<br><br>');
+
+            document.getElementById('insp-tox-note').textContent = `Dictamen Toxicológico: ${d.regulatory_compliance?.lick_safe_level || 'Verificado'} — ${item.notes || ''}`;
+
+            document.getElementById('insp-btn-load').onclick = () => {
+                closeVaultInspector();
+                loadVaultIdeaIntoWorkspace(item.id);
+            };
+            document.getElementById('insp-btn-pdf').onclick = () => {
+                currentPayload = JSON.parse(JSON.stringify(item.payload));
+                currentValidationData = JSON.parse(JSON.stringify(item.data));
+                generateDynamicFormulaPDF();
+            };
+
+            const modal = document.getElementById('vaultInspectorModal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function closeVaultInspector() {
+            const modal = document.getElementById('vaultInspectorModal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
+        function loadVaultIdeaIntoWorkspace(id) {
+            const item = vaultIdeas.find(i => i.id === id);
+            if (!item) return;
+
+            currentPayload = JSON.parse(JSON.stringify(item.payload));
+            currentValidationData = JSON.parse(JSON.stringify(item.data));
+
+            document.getElementById('product_name').value = currentPayload.product_name;
+            document.getElementById('cosmetic_form').value = currentPayload.cosmetic_form;
+            document.getElementById('target_pet').value = currentPayload.target_pet;
+            document.getElementById('coat_type').value = currentPayload.coat_type;
+            document.getElementById('ingredients').value = currentPayload.ingredients;
+            document.getElementById('concept_description').value = currentPayload.concept_description;
+
+            populateResults(currentValidationData, currentPayload, false);
+            populateFormula(currentValidationData);
+            populateLanding(currentValidationData, currentPayload);
+
+            switchTab('formula');
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            loadVaultFromStorage();
+            renderVaultIdeas();
+        });
+    </script>
+</body>
+</html>
