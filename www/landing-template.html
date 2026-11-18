@@ -1,0 +1,933 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kamaui — Dossier Científico & Transparencia Botánica</title>
+  <!-- Google Fonts: Cormorant Garamond, Plus Jakarta Sans & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=JetBrains+Mono:wght@300;400;500&family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <!-- Phosphor Icons (Light & Thin strokes) -->
+  <script src="https://unpkg.com/@phosphor-icons/web"></script>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- html2pdf.js for Client-Side PDF Generation -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            kamaui: {
+              bg: '#F7F5F0',
+              cream: '#EFECE6',
+              sand: '#E5DEC9',
+              gold: '#D4A373',
+              goldLight: '#E9EDC9',
+              brown: '#5C3A21',
+              espresso: '#2C1B10',
+              blue: '#85A1BA',
+              blueSoft: '#EBF1F5',
+              ink: '#1F1A17',
+              muted: '#7A7067',
+              sage: '#4A6B53'
+            }
+          },
+          fontFamily: {
+            serif: ['"Cormorant Garamond"', 'Georgia', 'serif'],
+            sans: ['"Plus Jakarta Sans"', 'system-ui', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace']
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      background-color: #F7F5F0;
+      color: #1F1A17;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      -webkit-font-smoothing: antialiased;
+      background-image:
+        radial-gradient(circle at 12% 10%, rgba(212, 163, 115, 0.14) 0%, transparent 42%),
+        radial-gradient(circle at 88% 22%, rgba(133, 161, 186, 0.14) 0%, transparent 40%),
+        radial-gradient(circle at 50% 88%, rgba(92, 58, 33, 0.06) 0%, transparent 50%);
+      background-attachment: fixed;
+    }
+
+    .botanical-surface {
+      background: rgba(255, 253, 249, 0.78);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(92, 58, 33, 0.09);
+      box-shadow: 0 20px 50px -15px rgba(44, 27, 16, 0.05), 0 4px 16px -2px rgba(44, 27, 16, 0.02);
+    }
+
+    .espresso-surface {
+      background: linear-gradient(145deg, #2C1B10 0%, #422918 58%, #5C3A21 100%);
+      color: #F7F5F0;
+      box-shadow: 0 28px 65px -15px rgba(44, 27, 16, 0.28);
+    }
+
+    @keyframes slowRotate {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+    .mandala-orbit {
+      animation: slowRotate 80s linear infinite;
+    }
+
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: #F7F5F0; }
+    ::-webkit-scrollbar-thumb { background: #D4A373; border-radius: 9999px; }
+  </style>
+</head>
+<body class="selection:bg-kamaui-gold/25 selection:text-kamaui-espresso">
+
+  <!-- FLOATING GLASSMORPHIC PILL NAVBAR -->
+  <header class="sticky top-5 z-50 px-4 sm:px-8">
+    <div class="max-w-7xl mx-auto botanical-surface rounded-full px-5 sm:px-8 py-3.5 flex items-center justify-between transition-all duration-500">
+      <div class="flex items-center gap-4">
+        <div class="relative w-11 h-11 rounded-full p-0.5 bg-gradient-to-tr from-kamaui-brown via-kamaui-gold to-kamaui-blue shadow-sm">
+          <img src="assets/logo-kamaui.jpg" alt="Kamaui Mandala Logo" class="w-full h-full rounded-full object-cover bg-white">
+        </div>
+        <div>
+          <div class="flex items-center gap-2.5">
+            <span class="font-serif text-2xl font-semibold tracking-[0.14em] text-kamaui-espresso">KAMAUI</span>
+            <span class="hidden md:inline-block text-[9px] font-mono uppercase tracking-[0.25em] px-2.5 py-0.5 rounded-full bg-kamaui-gold/15 text-kamaui-brown border border-kamaui-gold/30">Botanical Atelier</span>
+          </div>
+          <p class="text-[10px] tracking-[0.22em] uppercase text-kamaui-muted">Santuario de Ciencia Holística Veterinaria</p>
+        </div>
+      </div>
+
+      <nav class="hidden lg:flex items-center gap-7 text-xs font-medium text-kamaui-muted">
+        <a href="#materias-primas" class="hover:text-kamaui-espresso transition-colors duration-300">01. Fitoactivos</a>
+        <a href="#formulacion" class="hover:text-kamaui-espresso transition-colors duration-300">02. Fórmula Maestra 100%</a>
+        <a href="#manufactura" class="hover:text-kamaui-espresso transition-colors duration-300">03. Proceso & Escalado</a>
+        <a href="#especificaciones" class="hover:text-kamaui-espresso transition-colors duration-300">04. Normativa ICA</a>
+      </nav>
+
+      <div class="flex items-center gap-3">
+        <button onclick="generateDetailedFormulaPDF()" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-kamaui-espresso text-kamaui-bg text-[10px] font-mono uppercase tracking-[0.2em] hover:bg-kamaui-brown transition-all duration-500 shadow-sm">
+          <i class="ph-light ph-file-pdf text-sm text-kamaui-gold"></i>
+          <span>Dossier PDF</span>
+        </button>
+        <a href="index.html" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-white/80 hover:bg-white text-kamaui-espresso border border-kamaui-brown/15 text-[10px] font-mono uppercase tracking-[0.2em] transition-all duration-500">
+          <i class="ph-light ph-flask text-sm text-kamaui-brown"></i>
+          <span class="hidden sm:inline">Validador I+D</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- HERO SECTION: SPLIT SACRED MANDALA & ESPRESSO SHOWCASE -->
+  <section class="max-w-7xl mx-auto px-4 sm:px-8 pt-8 pb-16">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
+      
+      <!-- Left 7 Cols: Editorial Botanical Statement -->
+      <div class="lg:col-span-7 botanical-surface rounded-[36px] p-8 sm:p-14 flex flex-col justify-between relative overflow-hidden">
+        <div class="absolute -top-24 -right-24 w-72 h-72 rounded-full bg-kamaui-gold/10 blur-3xl pointer-events-none"></div>
+
+        <div>
+          <div class="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-kamaui-gold/15 border border-kamaui-gold/30 text-kamaui-brown text-[10px] font-mono uppercase tracking-[0.25em] mb-8">
+            <i class="ph-light ph-sparkle text-sm"></i>
+            <span>Dossier de Formulación Personal · Lote Piloto KMW-2026-B01</span>
+          </div>
+
+          <h1 class="font-serif text-4xl sm:text-6xl font-normal text-kamaui-espresso leading-[1.08] tracking-tight mb-6">
+            Bálsamo Botánico <span class="italic font-light text-kamaui-brown">Regenerador</span> de Caléndula & Avena
+          </h1>
+
+          <p class="text-sm sm:text-base text-kamaui-muted font-light leading-relaxed max-w-2xl mb-10">
+            Emulsión lamelar dermo-reparadora de grado humano diseñada para restaurar la barrera lipídica de almohadillas plantares, trufa nasal y zonas interdigitales en perros y gatos. Formulada bajo arquitectura de <strong class="font-medium text-kamaui-espresso">Transparencia Radical 100%</strong> y toxicología de ingestión por lamido cero riesgo.
+          </p>
+        </div>
+
+        <!-- Key Benefits List -->
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-8 border-t border-kamaui-brown/10">
+          <div class="p-4 rounded-2xl bg-white/70 border border-kamaui-brown/10">
+            <div class="flex items-center gap-2 text-kamaui-brown mb-1.5">
+              <i class="ph-light ph-shield-check text-lg"></i>
+              <span class="font-mono text-[10px] uppercase tracking-[0.2em]">Lick-Safe</span>
+            </div>
+            <p class="text-xs text-kamaui-muted font-light leading-relaxed">Inocuidad oral verificada para lamido constante canino y felino.</p>
+          </div>
+
+          <div class="p-4 rounded-2xl bg-white/70 border border-kamaui-brown/10">
+            <div class="flex items-center gap-2 text-kamaui-brown mb-1.5">
+              <i class="ph-light ph-drop-half-bottom text-lg"></i>
+              <span class="font-mono text-[10px] uppercase tracking-[0.2em]">pH 6.2 – 6.8</span>
+            </div>
+            <p class="text-xs text-kamaui-muted font-light leading-relaxed">Isotónico con el manto epitelial veterinario sin disruptores ácidos.</p>
+          </div>
+
+          <div class="p-4 rounded-2xl bg-white/70 border border-kamaui-brown/10">
+            <div class="flex items-center gap-2 text-kamaui-brown mb-1.5">
+              <i class="ph-light ph-flower-lotus text-lg"></i>
+              <span class="font-mono text-[10px] uppercase tracking-[0.2em]">0% Terpenos</span>
+            </div>
+            <p class="text-xs text-kamaui-muted font-light leading-relaxed">Libre de aceites esenciales fenólicos, parabenos y siliconas oclusivas.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right 5 Cols: Sacred Mandala Showcase Card -->
+      <div class="lg:col-span-5 espresso-surface rounded-[36px] p-8 sm:p-12 flex flex-col justify-between relative overflow-hidden">
+        <!-- Decorative SVG Sacred Geometry Ring -->
+        <svg class="mandala-orbit absolute -right-20 -top-20 w-80 h-80 text-kamaui-gold/10 pointer-events-none" viewBox="0 0 200 200" fill="none">
+          <circle cx="100" cy="100" r="90" stroke="currentColor" stroke-width="0.75" stroke-dasharray="4 4"/>
+          <circle cx="100" cy="100" r="70" stroke="currentColor" stroke-width="0.5"/>
+          <polygon points="100,15 173,142 27,142" stroke="currentColor" stroke-width="0.5"/>
+          <polygon points="100,185 173,58 27,58" stroke="currentColor" stroke-width="0.5"/>
+        </svg>
+
+        <div class="relative z-10 flex items-center justify-between">
+          <span class="font-mono text-[10px] uppercase tracking-[0.25em] text-kamaui-gold">Identidad & Equilibrio</span>
+          <span class="px-3 py-1 rounded-full bg-white/10 text-[10px] font-mono text-kamaui-goldLight">Score Viabilidad: 92/100</span>
+        </div>
+
+        <!-- Center Mandala Artwork -->
+        <div class="relative z-10 my-8 flex flex-col items-center text-center">
+          <div class="relative w-44 h-44 sm:w-52 sm:h-52 rounded-full p-2.5 bg-gradient-to-b from-kamaui-gold/40 via-kamaui-gold/10 to-transparent shadow-2xl">
+            <img src="assets/logo-kamaui.jpg" alt="Kamaui Dualidad Canina Mandala" class="w-full h-full object-cover rounded-full border-2 border-kamaui-gold/50 bg-white">
+          </div>
+          <p class="font-serif italic text-xl text-kamaui-goldLight mt-6">
+            “Donde la ciencia galénica abraza el vínculo sagrado con tu mascota.”
+          </p>
+        </div>
+
+        <!-- Bottom Navigation Anchors inside Showcase -->
+        <div class="relative z-10 pt-6 border-t border-white/10 flex flex-wrap items-center justify-between gap-3">
+          <a href="#formulacion" class="inline-flex items-center gap-2 text-xs font-mono uppercase tracking-[0.2em] text-kamaui-gold hover:text-white transition-colors">
+            <span>Explorar Fórmula 100%</span>
+            <i class="ph-light ph-arrow-down-right text-sm"></i>
+          </a>
+          <button onclick="generateDetailedFormulaPDF()" class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-kamaui-gold text-kamaui-espresso text-[10px] font-mono uppercase tracking-[0.2em] font-medium hover:bg-white transition-all duration-300">
+            <i class="ph-light ph-printer text-sm"></i>
+            <span>Exportar Orden PDF</span>
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- MODULE 01: OPCIONES DE MATERIAS PRIMAS SUGERIDAS -->
+  <section id="materias-primas" class="max-w-7xl mx-auto px-4 sm:px-8 py-16">
+    <div class="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6">
+      <div>
+        <div class="inline-flex items-center gap-2 text-kamaui-brown font-mono text-[10px] uppercase tracking-[0.28em] mb-3">
+          <i class="ph-light ph-plant text-sm"></i>
+          <span>Módulo 01 · Curaduría de Fitoactivos</span>
+        </div>
+        <h2 class="font-serif text-3xl sm:text-5xl text-kamaui-espresso font-normal">
+          Opciones de Materias Primas Sugeridas
+        </h2>
+      </div>
+      <p class="text-sm text-kamaui-muted max-w-md font-light leading-relaxed">
+        Cada ingrediente cuenta con una alternativa principal de máxima biodisponibilidad y un sustituto funcional homologado para garantizar continuidad en laboratorio.
+      </p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-7">
+      <!-- Card 01 -->
+      <div class="botanical-surface rounded-[28px] p-8 sm:p-10 transition-all duration-500 hover:-translate-y-1">
+        <div class="flex items-start justify-between gap-4 mb-6">
+          <div class="flex items-center gap-3.5">
+            <div class="w-12 h-12 rounded-2xl bg-kamaui-gold/15 border border-kamaui-gold/30 flex items-center justify-center text-kamaui-brown">
+              <i class="ph-light ph-flower-tulip text-2xl"></i>
+            </div>
+            <div>
+              <span class="font-mono text-[10px] uppercase tracking-[0.22em] text-kamaui-muted">Fitoactivo Epitelizante</span>
+              <h3 class="font-serif text-2xl text-kamaui-espresso font-medium">Caléndula CO2 Supercrítico</h3>
+            </div>
+          </div>
+          <span class="px-3 py-1 rounded-full bg-kamaui-sage/10 text-kamaui-sage border border-kamaui-sage/20 font-mono text-[10px] uppercase tracking-wider">Grado USP / Lick-Safe</span>
+        </div>
+        <p class="text-xs text-kamaui-muted font-mono mb-4">INCI: Calendula Officinalis Flower Extract</p>
+        <p class="text-sm text-kamaui-ink/90 font-light leading-relaxed mb-6">
+          Rico en ésteres de faradiol triterpénicos que estimulan la síntesis de colágeno tipo III y aceleran la re-epitelización de almohadillas agrietadas sin irritar mucosas.
+        </p>
+        <div class="p-4 rounded-2xl bg-kamaui-cream/70 border border-kamaui-brown/10 flex items-center justify-between text-xs">
+          <span class="font-mono uppercase tracking-wider text-kamaui-brown">Alternativa Homologada:</span>
+          <span class="text-kamaui-ink font-medium">Oleato de Caléndula en Jojoba Orgánica (1:5)</span>
+        </div>
+      </div>
+
+      <!-- Card 02 -->
+      <div class="botanical-surface rounded-[28px] p-8 sm:p-10 transition-all duration-500 hover:-translate-y-1">
+        <div class="flex items-start justify-between gap-4 mb-6">
+          <div class="flex items-center gap-3.5">
+            <div class="w-12 h-12 rounded-2xl bg-kamaui-blue/15 border border-kamaui-blue/30 flex items-center justify-center text-kamaui-espresso">
+              <i class="ph-light ph-grains text-2xl"></i>
+            </div>
+            <div>
+              <span class="font-mono text-[10px] uppercase tracking-[0.22em] text-kamaui-muted">Calmante de Prurito</span>
+              <h3 class="font-serif text-2xl text-kamaui-espresso font-medium">Avena Coloidal USP Micronizada</h3>
+            </div>
+          </div>
+          <span class="px-3 py-1 rounded-full bg-kamaui-sage/10 text-kamaui-sage border border-kamaui-sage/20 font-mono text-[10px] uppercase tracking-wider">Estandarizado &gt;5% Beta-Glucanos</span>
+        </div>
+        <p class="text-xs text-kamaui-muted font-mono mb-4">INCI: Avena Sativa (Oat) Kernel Flour</p>
+        <p class="text-sm text-kamaui-ink/90 font-light leading-relaxed mb-6">
+          Aporta avenantramidas calmantes que inhiben la liberación de citoquinas proinflamatorias e histamina en dermis canina y felina hiperreactiva.
+        </p>
+        <div class="p-4 rounded-2xl bg-kamaui-cream/70 border border-kamaui-brown/10 flex items-center justify-between text-xs">
+          <span class="font-mono uppercase tracking-wider text-kamaui-brown">Alternativa Homologada:</span>
+          <span class="text-kamaui-ink font-medium">Extracto Hidroglicerinado de Avena Sativa Eco</span>
+        </div>
+      </div>
+
+      <!-- Card 03 -->
+      <div class="botanical-surface rounded-[28px] p-8 sm:p-10 transition-all duration-500 hover:-translate-y-1">
+        <div class="flex items-start justify-between gap-4 mb-6">
+          <div class="flex items-center gap-3.5">
+            <div class="w-12 h-12 rounded-2xl bg-kamaui-gold/15 border border-kamaui-gold/30 flex items-center justify-center text-kamaui-brown">
+              <i class="ph-light ph-drop text-2xl"></i>
+            </div>
+            <div>
+              <span class="font-mono text-[10px] uppercase tracking-[0.22em] text-kamaui-muted">Emoliente Biomimético</span>
+              <h3 class="font-serif text-2xl text-kamaui-espresso font-medium">Manteca de Karité Nilotica</h3>
+            </div>
+          </div>
+          <span class="px-3 py-1 rounded-full bg-kamaui-sage/10 text-kamaui-sage border border-kamaui-sage/20 font-mono text-[10px] uppercase tracking-wider">Fusión a 34 °C</span>
+        </div>
+        <p class="text-xs text-kamaui-muted font-mono mb-4">INCI: Butyrospermum Parkii (Shea) Butter</p>
+        <p class="text-sm text-kamaui-ink/90 font-light leading-relaxed mb-6">
+          Perfil superior de oleína e insaponificables (lupeol y ácido cinámico) que se funde instantáneamente al contacto con el cojinete plantar sin dejar residuo graso en pisos.
+        </p>
+        <div class="p-4 rounded-2xl bg-kamaui-cream/70 border border-kamaui-brown/10 flex items-center justify-between text-xs">
+          <span class="font-mono uppercase tracking-wider text-kamaui-brown">Alternativa Homologada:</span>
+          <span class="text-kamaui-ink font-medium">Manteca de Cupuaçu Virgen (Theobroma Grandiflorum)</span>
+        </div>
+      </div>
+
+      <!-- Card 04 -->
+      <div class="botanical-surface rounded-[28px] p-8 sm:p-10 transition-all duration-500 hover:-translate-y-1">
+        <div class="flex items-start justify-between gap-4 mb-6">
+          <div class="flex items-center gap-3.5">
+            <div class="w-12 h-12 rounded-2xl bg-kamaui-blue/15 border border-kamaui-blue/30 flex items-center justify-center text-kamaui-espresso">
+              <i class="ph-light ph-hexagon text-2xl"></i>
+            </div>
+            <div>
+              <span class="font-mono text-[10px] uppercase tracking-[0.22em] text-kamaui-muted">Sistema Emulsionante</span>
+              <h3 class="font-serif text-2xl text-kamaui-espresso font-medium">Olivem 1000 (Cristales Líquidos)</h3>
+            </div>
+          </div>
+          <span class="px-3 py-1 rounded-full bg-kamaui-sage/10 text-kamaui-sage border border-kamaui-sage/20 font-mono text-[10px] uppercase tracking-wider">Certificado COSMOS</span>
+        </div>
+        <p class="text-xs text-kamaui-muted font-mono mb-4">INCI: Cetearyl Olivate (and) Sorbitan Olivate</p>
+        <p class="text-sm text-kamaui-ink/90 font-light leading-relaxed mb-6">
+          Autoemulsionante no iónico derivado del aceite de oliva que genera redes de cristal líquido biomiméticas para liberación prolongada de hidratación dérmica.
+        </p>
+        <div class="p-4 rounded-2xl bg-kamaui-cream/70 border border-kamaui-brown/10 flex items-center justify-between text-xs">
+          <span class="font-mono uppercase tracking-wider text-kamaui-brown">Alternativa Homologada:</span>
+          <span class="text-kamaui-ink font-medium">Montanov 68 MB (Cetearyl Alcohol &amp; Cetearyl Glucoside)</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- MODULE 02: FORMULACIÓN CUALI-CUANTITATIVA (FÓRMULA MAESTRA) -->
+  <section id="formulacion" class="max-w-7xl mx-auto px-4 sm:px-8 py-16">
+    <div class="botanical-surface rounded-[36px] p-8 sm:p-14">
+      <div class="flex flex-col lg:flex-row lg:items-end justify-between mb-10 gap-6 pb-8 border-b border-kamaui-brown/10">
+        <div>
+          <div class="inline-flex items-center gap-2 text-kamaui-brown font-mono text-[10px] uppercase tracking-[0.28em] mb-3">
+            <i class="ph-light ph-scales text-sm"></i>
+            <span>Módulo 02 · Arquitectura Galénica 100.0%</span>
+          </div>
+          <h2 class="font-serif text-3xl sm:text-5xl text-kamaui-espresso font-normal">
+            Formulación Cuali-Cuantitativa Maestra
+          </h2>
+        </div>
+
+        <!-- Interactive Batch Scale Selector -->
+        <div class="flex flex-col sm:flex-row sm:items-center gap-3">
+          <span class="font-mono text-[10px] uppercase tracking-[0.22em] text-kamaui-muted">Escala de Pesaje:</span>
+          <div class="inline-flex p-1.5 rounded-full bg-kamaui-cream border border-kamaui-brown/10">
+            <button onclick="updateBatchScale(50, 'g', this)" class="batch-btn px-4 py-1.5 rounded-full text-xs font-mono transition-all duration-300 text-kamaui-muted hover:text-kamaui-espresso">
+              Muestra 50 g
+            </button>
+            <button onclick="updateBatchScale(500, 'g', this)" class="batch-btn px-4 py-1.5 rounded-full text-xs font-mono transition-all duration-300 bg-kamaui-espresso text-white shadow-sm">
+              Lab 500 g
+            </button>
+            <button onclick="updateBatchScale(25, 'kg', this)" class="batch-btn px-4 py-1.5 rounded-full text-xs font-mono transition-all duration-300 text-kamaui-muted hover:text-kamaui-espresso">
+              Piloto 25 kg
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Master Formula Table with Visual Proportion Bars -->
+      <div class="overflow-x-auto">
+        <table class="w-full text-left border-collapse">
+          <thead>
+            <tr class="border-b border-kamaui-brown/15 text-[10px] font-mono uppercase tracking-[0.22em] text-kamaui-muted">
+              <th class="py-4 pr-4">Fase</th>
+              <th class="py-4 px-4">Ingrediente Comercial &amp; INCI</th>
+              <th class="py-4 px-4">Función Galénica</th>
+              <th class="py-4 px-4 w-56">Proporción (% p/p)</th>
+              <th class="py-4 pl-4 text-right" id="batch-header-label">Masa Lote (500 g)</th>
+            </tr>
+          </thead>
+          <tbody id="master-formula-tbody" class="divide-y divide-kamaui-brown/10 text-sm">
+            <!-- Populated by JS for live scaling -->
+          </tbody>
+          <tfoot>
+            <tr class="border-t-2 border-kamaui-espresso bg-kamaui-cream/50 font-mono text-xs">
+              <td colspan="3" class="py-5 px-4 font-semibold uppercase tracking-[0.2em] text-kamaui-espresso">
+                Balance Total Estequiométrico Verificado
+              </td>
+              <td class="py-5 px-4 font-semibold text-kamaui-brown">100.00 %</td>
+              <td id="batch-total-weight" class="py-5 px-4 text-right font-semibold text-kamaui-espresso">500.00 g</td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- MODULE 03: INSTRUCTIVO DE FABRICACIÓN (LABORATORIO Y PLANTA PILOTO) -->
+  <section id="manufactura" class="max-w-7xl mx-auto px-4 sm:px-8 py-16">
+    <div class="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6">
+      <div>
+        <div class="inline-flex items-center gap-2 text-kamaui-brown font-mono text-[10px] uppercase tracking-[0.28em] mb-3">
+          <i class="ph-light ph-gear-fine text-sm"></i>
+          <span>Módulo 03 · Ingeniería de Procesos SOP</span>
+        </div>
+        <h2 class="font-serif text-3xl sm:text-5xl text-kamaui-espresso font-normal">
+          Instructivo de Manufactura &amp; Escalado
+        </h2>
+      </div>
+      <p class="text-sm text-kamaui-muted max-w-md font-light leading-relaxed">
+        Protocolo operativo estandarizado desde validación galénica en mesón (500 g) hasta reactor planetario con vacío en planta piloto (25 kg).
+      </p>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
+      <!-- Lab Scale 500 g -->
+      <div class="botanical-surface rounded-[32px] p-8 sm:p-11">
+        <div class="flex items-center justify-between pb-6 mb-8 border-b border-kamaui-brown/10">
+          <div class="flex items-center gap-3.5">
+            <div class="w-11 h-11 rounded-2xl bg-kamaui-gold/20 text-kamaui-brown flex items-center justify-center">
+              <i class="ph-light ph-flask text-2xl"></i>
+            </div>
+            <div>
+              <span class="font-mono text-[10px] uppercase tracking-[0.2em] text-kamaui-muted">Escala I+D</span>
+              <h3 class="font-serif text-2xl text-kamaui-espresso font-medium">Protocolo Laboratorio (Lote 500 g)</h3>
+            </div>
+          </div>
+          <span class="px-3 py-1 rounded-full bg-kamaui-cream font-mono text-[10px] text-kamaui-brown">SOP-LAB-01</span>
+        </div>
+
+        <ol class="space-y-6">
+          <li class="flex gap-4">
+            <span class="w-7 h-7 rounded-full bg-kamaui-espresso text-white font-mono text-xs flex items-center justify-center shrink-0 mt-0.5">01</span>
+            <div>
+              <h4 class="font-medium text-kamaui-espresso text-sm mb-1">Preparación de Fase Acuosa &amp; Dispersión de Avena (Fase A)</h4>
+              <p class="text-xs text-kamaui-muted font-light leading-relaxed">En vaso de precipitados principal (1000 mL), pesar el Agua Desionizada USP. Pre-humectar la Goma Xantana con la Glicerina Vegetal y añadir bajo agitación de hélice a 400 RPM. Incorporar la Avena Coloidal tamizada y calentar a <strong>72–75 °C</strong>.</p>
+            </div>
+          </li>
+          <li class="flex gap-4">
+            <span class="w-7 h-7 rounded-full bg-kamaui-espresso text-white font-mono text-xs flex items-center justify-center shrink-0 mt-0.5">02</span>
+            <div>
+              <h4 class="font-medium text-kamaui-espresso text-sm mb-1">Fusión de Fase Lipídica Lamelar (Fase B)</h4>
+              <p class="text-xs text-kamaui-muted font-light leading-relaxed">En beaker secundario de acero inoxidable, fundir Manteca de Karité Nilotica, Aceite de Jojoba y Emulsionante Olivem 1000 en baño María controlado a <strong>75 °C</strong> hasta obtener una fase isotrópica translúcida sin puntos sólidos.</p>
+            </div>
+          </li>
+          <li class="flex gap-4">
+            <span class="w-7 h-7 rounded-full bg-kamaui-espresso text-white font-mono text-xs flex items-center justify-center shrink-0 mt-0.5">03</span>
+            <div>
+              <h4 class="font-medium text-kamaui-espresso text-sm mb-1">Emulsificación de Alto Cizallamiento</h4>
+              <p class="text-xs text-kamaui-muted font-light leading-relaxed">Verter lentamente la Fase B sobre la Fase A (ambas a 75 °C) aplicando rotor-estator (Ultra-Turrax) a <strong>6,500 RPM durante 4 minutos</strong> para formar la red de cristales líquidos de olivato.</p>
+            </div>
+          </li>
+          <li class="flex gap-4">
+            <span class="w-7 h-7 rounded-full bg-kamaui-espresso text-white font-mono text-xs flex items-center justify-center shrink-0 mt-0.5">04</span>
+            <div>
+              <h4 class="font-medium text-kamaui-espresso text-sm mb-1">Enfriamiento &amp; Adición de Termolábiles (Fase C)</h4>
+              <p class="text-xs text-kamaui-muted font-light leading-relaxed">Cambiar a paleta de ancla a 150 RPM hasta descender a <strong>38 °C</strong>. Incorporar D-Pantenol, Extracto CO2 de Caléndula, Vitamina E y Geogard Ultra. Verificar pH final (6.2 – 6.8) y envasar tras 12 h de reposo desaireado.</p>
+            </div>
+          </li>
+        </ol>
+      </div>
+
+      <!-- Pilot Plant Scale 25 kg -->
+      <div class="botanical-surface rounded-[32px] p-8 sm:p-11">
+        <div class="flex items-center justify-between pb-6 mb-8 border-b border-kamaui-brown/10">
+          <div class="flex items-center gap-3.5">
+            <div class="w-11 h-11 rounded-2xl bg-kamaui-blue/20 text-kamaui-espresso flex items-center justify-center">
+              <i class="ph-light ph-factory text-2xl"></i>
+            </div>
+            <div>
+              <span class="font-mono text-[10px] uppercase tracking-[0.2em] text-kamaui-muted">Escalado Industrial</span>
+              <h3 class="font-serif text-2xl text-kamaui-espresso font-medium">Planta Piloto BPMV (Lote 25 kg)</h3>
+            </div>
+          </div>
+          <span class="px-3 py-1 rounded-full bg-kamaui-blueSoft font-mono text-[10px] text-kamaui-espresso">SOP-PILOT-25K</span>
+        </div>
+
+        <div class="space-y-5">
+          <div class="p-5 rounded-2xl bg-white/75 border border-kamaui-brown/10">
+            <div class="flex items-center justify-between mb-1.5">
+              <span class="font-mono text-[10px] uppercase tracking-[0.2em] text-kamaui-brown">Reactor Principal</span>
+              <span class="font-mono text-xs text-kamaui-espresso font-medium">AISI 316L · 30 L Camisa Térmica</span>
+            </div>
+            <p class="text-xs text-kamaui-muted font-light leading-relaxed">Equipado con raspadores laterales de PTFE a 35 RPM y turbina de fondo tipo Silverson a 3,200 RPM.</p>
+          </div>
+
+          <div class="p-5 rounded-2xl bg-white/75 border border-kamaui-brown/10">
+            <div class="flex items-center justify-between mb-1.5">
+              <span class="font-mono text-[10px] uppercase tracking-[0.2em] text-kamaui-brown">Control de Vacío &amp; Cizalla</span>
+              <span class="font-mono text-xs text-kamaui-espresso font-medium">-0.6 bar · Vtip = 11.8 m/s</span>
+            </div>
+            <p class="text-xs text-kamaui-muted font-light leading-relaxed">La emulsificación bajo vacío (-0.6 bar) evita microburbujas de oxígeno, protegiendo los ésteres de caléndula contra la peroxidación lipídica.</p>
+          </div>
+
+          <div class="p-5 rounded-2xl bg-white/75 border border-kamaui-brown/10">
+            <div class="flex items-center justify-between mb-1.5">
+              <span class="font-mono text-[10px] uppercase tracking-[0.2em] text-kamaui-brown">Rampa de Enfriamiento</span>
+              <span class="font-mono text-xs text-kamaui-espresso font-medium">1.2 °C / min (Agua Chiller 14 °C)</span>
+            </div>
+            <p class="text-xs text-kamaui-muted font-light leading-relaxed">No enfriar de golpe con agua helada antes de los 50 °C para evitar recristalización prematura de la Manteca de Karité.</p>
+          </div>
+
+          <div class="p-5 rounded-2xl bg-white/75 border border-kamaui-brown/10">
+            <div class="flex items-center justify-between mb-1.5">
+              <span class="font-mono text-[10px] uppercase tracking-[0.2em] text-kamaui-brown">Dosificación &amp; Cuarentena</span>
+              <span class="font-mono text-xs text-kamaui-espresso font-medium">Bomba Lobular · Filtro 150 µm</span>
+            </div>
+            <p class="text-xs text-kamaui-muted font-light leading-relaxed">Llenado semiautomático en envase Airless PP o vidrio ámbar. Muestreo microbiológico antes de liberación de lote.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- DETAILED PDF GENERATOR BANNER (BELOW MODULE 3 AS REQUESTED) -->
+    <div class="espresso-surface rounded-[32px] p-8 sm:p-12 relative overflow-hidden">
+      <div class="absolute -right-12 -bottom-12 w-64 h-64 rounded-full bg-kamaui-gold/15 blur-2xl pointer-events-none"></div>
+      <div class="relative z-10 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-8">
+        <div class="max-w-2xl">
+          <div class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-kamaui-gold/20 border border-kamaui-gold/40 text-kamaui-goldLight font-mono text-[10px] uppercase tracking-[0.24em] mb-4">
+            <i class="ph-light ph-file-pdf text-sm"></i>
+            <span>Documento Técnico Oficial de Laboratorio</span>
+          </div>
+          <h3 class="font-serif text-3xl sm:text-4xl text-white font-normal mb-3">
+            Orden Maestra de Producción &amp; Fórmula Cuali-Cuantitativa en PDF
+          </h3>
+          <p class="text-sm text-kamaui-sand/85 font-light leading-relaxed">
+            Descarga el documento técnico maquetado en alta resolución con la tabla estequiométrica multi-escala (<strong>50 g, 500 g y 25 kg</strong>), el protocolo paso a paso de manufactura en laboratorio, parámetros críticos de escalado en reactor piloto y lista de chequeo de control de calidad fisicoquímico.
+          </p>
+        </div>
+
+        <button id="btn-generate-pdf" onclick="generateDetailedFormulaPDF()" class="shrink-0 inline-flex items-center gap-3 px-8 py-4 rounded-full bg-kamaui-gold text-kamaui-espresso font-mono text-xs uppercase tracking-[0.22em] font-semibold hover:bg-white transition-all duration-500 shadow-xl">
+          <i class="ph-light ph-download-simple text-lg"></i>
+          <span>Generar PDF Detallado</span>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- MODULE 04: ESPECIFICACIONES FÍSICO-QUÍMICAS Y CUMPLIMIENTO NORMATIVO -->
+  <section id="especificaciones" class="max-w-7xl mx-auto px-4 sm:px-8 py-16">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+      
+      <!-- Left 7 Cols: Physicochemical Specs -->
+      <div class="lg:col-span-7 botanical-surface rounded-[32px] p-8 sm:p-11">
+        <div class="inline-flex items-center gap-2 text-kamaui-brown font-mono text-[10px] uppercase tracking-[0.28em] mb-3">
+          <i class="ph-light ph-sliders-horizontal text-sm"></i>
+          <span>Módulo 04 · Control de Calidad Fisicoquímico</span>
+        </div>
+        <h2 class="font-serif text-3xl sm:text-4xl text-kamaui-espresso font-normal mb-8">
+          Especificaciones de Liberación de Lote
+        </h2>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div class="p-5 rounded-2xl bg-white/80 border border-kamaui-brown/10">
+            <span class="font-mono text-[10px] uppercase tracking-[0.2em] text-kamaui-muted block mb-1">pH Potenciométrico (25 °C)</span>
+            <p class="font-serif text-2xl text-kamaui-espresso font-semibold">6.20 – 6.80</p>
+            <p class="text-xs text-kamaui-muted mt-1 font-light">Fisiológico para epidermis canina y felina.</p>
+          </div>
+
+          <div class="p-5 rounded-2xl bg-white/80 border border-kamaui-brown/10">
+            <span class="font-mono text-[10px] uppercase tracking-[0.2em] text-kamaui-muted block mb-1">Viscosidad Brookfield RVT</span>
+            <p class="font-serif text-2xl text-kamaui-espresso font-semibold">18,000 – 24,000 cP</p>
+            <p class="text-xs text-kamaui-muted mt-1 font-light">Aguja #6, 10 RPM a 25.0 °C.</p>
+          </div>
+
+          <div class="p-5 rounded-2xl bg-white/80 border border-kamaui-brown/10">
+            <span class="font-mono text-[10px] uppercase tracking-[0.2em] text-kamaui-muted block mb-1">Gravedad Específica</span>
+            <p class="font-serif text-2xl text-kamaui-espresso font-semibold">0.985 – 1.015 g/mL</p>
+            <p class="text-xs text-kamaui-muted mt-1 font-light">Picnómetro de acero a 20 °C.</p>
+          </div>
+
+          <div class="p-5 rounded-2xl bg-white/80 border border-kamaui-brown/10">
+            <span class="font-mono text-[10px] uppercase tracking-[0.2em] text-kamaui-muted block mb-1">Límite Microbiológico USP &lt;61&gt;</span>
+            <p class="font-serif text-2xl text-kamaui-sage font-semibold">&lt; 100 UFC / g</p>
+            <p class="text-xs text-kamaui-muted mt-1 font-light">Ausencia total de S. aureus y P. aeruginosa.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right 5 Cols: Regulatory ICA Framework -->
+      <div class="lg:col-span-5 botanical-surface rounded-[32px] p-8 sm:p-11 flex flex-col justify-between">
+        <div>
+          <div class="inline-flex items-center gap-2 text-kamaui-brown font-mono text-[10px] uppercase tracking-[0.28em] mb-3">
+            <i class="ph-light ph-scroll text-sm"></i>
+            <span>Marco Regulatorio Veterinario</span>
+          </div>
+          <h3 class="font-serif text-3xl text-kamaui-espresso font-normal mb-6">
+            Respaldo Normativo ICA &amp; CAN
+          </h3>
+
+          <ul class="space-y-4 text-xs text-kamaui-ink/90 font-light leading-relaxed">
+            <li class="flex items-start gap-3 p-3.5 rounded-2xl bg-kamaui-cream/60 border border-kamaui-brown/10">
+              <i class="ph-light ph-check-circle text-lg text-kamaui-sage shrink-0 mt-0.5"></i>
+              <div>
+                <strong class="font-medium text-kamaui-espresso block">Resolución ICA 1056 de 1996 (Colombia)</strong>
+                Clasificado como Producto de Higiene y Embellecimiento Animal sin acción terapéutica sistémica ni farmacológica.
+              </div>
+            </li>
+            <li class="flex items-start gap-3 p-3.5 rounded-2xl bg-kamaui-cream/60 border border-kamaui-brown/10">
+              <i class="ph-light ph-check-circle text-lg text-kamaui-sage shrink-0 mt-0.5"></i>
+              <div>
+                <strong class="font-medium text-kamaui-espresso block">Decisión 483 de la Comunidad Andina (CAN)</strong>
+                Exento de receta médico-veterinaria; etiquetado libre de proclamas medicamentosas.
+              </div>
+            </li>
+            <li class="flex items-start gap-3 p-3.5 rounded-2xl bg-kamaui-cream/60 border border-kamaui-brown/10">
+              <i class="ph-light ph-check-circle text-lg text-kamaui-sage shrink-0 mt-0.5"></i>
+              <div>
+                <strong class="font-medium text-kamaui-espresso block">Toxicología Oral por Lamido (Lick-Safe)</strong>
+                0.0% aceites esenciales neurotóxicos, 0.0% xilitol, 0.0% óxido de zinc, 0.0% isotiazolinonas.
+              </div>
+            </li>
+          </ul>
+        </div>
+
+        <div class="mt-8 pt-6 border-t border-kamaui-brown/10 flex items-center justify-between text-[11px] font-mono text-kamaui-muted">
+          <span>CÓDIGO I+D: KMW-2026-B01</span>
+          <span class="text-kamaui-brown">USO PERSONAL I+D</span>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="max-w-7xl mx-auto px-4 sm:px-8 py-12 border-t border-kamaui-brown/10 mt-10">
+    <div class="flex flex-col sm:flex-row items-center justify-between gap-6">
+      <div class="flex items-center gap-3.5">
+        <img src="assets/logo-kamaui.jpg" alt="Kamaui" class="w-9 h-9 rounded-full object-cover border border-kamaui-gold/50">
+        <div>
+          <span class="font-serif text-lg tracking-[0.15em] text-kamaui-espresso font-semibold">KAMAUI</span>
+          <p class="text-[10px] font-mono text-kamaui-muted uppercase tracking-[0.2em]">Santuario de Ciencia Holística · Uso Personal I+D</p>
+        </div>
+      </div>
+      <div class="flex items-center gap-6 text-xs text-kamaui-muted font-mono">
+        <a href="index.html" class="hover:text-kamaui-espresso transition-colors">Volver al Validador 360°</a>
+        <span>·</span>
+        <button onclick="generateDetailedFormulaPDF()" class="text-kamaui-brown hover:underline">Descargar PDF Maestro</button>
+      </div>
+    </div>
+  </footer>
+
+  <!-- HIDDEN PRINTABLE PDF DOSSIER TEMPLATE (FOR HTML2PDF) -->
+  <div id="pdf-dossier-wrapper" class="hidden">
+    <div id="pdf-printable-area" style="width: 794px; background: #FFFFFF; color: #1F1A17; font-family: 'Plus Jakarta Sans', sans-serif; padding: 36px 42px; box-sizing: border-box;">
+      
+      <!-- PDF Header -->
+      <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #5C3A21; padding-bottom: 18px; margin-bottom: 22px;">
+        <div style="display: flex; align-items: center; gap: 14px;">
+          <img src="assets/logo-kamaui.jpg" alt="Kamaui Logo" style="width: 58px; height: 58px; border-radius: 50%; object-fit: cover; border: 2px solid #D4A373;">
+          <div>
+            <div style="font-family: 'Cormorant Garamond', serif; font-size: 26px; font-weight: 700; letter-spacing: 0.14em; color: #2C1B10;">KAMAUI</div>
+            <div style="font-family: 'JetBrains Mono', monospace; font-size: 9px; text-transform: uppercase; letter-spacing: 0.22em; color: #7A7067;">Dossier Maestro de Formulación &amp; Manufactura I+D</div>
+          </div>
+        </div>
+        <div style="text-align: right; font-family: 'JetBrains Mono', monospace; font-size: 9px; color: #5C3A21; line-height: 1.6;">
+          <div><strong>CÓDIGO:</strong> KMW-2026-B01</div>
+          <div><strong>FECHA:</strong> <span id="pdf-current-date">2026-11-06</span></div>
+          <div><strong>CLASIFICACIÓN:</strong> ICA Res. 1056/1996</div>
+        </div>
+      </div>
+
+      <!-- Product Summary Banner -->
+      <div style="background: #F7F5F0; border: 1px solid #E5DEC9; border-left: 4px solid #D4A373; border-radius: 10px; padding: 14px 18px; margin-bottom: 22px;">
+        <div style="font-family: 'Cormorant Garamond', serif; font-size: 22px; font-weight: 600; color: #2C1B10; margin-bottom: 4px;">
+          Bálsamo Botánico Regenerador de Caléndula &amp; Avena Coloidal
+        </div>
+        <div style="font-size: 11px; color: #5C3A21; line-height: 1.5;">
+          Emulsión lamelar dermo-reparadora 100% Lick-Safe para almohadillas plantares y trufa nasal en caninos y felinos. Rango de pH objetivo: <strong>6.20 – 6.80</strong> · Viscosidad: <strong>18,000 – 24,000 cP</strong>.
+        </div>
+      </div>
+
+      <!-- Section 1: Multi-Scale Quali-Quantitative Master Formula -->
+      <div style="margin-bottom: 24px;">
+        <div style="font-family: 'JetBrains Mono', monospace; font-size: 10px; text-transform: uppercase; letter-spacing: 0.2em; color: #5C3A21; margin-bottom: 8px; font-weight: 600;">
+          01. Fórmula Maestra Cuali-Cuantitativa Multi-Escala (100.00% p/p)
+        </div>
+        <table style="width: 100%; border-collapse: collapse; font-size: 10px;">
+          <thead>
+            <tr style="background: #2C1B10; color: #F7F5F0; font-family: 'JetBrains Mono', monospace; font-size: 8.5px; text-transform: uppercase; letter-spacing: 0.1em;">
+              <th style="padding: 7px 8px; text-align: left;">Fase</th>
+              <th style="padding: 7px 8px; text-align: left;">Ingrediente &amp; Nombre INCI</th>
+              <th style="padding: 7px 8px; text-align: left;">Función Galénica</th>
+              <th style="padding: 7px 8px; text-align: right;">% p/p</th>
+              <th style="padding: 7px 8px; text-align: right;">Muestra 50 g</th>
+              <th style="padding: 7px 8px; text-align: right;">Lab 500 g</th>
+              <th style="padding: 7px 8px; text-align: right;">Piloto 25 kg</th>
+            </tr>
+          </thead>
+          <tbody id="pdf-formula-rows">
+            <!-- Populated by JS -->
+          </tbody>
+          <tfoot>
+            <tr style="background: #EFECE6; font-family: 'JetBrains Mono', monospace; font-weight: 700; font-size: 9.5px; border-top: 2px solid #2C1B10;">
+              <td colspan="3" style="padding: 8px; color: #2C1B10;">TOTAL ESTEQUIOMÉTRICO</td>
+              <td style="padding: 8px; text-align: right; color: #5C3A21;">100.00 %</td>
+              <td style="padding: 8px; text-align: right; color: #2C1B10;">50.00 g</td>
+              <td style="padding: 8px; text-align: right; color: #2C1B10;">500.00 g</td>
+              <td style="padding: 8px; text-align: right; color: #2C1B10;">25.00 kg</td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+
+      <!-- Section 2: Manufacturing SOP (Lab & Pilot Plant) -->
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px;">
+        <div style="background: #F7F5F0; border: 1px solid #E5DEC9; border-radius: 10px; padding: 14px;">
+          <div style="font-family: 'JetBrains Mono', monospace; font-size: 9.5px; text-transform: uppercase; letter-spacing: 0.15em; color: #5C3A21; font-weight: 700; margin-bottom: 8px;">
+            02A. Instructivo Laboratorio (Lote 500 g)
+          </div>
+          <ol style="margin: 0; padding-left: 16px; font-size: 9.5px; line-height: 1.55; color: #1F1A17;">
+            <li style="margin-bottom: 5px;"><strong>Fase A (Acuosa):</strong> Dispersar Goma Xantana pre-humectada en glicerina sobre agua USP a 400 RPM. Incorporar Avena Coloidal tamizada y calentar a 72–75 °C.</li>
+            <li style="margin-bottom: 5px;"><strong>Fase B (Lipídica):</strong> Fundir Manteca de Karité Nilotica, Aceite de Jojoba y Olivem 1000 a 75 °C hasta isotropía completa.</li>
+            <li style="margin-bottom: 5px;"><strong>Emulsificación:</strong> Incorporar Fase B sobre Fase A a 75 °C con rotor-estator a 6,500 RPM durante 4 minutos continuos.</li>
+            <li><strong>Fase C (Termolábiles):</strong> Enfriar con ancla a 150 RPM hasta 38 °C. Añadir D-Pantenol, Caléndula CO2, Tocoferol y Geogard Ultra. Ajustar pH a 6.2–6.8.</li>
+          </ol>
+        </div>
+
+        <div style="background: #F7F5F0; border: 1px solid #E5DEC9; border-radius: 10px; padding: 14px;">
+          <div style="font-family: 'JetBrains Mono', monospace; font-size: 9.5px; text-transform: uppercase; letter-spacing: 0.15em; color: #5C3A21; font-weight: 700; margin-bottom: 8px;">
+            02B. Escalado Planta Piloto (Lote 25 kg)
+          </div>
+          <ul style="margin: 0; padding-left: 16px; font-size: 9.5px; line-height: 1.55; color: #1F1A17;">
+            <li style="margin-bottom: 5px;"><strong>Reactor:</strong> Marmita encamisada AISI 316L de 30 L con raspadores PTFE (35 RPM) y homomixer inferior Silverson (3,200 RPM).</li>
+            <li style="margin-bottom: 5px;"><strong>Vacío Operativo:</strong> -0.6 bar durante toda la emulsificación y enfriamiento para prevenir incorporación de aire.</li>
+            <li style="margin-bottom: 5px;"><strong>Gradiente Térmico:</strong> Enfriamiento controlado a 1.2 °C/min para evitar cristalización polimórfica beta en la manteca de karité.</li>
+            <li><strong>Filtración &amp; Llenado:</strong> Descarga con bomba lobular a través de malla inox de 150 micras hacia llenadora neumática Airless.</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Section 3: Quality Control Signature Box -->
+      <div style="border-top: 1px solid #E5DEC9; padding-top: 12px; display: flex; justify-content: space-between; align-items: center; font-family: 'JetBrains Mono', monospace; font-size: 8.5px; color: #7A7067;">
+        <div>KAMAUI BOTANICAL ATELIER · DOCUMENTO DE USO PERSONAL I+D</div>
+        <div>VERIFICADO BAJO ESTÁNDAR LICK-SAFE &amp; BPMV</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- INTERACTIVE SCRIPT -->
+  <script>
+    const MASTER_FORMULA = [
+      {
+        phase: 'Fase A',
+        name: 'Agua Desionizada Grado USP',
+        inci: 'Aqua (Water)',
+        role: 'Vehículo acuoso principal',
+        pct: 61.30
+      },
+      {
+        phase: 'Fase A',
+        name: 'Glicerina Vegetal Orgánica USP',
+        inci: 'Glycerin',
+        role: 'Humectante higroscópico y co-dispersante',
+        pct: 4.00
+      },
+      {
+        phase: 'Fase A',
+        name: 'Avena Coloidal USP Micronizada',
+        inci: 'Avena Sativa (Oat) Kernel Flour',
+        role: 'Calmante antipruriginoso (Beta-glucanos)',
+        pct: 3.00
+      },
+      {
+        phase: 'Fase A',
+        name: 'Goma Xantana Grado Transparente',
+        inci: 'Xanthan Gum',
+        role: 'Estabilizante reológico de fase continua',
+        pct: 0.40
+      },
+      {
+        phase: 'Fase B',
+        name: 'Manteca de Karité Nilotica Refinada',
+        inci: 'Butyrospermum Parkii (Shea) Butter',
+        role: 'Emoliente reparador de barrera plantar',
+        pct: 12.00
+      },
+      {
+        phase: 'Fase B',
+        name: 'Aceite Virgen de Jojoba Golden',
+        inci: 'Simmondsia Chinensis Seed Oil',
+        role: 'Éster líquido biomimético del sebo dérmico',
+        pct: 8.00
+      },
+      {
+        phase: 'Fase B',
+        name: 'Olivem 1000 (Cristales Líquidos)',
+        inci: 'Cetearyl Olivate, Sorbitan Olivate',
+        role: 'Emulsionante no iónico lamelar COSMOS',
+        pct: 5.50
+      },
+      {
+        phase: 'Fase C',
+        name: 'D-Pantenol (Provitamina B5 Pura)',
+        inci: 'Panthenol',
+        role: 'Re-epitelizante profundo y cicatrizante',
+        pct: 2.50
+      },
+      {
+        phase: 'Fase C',
+        name: 'Extracto CO2 Supercrítico de Caléndula',
+        inci: 'Calendula Officinalis Flower Extract',
+        role: 'Fitoactivo antiinflamatorio triterpénico',
+        pct: 1.50
+      },
+      {
+        phase: 'Fase C',
+        name: 'Tocoferol Natural (Vitamina E Mixta)',
+        inci: 'Tocopherol, Helianthus Annuus Seed Oil',
+        role: 'Antioxidante de fase lipídica',
+        pct: 0.80
+      },
+      {
+        phase: 'Fase C',
+        name: 'Geogard Ultra (Conservante COSMOS)',
+        inci: 'Gluconolactone, Sodium Benzoate',
+        role: 'Conservante amplio espectro Lick-Safe',
+        pct: 1.00
+      }
+    ];
+
+    function renderFormulaTable(scaleAmount = 500, unit = 'g') {
+      const tbody = document.getElementById('master-formula-tbody');
+      const headerLabel = document.getElementById('batch-header-label');
+      const totalLabel = document.getElementById('batch-total-weight');
+
+      headerLabel.textContent = `Masa Lote (${scaleAmount} ${unit})`;
+      totalLabel.textContent = `${scaleAmount.toFixed(2)} ${unit}`;
+
+      tbody.innerHTML = MASTER_FORMULA.map(item => {
+        const mass = (item.pct / 100) * scaleAmount;
+        const formattedMass = unit === 'kg'
+          ? `${mass.toFixed(3)} kg`
+          : `${mass.toFixed(2)} g`;
+        const barWidth = Math.min(100, Math.max(4, item.pct * 1.4));
+
+        return `
+          <tr class="hover:bg-white/60 transition-colors">
+            <td class="py-4 pr-4 font-mono text-xs text-kamaui-brown font-medium">${item.phase}</td>
+            <td class="py-4 px-4">
+              <div class="font-medium text-kamaui-espresso">${item.name}</div>
+              <div class="font-mono text-[11px] text-kamaui-muted">${item.inci}</div>
+            </td>
+            <td class="py-4 px-4 text-xs text-kamaui-muted font-light">${item.role}</td>
+            <td class="py-4 px-4">
+              <div class="flex items-center gap-3">
+                <span class="font-mono text-xs font-semibold text-kamaui-espresso w-14">${item.pct.toFixed(2)}%</span>
+                <div class="flex-1 h-1.5 rounded-full bg-kamaui-cream overflow-hidden">
+                  <div class="h-full rounded-full bg-gradient-to-r from-kamaui-brown to-kamaui-gold" style="width: ${barWidth}%"></div>
+                </div>
+              </div>
+            </td>
+            <td class="py-4 pl-4 text-right font-mono text-xs font-medium text-kamaui-espresso">${formattedMass}</td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    function updateBatchScale(amount, unit, btnEl) {
+      document.querySelectorAll('.batch-btn').forEach(btn => {
+        btn.classList.remove('bg-kamaui-espresso', 'text-white', 'shadow-sm');
+        btn.classList.add('text-kamaui-muted');
+      });
+      btnEl.classList.add('bg-kamaui-espresso', 'text-white', 'shadow-sm');
+      btnEl.classList.remove('text-kamaui-muted');
+      renderFormulaTable(amount, unit);
+    }
+
+    function populatePdfTable() {
+      const pdfRows = document.getElementById('pdf-formula-rows');
+      const dateSpan = document.getElementById('pdf-current-date');
+      if (dateSpan) {
+        dateSpan.textContent = new Date().toISOString().split('T')[0];
+      }
+      pdfRows.innerHTML = MASTER_FORMULA.map((item, idx) => {
+        const bg = idx % 2 === 0 ? '#FFFFFF' : '#F9F7F3';
+        const g50 = ((item.pct / 100) * 50).toFixed(2) + ' g';
+        const g500 = ((item.pct / 100) * 500).toFixed(2) + ' g';
+        const kg25 = ((item.pct / 100) * 25).toFixed(3) + ' kg';
+        return `
+          <tr style="background: ${bg}; border-bottom: 1px solid #EFECE6;">
+            <td style="padding: 6px 8px; font-family: 'JetBrains Mono', monospace; color: #5C3A21; font-weight: 600;">${item.phase}</td>
+            <td style="padding: 6px 8px;">
+              <div style="font-weight: 600; color: #1F1A17;">${item.name}</div>
+              <div style="font-family: 'JetBrains Mono', monospace; font-size: 8px; color: #7A7067;">${item.inci}</div>
+            </td>
+            <td style="padding: 6px 8px; color: #5C3A21;">${item.role}</td>
+            <td style="padding: 6px 8px; text-align: right; font-family: 'JetBrains Mono', monospace; font-weight: 600;">${item.pct.toFixed(2)}%</td>
+            <td style="padding: 6px 8px; text-align: right; font-family: 'JetBrains Mono', monospace;">${g50}</td>
+            <td style="padding: 6px 8px; text-align: right; font-family: 'JetBrains Mono', monospace; font-weight: 600; color: #2C1B10;">${g500}</td>
+            <td style="padding: 6px 8px; text-align: right; font-family: 'JetBrains Mono', monospace;">${kg25}</td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    async function generateDetailedFormulaPDF() {
+      const btn = document.getElementById('btn-generate-pdf');
+      const originalHTML = btn ? btn.innerHTML : '';
+      if (btn) {
+        btn.innerHTML = '<i class="ph-light ph-spinner animate-spin text-lg"></i><span>Maquetando PDF...</span>';
+        btn.disabled = true;
+      }
+
+      populatePdfTable();
+      const wrapper = document.getElementById('pdf-dossier-wrapper');
+      const element = document.getElementById('pdf-printable-area');
+      wrapper.classList.remove('hidden');
+
+      const opt = {
+        margin: [8, 8, 8, 8],
+        filename: 'Kamaui_Dossier_Formula_Maestra_SOP.pdf',
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { scale: 2, useCORS: true, logging: false },
+        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+      };
+
+      try {
+        await html2pdf().set(opt).from(element).save();
+      } catch (err) {
+        console.error('Error al generar PDF:', err);
+        window.print();
+      } finally {
+        wrapper.classList.add('hidden');
+        if (btn) {
+          btn.innerHTML = originalHTML;
+          btn.disabled = false;
+        }
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      renderFormulaTable(500, 'g');
+      populatePdfTable();
+    });
+  </script>
+</body>
+</html>

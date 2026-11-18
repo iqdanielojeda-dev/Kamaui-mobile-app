@@ -1,0 +1,27 @@
+{
+  "name": "Kamaui Lab — Validador & Dossier 360°",
+  "short_name": "Kamaui Lab",
+  "description": "Validador Express de Ideas 360°, Dossier Galénico I+D y Portafolio de Proyectos para Cosmética Veterinaria Holística.",
+  "start_url": "./kamaui-mobile-apk.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#382212",
+  "theme_color": "#5C3A21",
+  "lang": "es-CO",
+  "categories": ["productivity", "medical", "business"],
+  "icons": [
+    {
+      "src": "assets/logo-kamaui.jpg",
+      "sizes": "192x192",
+      "type": "image/jpeg",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "assets/logo-kamaui.jpg",
+      "sizes": "512x512",
+      "type": "image/jpeg",
+      "purpose": "any maskable"
+    }
+  ]
+}
